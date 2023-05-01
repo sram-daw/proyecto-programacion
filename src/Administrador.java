@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Administrador extends Usuarios {
     public Administrador() {
     }
@@ -17,7 +19,9 @@ public class Administrador extends Usuarios {
         return null;
     }
 
-    //añadir metodo mostrarHistorialTotalPedidos
+    public ArrayList<Pedidos> mostrarHistorialTotalPedidos(){
+        return null;
+    }
     public ListaUsers mostrarListaUsuarios(){
         return null;
     }
@@ -25,5 +29,7 @@ public class Administrador extends Usuarios {
     public void reponerStock(){
 
     }
-    //añadir metodo comprobarStock
+    public Catalogo comprobarStock(){
+        return null;
+    }
 }

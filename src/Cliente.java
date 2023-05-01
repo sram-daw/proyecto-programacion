@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Cliente extends Usuarios {
 
     private String direccion;
@@ -7,14 +9,13 @@ public class Cliente extends Usuarios {
     private String ciudad;
     private String nombre;
     private String apellido;
-    private String dni;
-    //añadir arraylist de clase pedidos
+    private ArrayList<Pedidos> listaPedidos;
 
 
     public Cliente() {
     }
 
-    public Cliente(String idUsuario, Boolean isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String ciudad, String nombre, String apellido, String dni) {
+    public Cliente(String idUsuario, Boolean isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String ciudad, String nombre, String apellido, ArrayList<Pedidos> listaPedidos) {
         super(idUsuario, isAdmin, nombreUsuario, pwd);
         this.direccion = direccion;
         this.numTelf = numTelf;
@@ -23,7 +24,15 @@ public class Cliente extends Usuarios {
         this.ciudad = ciudad;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.dni = dni;
+        this.listaPedidos = listaPedidos;
+    }
+
+    public ArrayList<Pedidos> getListaPedidos() {
+        return listaPedidos;
+    }
+
+    public void setListaPedidos(ArrayList<Pedidos> listaPedidos) {
+        this.listaPedidos = listaPedidos;
     }
 
     @Override
@@ -92,12 +101,8 @@ public class Cliente extends Usuarios {
         this.apellido = apellido;
     }
 
-    public String getDni() {
-        return dni;
-    }
 
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-//añadir metodo mostrarHistorialPedidos
+public ArrayList<Pedidos> mostrarHistorialPedidos(String idUsuario){
+        return null;
+}
 }
