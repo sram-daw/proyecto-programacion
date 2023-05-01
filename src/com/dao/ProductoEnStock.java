@@ -4,8 +4,8 @@ public class ProductoEnStock extends Producto{
 
     private int stock;
 
-    public ProductoEnStock(String idProducto, float precio, int categoriaID, String categoriaNombre, int stock) {
-        super(idProducto, precio, categoriaID, categoriaNombre);
+    public ProductoEnStock(int idProducto, String nombre, float precio, int categoriaID, String categoriaNombre, int stock) {
+        super(idProducto, nombre, precio, categoriaID, categoriaNombre);
         this.stock = stock;
     }
 
