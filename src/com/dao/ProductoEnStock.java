@@ -1,3 +1,5 @@
+package com.dao;
+
 public class ProductoEnStock extends Producto{
 
     private int stock;
