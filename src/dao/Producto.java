@@ -1,4 +1,4 @@
-package com.dao;
+package dao;
 
 public abstract class Producto {
 

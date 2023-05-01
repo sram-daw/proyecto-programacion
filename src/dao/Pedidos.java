@@ -1,4 +1,4 @@
-package com.dao;
+package dao;
 
 import java.util.ArrayList;
 import java.util.Date;

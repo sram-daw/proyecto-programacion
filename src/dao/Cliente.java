@@ -1,4 +1,4 @@
-package com.dao;
+package dao;
 
 import java.util.ArrayList;
 
@@ -8,45 +8,34 @@ public class Cliente extends Usuarios {
     private String numTelf;
     private String email;
     private String cp;
-    private String ciudad;
     private String nombre;
     private String apellido;
-    private ArrayList<Pedidos> listaPedidos;
+
 
 
     public Cliente() {
     }
 
-    public Cliente(String idUsuario, Boolean isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String ciudad, String nombre, String apellido, ArrayList<Pedidos> listaPedidos) {
-        super(idUsuario, isAdmin, nombreUsuario, pwd);
+    public Cliente(/*int idUsuario,*/ int isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String nombre, String apellido) {
+        super(/*idUsuario,*/ isAdmin, nombreUsuario, pwd);
         this.direccion = direccion;
         this.numTelf = numTelf;
         this.email = email;
         this.cp = cp;
-        this.ciudad = ciudad;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.listaPedidos = listaPedidos;
+
+
     }
 
-    public ArrayList<Pedidos> getListaPedidos() {
+    /*public ArrayList<Pedidos> getListaPedidos() {
         return listaPedidos;
     }
 
     public void setListaPedidos(ArrayList<Pedidos> listaPedidos) {
         this.listaPedidos = listaPedidos;
     }
-
-    @Override
-    public Boolean login(String nombreUsuario, String pwd) {
-        return null;
-    }
-
-    @Override
-    public Boolean signIn(String nombreUsuario, String pwd, Boolean isAdmin) {
-        return null;
-    }
-
+*/
     public String getDireccion() {
         return direccion;
     }
@@ -79,14 +68,6 @@ public class Cliente extends Usuarios {
         this.cp = cp;
     }
 
-    public String getCiudad() {
-        return ciudad;
-    }
-
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -103,8 +84,8 @@ public class Cliente extends Usuarios {
         this.apellido = apellido;
     }
 
-
-public ArrayList<Pedidos> mostrarHistorialPedidos(String idUsuario){
+    public ArrayList<Pedidos> mostrarHistorialPedidos(String idUsuario) {
         return null;
-}
+    }
+
 }
