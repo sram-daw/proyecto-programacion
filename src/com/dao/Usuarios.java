@@ -1,3 +1,5 @@
+package com.dao;
+
 public abstract class Usuarios {
     private String idUsuario;
     private Boolean isAdmin;

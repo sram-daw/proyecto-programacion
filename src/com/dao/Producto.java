@@ -1,3 +1,5 @@
+package com.dao;
+
 public abstract class Producto {
 
     private String idProducto;

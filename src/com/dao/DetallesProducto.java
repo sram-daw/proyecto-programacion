@@ -1,3 +1,5 @@
+package com.dao;
+
 public class DetallesProducto extends Producto {
     private int cantidad;
 
