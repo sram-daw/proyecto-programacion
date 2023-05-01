@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/model/dao/Pedidos.java
 package model.dao;
+========
+package dao;
+>>>>>>>> e77302a (ventanas y código de registro añadidos, cambio de estructura en carpetas):src/dao/Pedidos.java
 
 import java.util.ArrayList;
 import java.util.Date;
