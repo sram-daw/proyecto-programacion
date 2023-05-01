@@ -1,6 +1,6 @@
 package model;
 
-import dao.Cliente;
+import model.dao.Cliente;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

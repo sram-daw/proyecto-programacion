@@ -1,4 +1,4 @@
-package dao;
+package model.dao;
 
 public abstract class Usuarios<T> {
     private int idUsuario;

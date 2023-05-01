@@ -1,6 +1,6 @@
 package view;
 
-import UI.PaginaInicio;
+import view.UI.PaginaInicio;
 
 public class View {
     public View() {

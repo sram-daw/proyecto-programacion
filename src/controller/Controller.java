@@ -2,7 +2,7 @@ package controller;
 
 import model.Model;
 import view.View;
-import dao.Cliente;
+import model.dao.Cliente;
 
 public class Controller {
 
