@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/model/dao/ProductoEnStock.java
 package model.dao;
+========
+package com.dao;
+>>>>>>>> c3a7b76 (Reorganizacion para mvc):src/com/dao/ProductoEnStock.java
 
 public class ProductoEnStock extends Producto{
 

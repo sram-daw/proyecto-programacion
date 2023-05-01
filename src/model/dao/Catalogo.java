@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/model/dao/Catalogo.java
 package model.dao;
+========
+package com.dao;
+>>>>>>>> c3a7b76 (Reorganizacion para mvc):src/com/dao/Catalogo.java
 
 import java.util.ArrayList;
 
