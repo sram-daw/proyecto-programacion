@@ -10,11 +10,21 @@ public class PaginaInicio extends JFrame { //para poder usar los métodos de Jfr
     private JButton iniciarSesiónButton;
     static PaginaInicio paginaInicio = new PaginaInicio();
 
+    //Botón registrarse
     public PaginaInicio() {
         registrarseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Registro.crearVentanaRegistro();
+                paginaInicio.dispose(); //se cierra la ventana tras pulsar el botón
+            }
+        });
+
+        //Botón iniciar sesión
+        iniciarSesiónButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                InicioSesion.crearVentanaInicioSesion();
                 paginaInicio.dispose();
             }
         });

@@ -7,5 +7,4 @@ public class View {
         PaginaInicio.crearVentanaInicial(); //Método para iniciar la primera ventana
     }
 
-
 }

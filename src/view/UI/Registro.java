@@ -19,7 +19,7 @@ public class Registro extends JFrame {
     private JButton registrarseButton;
     private JTextField pwd;
 
-    private static Registro registro;
+    private static Registro registro; //instancia de la propia clase para poder usarla en distintos métodos
 
     public Registro() {
         registrarseButton.addActionListener(new ActionListener() {
