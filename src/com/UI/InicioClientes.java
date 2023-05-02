@@ -22,12 +22,12 @@ public class InicioClientes extends JFrame {//extendemos de JFrame para trabajar
 
     public InicioClientes() {
 
-
+        //añadimos el contenindo a la ventana
         setContentPane(PanelPrincipal);
-
+        //Añadimos los items al menu
         ClienteMenu.add(ItemCuenta);
         ClienteMenu.add(ItemPedidos);
-
+        //Mostramos mensaje por consola de la funcionalidad que tendra el boton
         logoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
