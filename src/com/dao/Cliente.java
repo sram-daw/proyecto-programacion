@@ -17,7 +17,7 @@ public class Cliente extends Usuarios {
     public Cliente() {
     }
 
-    public Cliente(String idUsuario, Boolean isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String ciudad, String nombre, String apellido, ArrayList<Pedidos> listaPedidos) {
+    public Cliente(int idUsuario, int isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String ciudad, String nombre, String apellido, ArrayList<Pedidos> listaPedidos) {
         super(idUsuario, isAdmin, nombreUsuario, pwd);
         this.direccion = direccion;
         this.numTelf = numTelf;
