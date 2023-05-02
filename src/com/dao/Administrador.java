@@ -6,7 +6,7 @@ public class Administrador extends Usuarios {
     public Administrador() {
     }
 
-    public Administrador(String idUsuario, Boolean isAdmin, String nombreUsuario, String pwd) {
+    public Administrador(int idUsuario, int isAdmin, String nombreUsuario, String pwd) {
         super(idUsuario, isAdmin, nombreUsuario, pwd);
     }
 

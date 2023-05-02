@@ -3,8 +3,10 @@ package com.dao;
 public class DetallesProducto extends Producto {
     private int cantidad;
 
-    public DetallesProducto(String idProducto, float precio, int categoriaID, String categoriaNombre) {
-        super(idProducto, precio, categoriaID, categoriaNombre);
+
+    public DetallesProducto(int idProducto, String nombre, float precio, int categoriaID, String categoriaNombre, int cantidad) {
+        super(idProducto, nombre, precio, categoriaID, categoriaNombre);
+        this.cantidad = cantidad;
     }
 
     public DetallesProducto() {
