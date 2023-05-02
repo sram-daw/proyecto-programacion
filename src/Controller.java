@@ -11,7 +11,7 @@ public class Controller {
         //titulo de la pantalla
         ventanaClientes.setTitle("Inicio clientes");
         ventanaClientes.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //indicamos mediante valor boolena que la pantalla sea visible
+        //indicamos mediante valor booleano que la pantalla sea visible
         ventanaClientes.setVisible(true);
     }
 }
