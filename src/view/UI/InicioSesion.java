@@ -34,7 +34,7 @@ public class InicioSesion extends JFrame {
                     }
                     inicioSesion.dispose();
                 } else {
-                    crearVentanaInicioSesion();
+                    crearVentanaInicioSesion(); //si es incorrecto el inicio de sesión se vuelve a mostrar la ventana de inicio de sesion
                 }
             }
         });
