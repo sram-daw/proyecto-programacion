@@ -33,12 +33,15 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
 
     }
 
-    public static void crearVentana() {
+    public static void crearVentanaPaginaPrincipalCliente() {
         //añadimos el contenindo a la ventana
         paginaPrincipalClientes.setContentPane(paginaPrincipalClientes.PanelPrincipal);
         //Añadimos los items al menu
         paginaPrincipalClientes.ClienteMenu.add(paginaPrincipalClientes.ItemCuenta);
         paginaPrincipalClientes.ClienteMenu.add(paginaPrincipalClientes.ItemPedidos);
+        paginaPrincipalClientes.setBounds(630, 250, 1000, 700);
+        paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        paginaPrincipalClientes.setVisible(true);
     }
 
 }
