@@ -27,10 +27,12 @@ public class InicioSesion extends JFrame {
                 //Se llama al método iniciar sesión del Controller
                 HashMap<String, Boolean> resultadoLogin = Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText());
                 if (resultadoLogin.get("isInicioSesionOk")) {
-                    if (!resultadoLogin.get("isAdmin")){
+                    if (!resultadoLogin.get("isAdmin")) {
                         //añadir aquí la pantalla principal que vería el usuario al iniciar sesión.
-                    }else {
-                        //añadir la pantalla principal que vería el admin al iniciar sesión
+                        PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                    } else {
+                        //página inicial que verán los admins
+
                     }
                     inicioSesion.dispose();
                 } else {
