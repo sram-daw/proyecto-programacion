@@ -1,9 +1,13 @@
 package controller;
 
 import model.Model;
+import view.UI.PaginaPrincipalAdmin;
 import view.View;
 import model.dao.Cliente;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class Controller {
@@ -19,13 +23,19 @@ public class Controller {
         return Model.comprobarInicioSesOk(nombreUsuario, pwd);
     }
 
+
+    //Metodo para agregar el modela a la tabla Almacen
+    static public DefaultTableModel agregarTablaAlmacen() throws SQLException {
+        return Model.obtenerDatosAlmacen();
+    }
+
     public static void main(String[] args) {
         Model model = new Model();
         //Instancia de view.View. El constructor contiene la llamada al método que crea la primera ventana
         View view = new View();
         //Conexión a la bbdd
         model.establecerConexionBd(); //se establece la conexión con la bd antes de nada
-
-
     }
+
+
 }

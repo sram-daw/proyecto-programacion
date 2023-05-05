@@ -29,6 +29,7 @@ public class Registro extends JFrame {
                 Boolean isAddOk = Controller.registrarse(nombreUsuario.getText(), pwd.getText(), direccion.getText(), tlf.getText(), cp.getText(), email.getText(), nombre.getText(), apellido.getText());
                 if (isAddOk) {
                     JOptionPane.showMessageDialog(null, "Registro correcto.");
+                    InicioSesion.crearVentanaInicioSesion();
                 } else {
                     JOptionPane.showMessageDialog(null, "Ha habido un error en el registro.");
                 }

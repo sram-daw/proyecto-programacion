@@ -3,6 +3,7 @@ package model;
 import model.dao.Cliente;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,6 +14,8 @@ public class Model {
 
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
+
+
     public Model() {
 
     }
@@ -21,7 +24,7 @@ public class Model {
         conexion = null;
         String url = "jdbc:mysql://localhost:3306/lurpiazon";
         String usuario = "root";
-        String passwd = "1234";
+        String passwd = "root";
         try {
             conexion = DriverManager.getConnection(url, usuario, passwd);
             System.out.println("Conexión correcta");
@@ -103,5 +106,30 @@ public class Model {
         resultadoDevuelto.put("isAdmin", isAdmin);
         return resultadoDevuelto;
     }
+
+    //funcion para mostrar los datos de la tabla productos_almacen
+    public static DefaultTableModel obtenerDatosAlmacen()throws SQLException{
+        String[] columnas= {"id_producto","nombre_producto","precio","id_categoria","nombre_categoria","stock"};
+        DefaultTableModel modelAlmacen =new DefaultTableModel(columnas,0);
+
+
+        try(Statement statement= conexion.createStatement();
+        ResultSet resultSet= statement.executeQuery("SELECT * FROM productos_almacen")){
+            while (resultSet.next()){
+                int id_producto=resultSet.getInt("id_producto");
+                String nombre_producto=resultSet.getString("nombre_producto");
+                float precio=resultSet.getFloat("precio");
+                int id_categoria=resultSet.getInt("id_categoria");
+                String nombre_categoria=resultSet.getString("nombre_categoria");
+                int stock=resultSet.getInt("stock");
+
+                Object[]row={id_producto,nombre_producto,precio,id_categoria,nombre_categoria,stock};
+                modelAlmacen.addRow(row);
+            }
+        }
+
+        return modelAlmacen;
+    }
+
 
 }

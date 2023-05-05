@@ -3,8 +3,10 @@ package view.UI;
 import controller.Controller;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class InicioSesion extends JFrame {
@@ -32,7 +34,11 @@ public class InicioSesion extends JFrame {
                         PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
                     } else {
                         //página inicial que verán los admins
-
+                        try {
+                            PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                     inicioSesion.dispose();
                 } else {
