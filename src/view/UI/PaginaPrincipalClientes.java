@@ -42,7 +42,6 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
 
     public PaginaPrincipalClientes() {
 
-
         //Mostramos mensaje por consola de la funcionalidad que tendra el boton
         logoButton.addActionListener(new ActionListener() {
             @Override
