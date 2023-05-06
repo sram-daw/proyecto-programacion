@@ -30,7 +30,11 @@ public class InicioSesion extends JFrame {
                 if (resultadoLogin.get("isInicioSesionOk")) {
                     if (!resultadoLogin.get("isAdmin")) {
                         //añadir aquí la pantalla principal que vería el usuario al iniciar sesión.
-                        PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                        try {
+                            PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     } else {
                         //página inicial que verán los admins
                         try {

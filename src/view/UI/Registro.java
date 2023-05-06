@@ -19,7 +19,7 @@ public class Registro extends JFrame {
     private JButton registrarseButton;
     private JTextField pwd;
 
-    private static Registro registro; //instancia de la propia clase para poder usarla en distintos métodos
+    private static Registro registro = new Registro(); //instancia de la propia clase para poder usarla en distintos métodos
 
     public Registro() {
         registrarseButton.addActionListener(new ActionListener() {
@@ -39,7 +39,6 @@ public class Registro extends JFrame {
     }
 
     public static void crearVentanaRegistro() {
-        registro = new Registro();
         registro.setContentPane(registro.container);
         registro.setTitle("Registro");
         registro.setBounds(630, 250, 650, 600);

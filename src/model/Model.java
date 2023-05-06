@@ -67,6 +67,8 @@ public class Model {
     }
 
     //Función para comprobar si los datos de inicio de sesión son correctos
+
+    //modificar este metodo para que devuelva un objeto cliente
     public static HashMap<String, Boolean> comprobarInicioSesOk(String nombreUsuario, String pwd) {
         HashMap<String, Boolean> resultadoDevuelto = new HashMap<>();
         Boolean isInicioSesionOk = false;
