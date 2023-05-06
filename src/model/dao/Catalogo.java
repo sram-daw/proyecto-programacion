@@ -20,4 +20,12 @@ public class Catalogo {
     public ArrayList<ProductoEnStock> mostrarCatalogoPorCategoria(String idProducto) {
         return null;
     }
+
+    public ArrayList<ProductoEnStock> getCatalogo() {
+        return catalogo;
+    }
+
+    public void setCatalogo(ArrayList<ProductoEnStock> catalogo) {
+        this.catalogo = catalogo;
+    }
 }

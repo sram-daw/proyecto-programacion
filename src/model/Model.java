@@ -1,12 +1,17 @@
 package model;
 
+import model.dao.Catalogo;
 import model.dao.Cliente;
+import model.dao.Producto;
+import model.dao.ProductoEnStock;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Model {
@@ -52,7 +57,7 @@ public class Model {
             consulta.executeUpdate(texto_consulta);
             System.out.println("Usuario añadido correctamente");
             isAddOk = true;
-
+            consulta.close();
         } catch (SQLException e) {
             System.out.println("Error al añadir el usuario");
             System.out.println(e.getLocalizedMessage());
@@ -86,14 +91,13 @@ public class Model {
                 } else {
                     System.out.println("Sesión iniciada correctamente como cliente.");
                     isAdmin = false;
-
                 }
                 isInicioSesionOk = true;
             } else {
                 JOptionPane.showMessageDialog(null, "Datos incorrectos. Vuelte a intentarlo.");
                 isInicioSesionOk = false;
             }
-
+            resultado.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar iniciar sesión. Vuelte a intentarlo.");
             System.out.println(e.getLocalizedMessage());
@@ -103,5 +107,31 @@ public class Model {
         resultadoDevuelto.put("isAdmin", isAdmin);
         return resultadoDevuelto;
     }
+
+    //funcion para mostrar los datos de la tabla productos_almacen
+    public static Catalogo obtenerDatosAlmacen() throws SQLException {
+        Catalogo catalogo = new Catalogo();
+        ArrayList<ProductoEnStock> listaProductos = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM productos_almacen")) {
+            while (resultSet.next()) {
+                ProductoEnStock nuevoProducto = new ProductoEnStock();
+                nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
+                nuevoProducto.setPrecio(resultSet.getFloat("precio"));
+                nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
+                nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
+                nuevoProducto.setStock(resultSet.getInt("stock"));
+                listaProductos.add(nuevoProducto);
+            }
+            catalogo.setCatalogo(listaProductos);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los productos del almacén.");
+            System.out.println(e.getLocalizedMessage());
+        }
+        return catalogo;
+    }
+
 
 }

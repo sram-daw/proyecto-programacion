@@ -1,9 +1,14 @@
 package controller;
 
 import model.Model;
+import model.dao.Catalogo;
 import view.View;
 import model.dao.Cliente;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Controller {
@@ -17,6 +22,11 @@ public class Controller {
     //Método para iniciar sesión
     static public HashMap<String, Boolean> iniciarSesion(String nombreUsuario, String pwd) {
         return Model.comprobarInicioSesOk(nombreUsuario, pwd);
+    }
+
+    //Metodo para agregar el modelo a la tabla Almacen
+    static public Catalogo agregarTablaAlmacen() throws SQLException {
+        return Model.obtenerDatosAlmacen();
     }
 
     public static void main(String[] args) {
