@@ -24,7 +24,7 @@ public class InicioSesion extends JFrame {
     public InicioSesion() {
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+           public void actionPerformed(ActionEvent e) {
                 //Se llama al método iniciar sesión del Controller
                 HashMap<String, Boolean> resultadoLogin = Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText());
                 if (resultadoLogin.get("isInicioSesionOk")) {
