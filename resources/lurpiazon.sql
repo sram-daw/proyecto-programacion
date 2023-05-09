@@ -30,7 +30,7 @@ CREATE TABLE `detalles_pedidos` (
   KEY `id_pedido_idx` (`id_pedido`),
   KEY `id_producto_idx` (`id_producto`),
   CONSTRAINT `id_pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id_pedido`),
-  CONSTRAINT `id_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos _almacen` (`id_producto`)
+  CONSTRAINT `id_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos_almacen` (`id_producto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -72,13 +72,13 @@ LOCK TABLES `pedidos` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `productos _almacen`
+-- Table structure for table `productos_almacen`
 --
 
-DROP TABLE IF EXISTS `productos _almacen`;
+DROP TABLE IF EXISTS `productos_almacen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `productos _almacen` (
+CREATE TABLE `productos_almacen` (
   `id_producto` int NOT NULL AUTO_INCREMENT,
   `nombre_producto` varchar(45) NOT NULL,
   `precio` float NOT NULL,
@@ -87,16 +87,17 @@ CREATE TABLE `productos _almacen` (
   `stock` int NOT NULL,
   PRIMARY KEY (`id_producto`),
   UNIQUE KEY `id_producto_UNIQUE` (`id_producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `productos _almacen`
+-- Dumping data for table `productos_almacen`
 --
 
-LOCK TABLES `productos _almacen` WRITE;
-/*!40000 ALTER TABLE `productos _almacen` DISABLE KEYS */;
-/*!40000 ALTER TABLE `productos _almacen` ENABLE KEYS */;
+LOCK TABLES `productos_almacen` WRITE;
+/*!40000 ALTER TABLE `productos_almacen` DISABLE KEYS */;
+INSERT INTO `productos_almacen` VALUES (1,'camisa',20.95,1,'ropa',40),(2,'vestido',18.75,1,'ropa',20),(3,'abrigo',45.99,1,'ropa',30),(4,'falda',23.5,1,'ropa',25),(5,'sudadera',27.75,1,'ropa',35),(6,'camiseta',22.5,1,'ropa',33),(7,'jersey',29.99,1,'ropa',12),(8,'gorro',8.5,1,'ropa',35),(9,'guantes',9.85,1,'ropa',22),(10,'pantalon',32.9,1,'ropa',38),(11,'alfombra',45.75,2,'hogar',35),(12,'mesa',75.5,2,'hogar',26),(13,'estanteria',55.99,2,'hogar',38),(14,'vaso',3.5,2,'hogar',50),(15,'taza',2.75,2,'hogar',42),(16,'plato',1.9,2,'hogar',33),(17,'espejo',26.5,2,'hogar',16),(18,'lampara',35.95,2,'hogar',29),(19,'sofa',255.9,2,'hogar',30),(20,'silla',34.5,2,'hogar',20),(21,'roll',4.5,3,'alimentacion',15),(22,'heura',3.75,3,'alimentacion',28),(23,'pizza',2.55,3,'alimentacion',19),(24,'aceite',5.5,3,'alimentacion',23),(25,'vinagre',0.8,3,'alimentacion',15),(26,'empanada',8.95,3,'alimentacion',22),(27,'cafe',1.59,3,'alimentacion',42),(28,'arroz',1.29,3,'alimentacion',12),(29,'proteina',16.99,3,'alimentacion',18),(30,'avena',0.99,3,'alimentacion',32),(31,'pelota',3.2,4,'mascota',23),(32,'collar',12.5,4,'mascota',17),(33,'correa',14.95,4,'mascota',35),(34,'transportin',25.95,4,'mascota',40),(35,'champu',11.99,4,'mascota',16),(36,'pipeta',23.95,4,'mascota',30),(37,'cama',37.95,4,'mascota',22),(38,'frisbee',11.95,4,'mascota',37),(39,'comedero',9.99,4,'mascota',19),(40,'bebedero',17.5,4,'mascota',18);
+/*!40000 ALTER TABLE `productos_almacen` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -122,7 +123,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `nombre_usuario_UNIQUE` (`nombre_usuario`),
   UNIQUE KEY `num_telf_UNIQUE` (`num_telf`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,6 +132,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,1,'admin','admin','admin','1234','admin','123','admin','12345'),(2,1,'adm','administrador','admin','12','admin','567','admino','56789'),(3,0,'pedro','pedro','pedrin','789','pepe','456','pedron','147');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-01 20:42:59
+-- Dump completed on 2023-05-05 17:55:41
