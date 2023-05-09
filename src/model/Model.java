@@ -15,6 +15,8 @@ public class Model {
 
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
+
+
     public Model() {
 
     }
@@ -23,7 +25,7 @@ public class Model {
         conexion = null;
         String url = "jdbc:mysql://localhost:3306/lurpiazon";
         String usuario = "root";
-        String passwd = "1234";
+        String passwd = "root";
         try {
             conexion = DriverManager.getConnection(url, usuario, passwd);
             System.out.println("Conexión correcta");
@@ -54,7 +56,7 @@ public class Model {
             consulta.executeUpdate(texto_consulta);
             System.out.println("Usuario añadido correctamente");
             isAddOk = true;
-            consulta.close();
+
         } catch (SQLException e) {
             System.out.println("Error al añadir el usuario");
             System.out.println(e.getLocalizedMessage());
@@ -64,8 +66,6 @@ public class Model {
     }
 
     //Función para comprobar si los datos de inicio de sesión son correctos
-
-    //modificar este metodo para que devuelva un objeto cliente
     public static HashMap<String, Boolean> comprobarInicioSesOk(String nombreUsuario, String pwd) {
         HashMap<String, Boolean> resultadoDevuelto = new HashMap<>();
         Boolean isInicioSesionOk = false;
@@ -90,13 +90,14 @@ public class Model {
                 } else {
                     System.out.println("Sesión iniciada correctamente como cliente.");
                     isAdmin = false;
+
                 }
                 isInicioSesionOk = true;
             } else {
                 JOptionPane.showMessageDialog(null, "Datos incorrectos. Vuelte a intentarlo.");
                 isInicioSesionOk = false;
             }
-            resultado.close();
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar iniciar sesión. Vuelte a intentarlo.");
             System.out.println(e.getLocalizedMessage());
@@ -108,39 +109,39 @@ public class Model {
     }
 
     //funcion para mostrar los datos de la tabla productos_almacen
-    public static Catalogo obtenerDatosAlmacen() throws SQLException {
-        Catalogo catalogo = new Catalogo();
-        ArrayList<ProductoEnStock> listaProductos = new ArrayList<>();
+    public static Catalogo obtenerDatosAlmacen()throws SQLException{
 
-        try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM productos_almacen")) {
-            while (resultSet.next()) {
-                ProductoEnStock nuevoProducto = new ProductoEnStock();
-                nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
-                nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
-                nuevoProducto.setPrecio(resultSet.getFloat("precio"));
-                nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
-                nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
-                nuevoProducto.setStock(resultSet.getInt("stock"));
-                listaProductos.add(nuevoProducto);
-            }
-            catalogo.setCatalogo(listaProductos);
-        } catch (SQLException e) {
+        Catalogo catalogo=new Catalogo();
+        ArrayList<ProductoEnStock>listaProductos=new ArrayList<>();
+
+        try (Statement statement= conexion.createStatement();
+            ResultSet resultSet= statement.executeQuery("SELECT * FROM productos_almacen")){
+                while (resultSet.next()){
+                    ProductoEnStock nuevoProducto =new ProductoEnStock();
+                    nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                    nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
+                    nuevoProducto.setPrecio(resultSet.getFloat("precio"));
+                    nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
+                    nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
+                    nuevoProducto.setStock(resultSet.getInt("stock"));
+                    listaProductos.add(nuevoProducto);
+                }
+                catalogo.setCatalogo(listaProductos);
+        }catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los productos del almacén.");
             System.out.println(e.getLocalizedMessage());
         }
-        return catalogo;
+            return catalogo;
     }
 
-    //funcion para mostrar los clientes de la tabla usuarios
-    public static ListaClientes obtenerDatosCliente() throws SQLException {
-        ListaClientes listaCliente = new ListaClientes();
-        ArrayList<Cliente> lista = new ArrayList<>();
+  public static ListaClientes obtenerDatosCliente()throws SQLException{
+        ListaClientes listaCliente =new ListaClientes();
+        ArrayList<Cliente> lista=new ArrayList<>();
 
-        try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
-            while (resultSet.next()) {
-                Cliente nuevoCliente = new Cliente();
+        try (Statement statement= conexion.createStatement();
+             ResultSet resultSet= statement.executeQuery("SELECT * FROM usuarios where is_admin=0")){ //recoge solo los clientes
+            while (resultSet.next()){
+                Cliente nuevoCliente=new Cliente();
                 nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
                 nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
                 nuevoCliente.setNombre(resultSet.getString("nombre"));
@@ -153,12 +154,12 @@ public class Model {
                 lista.add(nuevoCliente);
             }
             listaCliente.setListaClientes(lista);
-        } catch (SQLException e) {
+        }catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
             System.out.println(e.getLocalizedMessage());
         }
+
+
         return listaCliente;
     }
-
-
 }

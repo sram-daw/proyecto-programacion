@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/model/dao/Pedidos.java
 package model.dao;
-========
-package dao;
->>>>>>>> e77302a (ventanas y código de registro añadidos, cambio de estructura en carpetas):src/dao/Pedidos.java
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,15 +8,16 @@ public class Pedidos {
     private ArrayList<Cesta> pedido;
     private Date fecha;
 
+    private int idPedido;
+
     private float precio;
 
-    private Cliente cliente;
 
-    public Pedidos(ArrayList<Cesta> pedido, Date fecha, float precio, Cliente cliente) {
+    public Pedidos(ArrayList<Cesta> pedido, Date fecha, int idPedido, float precio) {
         this.pedido = pedido;
         this.fecha = fecha;
+        this.idPedido = idPedido;
         this.precio = precio;
-        this.cliente = cliente;
     }
 
     public Pedidos() {
@@ -46,20 +43,12 @@ public class Pedidos {
         this.fecha = fecha;
     }
 
-    public float getPrecio() {
-        return precio;
+    public int getIdPedido() {
+        return idPedido;
     }
 
-    public void setPrecio(float precio) {
-        this.precio = precio;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 }
 

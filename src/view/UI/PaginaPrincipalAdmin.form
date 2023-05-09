@@ -32,83 +32,73 @@
           </scrollpane>
         </children>
       </grid>
-      <grid id="608d2" binding="panelBotones" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <grid id="f59e9" class="javax.swing.JMenuBar" binding="menuBarAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="10" bottom="0" right="10"/>
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <minimum-size width="-1" height="40"/>
+            <preferred-size width="-1" height="40"/>
+            <maximum-size width="-1" height="40"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="f59e9" class="javax.swing.JMenuBar" binding="menuBarAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="10" bottom="0" right="10"/>
+          <grid id="cdb81" class="javax.swing.JMenu" binding="menuPedidosAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="20"/>
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <minimum-size width="-1" height="40"/>
-                <preferred-size width="-1" height="40"/>
-                <maximum-size width="-1" height="40"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="true">
+                <preferred-size width="-1" height="20"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <text value="Pedidos"/>
+            </properties>
             <border type="none"/>
-            <children>
-              <grid id="cdb81" class="javax.swing.JMenu" binding="menuPedidosAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="20"/>
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="true">
-                    <preferred-size width="-1" height="20"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Pedidos"/>
-                </properties>
-                <border type="none"/>
-                <children/>
+            <children/>
+          </grid>
+          <grid id="62d8" class="javax.swing.JMenu" binding="menuClientesAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="20"/>
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="true">
+                <preferred-size width="-1" height="20"/>
               </grid>
-              <grid id="62d8" class="javax.swing.JMenu" binding="menuClientesAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="20"/>
-                <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="true">
-                    <preferred-size width="-1" height="20"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Clientes"/>
-                </properties>
-                <border type="none"/>
-                <children/>
+            </constraints>
+            <properties>
+              <text value="Clientes"/>
+            </properties>
+            <border type="none"/>
+            <children/>
+          </grid>
+          <grid id="3342" class="javax.swing.JMenu" binding="menuAlmacenAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="20"/>
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                <preferred-size width="-1" height="20"/>
               </grid>
-              <grid id="3342" class="javax.swing.JMenu" binding="menuAlmacenAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="20"/>
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="-1" height="20"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Almacen"/>
-                </properties>
-                <border type="none"/>
-                <children/>
+            </constraints>
+            <properties>
+              <text value="Almacen"/>
+            </properties>
+            <border type="none"/>
+            <children/>
+          </grid>
+          <grid id="41e35" class="javax.swing.JMenu" binding="menuSalirAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="20"/>
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="4" fill="2" indent="0" use-parent-layout="false">
+                <preferred-size width="-1" height="20"/>
               </grid>
-              <grid id="41e35" class="javax.swing.JMenu" binding="menuSalirAdmin" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="20"/>
-                <constraints>
-                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="4" fill="2" indent="0" use-parent-layout="false">
-                    <preferred-size width="-1" height="20"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <armed value="false"/>
-                  <enabled value="true"/>
-                  <popupMenuVisible value="false"/>
-                  <selected value="false"/>
-                  <text value="Salir"/>
-                </properties>
-                <border type="none"/>
-                <children/>
-              </grid>
-            </children>
+            </constraints>
+            <properties>
+              <armed value="false"/>
+              <enabled value="true"/>
+              <popupMenuVisible value="false"/>
+              <selected value="false"/>
+              <text value="Salir"/>
+            </properties>
+            <border type="none"/>
+            <children/>
           </grid>
         </children>
       </grid>
