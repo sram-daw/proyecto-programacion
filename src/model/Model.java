@@ -1,9 +1,6 @@
 package model;
 
-import model.dao.Catalogo;
-import model.dao.Cliente;
-import model.dao.Producto;
-import model.dao.ProductoEnStock;
+import model.dao.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -133,6 +130,34 @@ public class Model {
             System.out.println(e.getLocalizedMessage());
         }
         return catalogo;
+    }
+
+    //funcion para mostrar los clientes de la tabla usuarios
+    public static ListaClientes obtenerDatosCliente() throws SQLException {
+        ListaClientes listaCliente = new ListaClientes();
+        ArrayList<Cliente> lista = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
+            while (resultSet.next()) {
+                Cliente nuevoCliente = new Cliente();
+                nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                nuevoCliente.setNombre(resultSet.getString("nombre"));
+                nuevoCliente.setApellido(resultSet.getString("apellido"));
+                nuevoCliente.setPwd(resultSet.getString("pwd"));
+                nuevoCliente.setDireccion(resultSet.getString("direccion"));
+                nuevoCliente.setNumTelf(resultSet.getString("num_telf"));
+                nuevoCliente.setEmail(resultSet.getString("email"));
+                nuevoCliente.setCp(resultSet.getString("cp"));
+                lista.add(nuevoCliente);
+            }
+            listaCliente.setListaClientes(lista);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
+            System.out.println(e.getLocalizedMessage());
+        }
+        return listaCliente;
     }
 
 
