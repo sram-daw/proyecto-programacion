@@ -5,6 +5,7 @@ import controller.Controller;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class InicioSesion extends JFrame {
@@ -23,16 +24,26 @@ public class InicioSesion extends JFrame {
     public InicioSesion() {
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+           public void actionPerformed(ActionEvent e) {
                 //Se llama al método iniciar sesión del Controller
                 HashMap<String, Boolean> resultadoLogin = Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText());
                 if (resultadoLogin.get("isInicioSesionOk")) {
                     if (!resultadoLogin.get("isAdmin")) {
                         //añadir aquí la pantalla principal que vería el usuario al iniciar sesión.
-                        PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                        try {
+                            PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     } else {
                         //página inicial que verán los admins
+                        try {
+                            PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al mostrar la página principal del administrador.");
+                            throw new RuntimeException(ex);
 
+                        }
                     }
                     inicioSesion.dispose();
                 } else {
