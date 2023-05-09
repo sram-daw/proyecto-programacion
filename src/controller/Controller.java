@@ -1,6 +1,8 @@
 package controller;
 
 import model.Model;
+import model.dao.Catalogo;
+import model.dao.ListaClientes;
 import view.UI.PaginaPrincipalAdmin;
 import view.View;
 import model.dao.Cliente;
@@ -25,8 +27,11 @@ public class Controller {
 
 
     //Metodo para agregar el modela a la tabla Almacen
-    static public DefaultTableModel agregarTablaAlmacen() throws SQLException {
+    static public Catalogo agregarTablaAlmacen() throws SQLException {
         return Model.obtenerDatosAlmacen();
+    }
+    static public ListaClientes agregarTablaCliente() throws SQLException{
+        return Model.obtenerDatosCliente();
     }
 
     public static void main(String[] args) {

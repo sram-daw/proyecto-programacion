@@ -37,6 +37,7 @@ public class InicioSesion extends JFrame {
                         try {
                             PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();
                         } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al mostrar la página principal del administrador.");
                             throw new RuntimeException(ex);
                         }
                     }

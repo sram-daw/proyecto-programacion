@@ -1,6 +1,6 @@
 package model;
 
-import model.dao.Cliente;
+import model.dao.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Model {
@@ -108,28 +109,57 @@ public class Model {
     }
 
     //funcion para mostrar los datos de la tabla productos_almacen
-    public static DefaultTableModel obtenerDatosAlmacen()throws SQLException{
-        String[] columnas= {"id_producto","nombre_producto","precio","id_categoria","nombre_categoria","stock"};
-        DefaultTableModel modelAlmacen =new DefaultTableModel(columnas,0);
+    public static Catalogo obtenerDatosAlmacen()throws SQLException{
 
+        Catalogo catalogo=new Catalogo();
+        ArrayList<ProductoEnStock>listaProductos=new ArrayList<>();
 
-        try(Statement statement= conexion.createStatement();
-        ResultSet resultSet= statement.executeQuery("SELECT * FROM productos_almacen")){
-            while (resultSet.next()){
-                int id_producto=resultSet.getInt("id_producto");
-                String nombre_producto=resultSet.getString("nombre_producto");
-                float precio=resultSet.getFloat("precio");
-                int id_categoria=resultSet.getInt("id_categoria");
-                String nombre_categoria=resultSet.getString("nombre_categoria");
-                int stock=resultSet.getInt("stock");
-
-                Object[]row={id_producto,nombre_producto,precio,id_categoria,nombre_categoria,stock};
-                modelAlmacen.addRow(row);
-            }
+        try (Statement statement= conexion.createStatement();
+            ResultSet resultSet= statement.executeQuery("SELECT * FROM productos_almacen")){
+                while (resultSet.next()){
+                    ProductoEnStock nuevoProducto =new ProductoEnStock();
+                    nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                    nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
+                    nuevoProducto.setPrecio(resultSet.getFloat("precio"));
+                    nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
+                    nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
+                    nuevoProducto.setStock(resultSet.getInt("stock"));
+                    listaProductos.add(nuevoProducto);
+                }
+                catalogo.setCatalogo(listaProductos);
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los productos del almacén.");
+            System.out.println(e.getLocalizedMessage());
         }
-
-        return modelAlmacen;
+            return catalogo;
     }
 
+  public static ListaClientes obtenerDatosCliente()throws SQLException{
+        ListaClientes listaCliente =new ListaClientes();
+        ArrayList<Cliente> lista=new ArrayList<>();
 
+        try (Statement statement= conexion.createStatement();
+             ResultSet resultSet= statement.executeQuery("SELECT * FROM usuarios where is_admin=0")){ //recoge solo los clientes
+            while (resultSet.next()){
+                Cliente nuevoCliente=new Cliente();
+                nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                nuevoCliente.setNombre(resultSet.getString("nombre"));
+                nuevoCliente.setApellido(resultSet.getString("apellido"));
+                nuevoCliente.setPwd(resultSet.getString("pwd"));
+                nuevoCliente.setDireccion(resultSet.getString("direccion"));
+                nuevoCliente.setNumTelf(resultSet.getString("num_telf"));
+                nuevoCliente.setEmail(resultSet.getString("email"));
+                nuevoCliente.setCp(resultSet.getString("cp"));
+                lista.add(nuevoCliente);
+            }
+            listaCliente.setListaClientes(lista);
+        }catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
+            System.out.println(e.getLocalizedMessage());
+        }
+
+
+        return listaCliente;
+    }
 }
