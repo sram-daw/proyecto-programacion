@@ -73,7 +73,7 @@ public class Model {
         try {
             consulta = conexion.createStatement();
             ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
-            if (resultadoInicioSes.next()) {
+            if (resultadoInicioSes.next()) { //si hay resultados quiere decir que existe el usuario en la bd y que la contraseña coincide con la introducida
                 userExiste = true;
             }
             consulta.close();
@@ -121,6 +121,7 @@ public class Model {
             consulta = conexion.createStatement();
             ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
             while (resultadoInicioSes.next()) { //importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
+                //se establecen los atributos del nuevo administrador con los datos obtenidos de la bd
                 admin.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
                 admin.setPwd(resultadoInicioSes.getString("pwd"));
             }
@@ -131,7 +132,7 @@ public class Model {
         return admin;
     }
 
-    //Método que devuelve un uobjeto Cliente consultando los datos del login en la bd
+    //Método que devuelve un objeto Cliente consultando los datos del login en la bd
     public static Cliente getClienteLogado(String nombreUsuario, String pwd) {
         Cliente cliente = new Cliente();
 
@@ -143,7 +144,7 @@ public class Model {
         try {
             consulta = conexion.createStatement();
             ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
-            while (resultadoInicioSes.next()) {
+            while (resultadoInicioSes.next()) {//importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
                 //se establecen los atributos del nuevo cliente con los datos obtenidos de la bd
                 cliente.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
                 cliente.setNombre(resultadoInicioSes.getString("nombre"));
