@@ -2,7 +2,7 @@ package model.dao;
 
 import java.util.ArrayList;
 
-public class Cliente extends Usuarios {
+public class Cliente extends Usuario {
 
     private String direccion;
     private String numTelf;
@@ -24,8 +24,6 @@ public class Cliente extends Usuarios {
         this.cp = cp;
         this.nombre = nombre;
         this.apellido = apellido;
-
-
     }
 
     /*public ArrayList<Pedidos> getListaPedidos() {

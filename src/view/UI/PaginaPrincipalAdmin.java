@@ -74,7 +74,7 @@ public class PaginaPrincipalAdmin extends JFrame {
 
 
         //Tabla que visualiza el administrador al pulsar en Clientes del menú
-        String titulosEncabezadoCliente[]={"ID Usuiario","Nombre Usuario","Nombre","Apellido","Contraseña","Direccion","Telefono","Email","CP"};
+        String titulosEncabezadoCliente[]={"Nombre Usuario","Nombre","Apellido","Contraseña","Direccion","Telefono","Email","CP"};
         JTable tablaClientesAdmin=new JTable();
         DefaultTableModel modeloClientes= (DefaultTableModel)tablaClientesAdmin.getModel();
         modeloClientes.setColumnIdentifiers(titulosEncabezadoCliente);
@@ -83,7 +83,7 @@ public class PaginaPrincipalAdmin extends JFrame {
 
         int j=0;
         for (Cliente c :grupoClientes){
-            String[] dataCliente={String.valueOf(grupoClientes.get(j).getIdUsuario()),grupoClientes.get(j).getNombreUsuario(),grupoClientes.get(j).getNombre(),grupoClientes.get(j).getApellido(),grupoClientes.get(j).getPwd(),grupoClientes.get(j).getDireccion(),grupoClientes.get(j).getNumTelf(),grupoClientes.get(j).getEmail(),grupoClientes.get(j).getCp()};
+            String[] dataCliente={grupoClientes.get(j).getNombreUsuario(),grupoClientes.get(j).getNombre(),grupoClientes.get(j).getApellido(),grupoClientes.get(j).getPwd(),grupoClientes.get(j).getDireccion(),grupoClientes.get(j).getNumTelf(),grupoClientes.get(j).getEmail(),grupoClientes.get(j).getCp()};
             modeloClientes.addRow(dataCliente);
             j++;
         }
