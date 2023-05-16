@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `lurpiazon` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `lurpiazon`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: localhost    Database: lurpiazon
@@ -23,15 +25,16 @@ DROP TABLE IF EXISTS `detalles_pedidos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalles_pedidos` (
-  `id_pedido` int DEFAULT NULL,
+  `id_detalles_pedidos` int NOT NULL AUTO_INCREMENT,
+  `id_pedido` int NOT NULL,
   `id_producto` int DEFAULT NULL,
-  `nombre_producto` varchar(45) NOT NULL,
   `cantidad` int NOT NULL,
+  PRIMARY KEY (`id_detalles_pedidos`),
   KEY `id_pedido_idx` (`id_pedido`),
   KEY `id_producto_idx` (`id_producto`),
   CONSTRAINT `id_pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id_pedido`),
   CONSTRAINT `id_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos_almacen` (`id_producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -53,13 +56,13 @@ DROP TABLE IF EXISTS `pedidos`;
 CREATE TABLE `pedidos` (
   `id_pedido` int NOT NULL AUTO_INCREMENT,
   `id_usuario` int DEFAULT NULL,
-  `fecha` date NOT NULL,
+  `fecha` timestamp NOT NULL,
   `total_precio` float NOT NULL,
   PRIMARY KEY (`id_pedido`),
   UNIQUE KEY `id_pedido_UNIQUE` (`id_pedido`),
   KEY `id_usuario_idx` (`id_usuario`),
   CONSTRAINT `id_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-05 17:55:41
+-- Dump completed on 2023-05-16 12:49:49

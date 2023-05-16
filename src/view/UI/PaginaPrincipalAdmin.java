@@ -58,6 +58,7 @@ public class PaginaPrincipalAdmin extends JFrame {
         });
 
     }
+
     //Este metodo tiene que dividirse en 3 para que nos muestre las distintas tablas en funcion del boton que seleccionemos
     public static void crearVentanaPaginaPrincipalAdmin() throws SQLException {
         //creación de la ventana
@@ -74,16 +75,16 @@ public class PaginaPrincipalAdmin extends JFrame {
 
 
         //Tabla que visualiza el administrador al pulsar en Clientes del menú
-        String titulosEncabezadoCliente[]={"Nombre Usuario","Nombre","Apellido","Contraseña","Direccion","Telefono","Email","CP"};
-        JTable tablaClientesAdmin=new JTable();
-        DefaultTableModel modeloClientes= (DefaultTableModel)tablaClientesAdmin.getModel();
+        String titulosEncabezadoCliente[] = {"Nombre Usuario", "Nombre", "Apellido", "Contraseña", "Direccion", "Telefono", "Email", "CP"};
+        JTable tablaClientesAdmin = new JTable();
+        DefaultTableModel modeloClientes = (DefaultTableModel) tablaClientesAdmin.getModel();
         modeloClientes.setColumnIdentifiers(titulosEncabezadoCliente);
-        ListaClientes listaClientes=Controller.agregarTablaCliente();
-        ArrayList<Cliente> grupoClientes=listaClientes.getListaClientes();
+        ListaClientes listaClientes = Controller.agregarTablaCliente();
+        ArrayList<Cliente> grupoClientes = listaClientes.getListaClientes();
 
-        int j=0;
-        for (Cliente c :grupoClientes){
-            String[] dataCliente={grupoClientes.get(j).getNombreUsuario(),grupoClientes.get(j).getNombre(),grupoClientes.get(j).getApellido(),grupoClientes.get(j).getPwd(),grupoClientes.get(j).getDireccion(),grupoClientes.get(j).getNumTelf(),grupoClientes.get(j).getEmail(),grupoClientes.get(j).getCp()};
+        int j = 0;
+        for (Cliente c : grupoClientes) {
+            String[] dataCliente = {grupoClientes.get(j).getNombreUsuario(), grupoClientes.get(j).getNombre(), grupoClientes.get(j).getApellido(), grupoClientes.get(j).getPwd(), grupoClientes.get(j).getDireccion(), grupoClientes.get(j).getNumTelf(), grupoClientes.get(j).getEmail(), grupoClientes.get(j).getCp()};
             modeloClientes.addRow(dataCliente);
             j++;
         }

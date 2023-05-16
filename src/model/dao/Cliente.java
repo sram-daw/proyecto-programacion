@@ -16,8 +16,8 @@ public class Cliente extends Usuario {
     public Cliente() {
     }
 
-    public Cliente(/*int idUsuario,*/ int isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String nombre, String apellido) {
-        super(/*idUsuario,*/ isAdmin, nombreUsuario, pwd);
+    public Cliente(int idUsuario, int isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String nombre, String apellido) {
+        super(idUsuario, isAdmin, nombreUsuario, pwd);
         this.direccion = direccion;
         this.numTelf = numTelf;
         this.email = email;
@@ -34,6 +34,7 @@ public class Cliente extends Usuario {
         this.listaPedidos = listaPedidos;
     }
 */
+
     public String getDireccion() {
         return direccion;
     }
@@ -82,8 +83,8 @@ public class Cliente extends Usuario {
         this.apellido = apellido;
     }
 
-    public ArrayList<Pedidos> mostrarHistorialPedidos(String idUsuario) {
+ /*   public ArrayList<Pedido> mostrarHistorialPedidos(String idUsuario) {
         return null;
-    }
+    }*/
 
 }

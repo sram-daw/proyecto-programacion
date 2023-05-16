@@ -1,5 +1,6 @@
 package view.UI;
 
+import controller.Controller;
 import model.dao.Cesta;
 import model.dao.DetallesProducto;
 
@@ -21,6 +22,7 @@ public class VentanaCesta extends JFrame {
     static VentanaCesta ventanaCesta = new VentanaCesta();
 
     public VentanaCesta() {
+        //Botón para retroceder a la página principal de la tienda
         volverAtrásButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -28,8 +30,21 @@ public class VentanaCesta extends JFrame {
                     PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
                     ventanaCesta.dispose();
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Ha habido un error al volver a la tienda.");
+                    JOptionPane.showMessageDialog(null, "Ha habido un error al volver a la tienda.", "Error", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(ex);
+                }
+            }
+        });
+        //Botón para finalizar la compra
+        finalizarCompraButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isFinalizarCompraOk = false;
+                isFinalizarCompraOk = Controller.finalizarCompra();
+                if (isFinalizarCompraOk) {
+                    JOptionPane.showMessageDialog(null, "¡Gracias por su compra!", "Compra realizada", JOptionPane.INFORMATION_MESSAGE);
+                }else {
+                    JOptionPane.showMessageDialog(null, "Error al finalizar la compra. Vuelva a intentarlo.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

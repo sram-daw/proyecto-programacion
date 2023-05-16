@@ -1,44 +1,46 @@
 package model.dao;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Pedidos {
+public class Pedido {
 
-    private ArrayList<Cesta> pedido;
-    private Date fecha;
-
+    private int idPedido;
+    private Cesta pedido;
+    private Timestamp fecha;
     private float precio;
 
     private Cliente cliente;
 
-    public Pedidos(ArrayList<Cesta> pedido, Date fecha, float precio, Cliente cliente) {
+    public Pedido(int idPedido, Cesta pedido, Timestamp fecha, float precio, Cliente cliente) {
+        this.idPedido = idPedido;
         this.pedido = pedido;
         this.fecha = fecha;
         this.precio = precio;
         this.cliente = cliente;
     }
 
-    public Pedidos() {
+    public Pedido() {
     }
 
     public ArrayList<DetallesProducto> mostrarPedido() {
         return null;
     }
 
-    public ArrayList<Cesta> getPedido() {
+    public Cesta getPedido() {
         return pedido;
     }
 
-    public void setPedido(ArrayList<Cesta> pedido) {
+    public void setPedido(Cesta pedido) {
         this.pedido = pedido;
     }
 
-    public Date getFecha() {
+    public Timestamp getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(Timestamp fecha) {
         this.fecha = fecha;
     }
 
@@ -57,5 +59,14 @@ public class Pedidos {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
+    public int getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
+    }
 }
+
 

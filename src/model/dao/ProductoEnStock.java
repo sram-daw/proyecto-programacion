@@ -1,4 +1,5 @@
 package model.dao;
+//Objeto producto que se almacena en el catálogo
 
 public class ProductoEnStock extends Producto{
 

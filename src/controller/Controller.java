@@ -5,18 +5,28 @@ import model.dao.*;
 import view.View;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad para poder devolver un objeto cliente y administrador en el método iniciarSesion
 
     static Cesta cesta = new Cesta(); //se instancia globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
 
     //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
-    static Cliente clienteLogado = new Cliente();
+    public static Cliente clienteLogado = new Cliente(); //es público para poder usarlo en el método getIdCliente del modelo
     static Administrador administradorLogado = new Administrador();
 
     //Método para registrar clientes
     static public boolean registrarse(String nombreUsuario, String pwd, String direccion, String tlf, String cp, String email, String nombre, String apellido) {
-        Cliente nuevoCliente = new Cliente(0, nombreUsuario, pwd, direccion, tlf, email, cp, nombre, apellido); //indicamos directamente que isadmin es false (0 porque es de tipo tinyint en la bd) porque los admins se dan de alta solo en la propia bd, no desde la app
+        Cliente nuevoCliente = new Cliente(/*0, nombreUsuario, pwd, direccion, tlf, email, cp, nombre, apellido*/);
+        nuevoCliente.setIsAdmin(0); //indicamos directamente que isadmin es false (0 porque es de tipo tinyint en la bd) porque los admins se dan de alta solo en la propia bd, no desde la app
+        nuevoCliente.setNombreUsuario(nombreUsuario);
+        nuevoCliente.setPwd(pwd);
+        nuevoCliente.setDireccion(direccion);
+        nuevoCliente.setNumTelf(tlf);
+        nuevoCliente.setCp(cp);
+        nuevoCliente.setEmail(email);
+        nuevoCliente.setNombre(nombre);
+        nuevoCliente.setApellido(apellido);
         return Model.registrarCliente(nuevoCliente);
     }
 
@@ -35,6 +45,7 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
             administradorLogado = Model.getAdministradorLogado(nombreUsuario, pwd); //aquí se asigna la variable global administradorLogado usando el método getAdministradorLogado, que devuelve un objeto Administrador
         } else {
             clienteLogado = Model.getClienteLogado(nombreUsuario, pwd); //aquí se asigna la variable global clienteLogado usando el método getAClienteLogado, que devuelve un objeto Cliente
+            clienteLogado.setIdUsuario(Model.getIdCliente(clienteLogado));
         }
         return isAdmin;
     }
@@ -64,6 +75,30 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
         precioTotal += precio * cantidad;
         cesta.setPrecio(precioTotal);
         return cesta;
+    }
+
+    //Método para finalizar la compra. Crea un nuevo objeto Pedido y llama a los métodos para restar los productos del stock y almacenarlo en el historial de pedidos
+    public static boolean finalizarCompra() {
+        //crear objeto pedido
+        //restar número de productos de la cesta al stock
+        //crear un nuevo item pedido
+        //almacenar el nuevo pedido en historialPedidosTotal
+
+        //se genera el objeto pedido
+        boolean isFinalizarCompraOk = false;
+        Pedido pedido = new Pedido();
+        pedido.setPedido(cesta);
+        pedido.setPrecio(cesta.getPrecio());
+        pedido.setCliente(clienteLogado);
+        pedido.setFecha(new Timestamp(System.currentTimeMillis()));
+        isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
+        pedido.setIdPedido(Model.getIdPedido(pedido)); //se settea el id del objeto pedido después de añadir el pedido a bd para que se genere el id en la bd de forma autoincremental, por lo que tiene que tomarlo a posteriori
+
+        //Se añaden con un bucle todos los productos de la cesta de pedido a la tabla detalles_pedidos de la bd
+        for (int i = 0; i < pedido.getPedido().getCesta().size(); i++) {
+            Model.almacenarDetallesPedidosBd(pedido.getPedido().getCesta().get(i), pedido.getIdPedido());
+        }
+        return isFinalizarCompraOk;
     }
 
     public static void main(String[] args) {

@@ -6,11 +6,11 @@ public class Administrador extends Usuario {
     public Administrador() {
     }
 
-    public Administrador(int isAdmin, String nombreUsuario, String pwd) {
-        super(isAdmin, nombreUsuario, pwd);
+    public Administrador(int idUsuario, int isAdmin, String nombreUsuario, String pwd) {
+        super(idUsuario, isAdmin, nombreUsuario, pwd);
     }
 
-    public ArrayList<Pedidos> mostrarHistorialTotalPedidos(){
+    public ArrayList<Pedido> mostrarHistorialTotalPedidos(){
         return null;
     }
     /*public ListaUsers mostrarListaUsuarios(){

@@ -1,5 +1,6 @@
 package model.dao;
 
+//Objeto producto que se almacena en la cesta
 public class DetallesProducto extends Producto {
     private int cantidad;
 

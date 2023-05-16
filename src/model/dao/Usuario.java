@@ -1,7 +1,7 @@
 package model.dao;
 
 public abstract class Usuario {
-    /*private int idUsuario;*/
+    private int idUsuario;
     private int isAdmin;
     private String nombreUsuario;
     private String pwd;
@@ -9,20 +9,20 @@ public abstract class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int isAdmin, String nombreUsuario, String pwd) {
-        /* this.idUsuario = idUsuario;*/
+    public Usuario(int idUsuario,int isAdmin, String nombreUsuario, String pwd) {
+        this.idUsuario = idUsuario;
         this.isAdmin = isAdmin;
         this.nombreUsuario = nombreUsuario;
         this.pwd = pwd;
     }
 
-    /*public int getIdUsuario() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
-    }*/
+    }
 
     public int getIsAdmin() {
         return isAdmin;

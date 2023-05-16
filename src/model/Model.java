@@ -1,5 +1,6 @@
 package model;
 
+import controller.Controller;
 import model.dao.*;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Model {
@@ -17,7 +19,7 @@ public class Model {
 
     }
 
-
+    //Método para establecer la conexión a la bd
     public void establecerConexionBd() {
         conexion = null;
         String url = "jdbc:mysql://localhost:3306/lurpiazon";
@@ -61,6 +63,96 @@ public class Model {
         }
         return isAddOk;
     }
+
+    //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
+    public static int getIdCliente(Cliente clienteLogado) {
+        int idCliente = 0;
+        Statement consulta = null;
+        String consultaId = "SELECT id_usuario FROM usuarios WHERE nombre_usuario=" +
+                "'" + clienteLogado.getNombreUsuario() + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaId);
+            if (resultadoInicioSes.next()) {
+                idCliente = resultadoInicioSes.getInt("id_usuario");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return idCliente;
+    }
+
+
+    //Método para añadir el nuevo pedido a la tabla pedidos de la bd
+    public static boolean almacenarPedidosBd(Pedido pedido) {
+        Boolean isAddOk = false;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fechaSql = dateFormat.format(pedido.getFecha());
+
+        Statement consulta = null;
+        String insertIntoPedidos = "INSERT INTO pedidos (id_usuario, fecha, total_precio) " +
+                "VALUES (" +
+                "'" + pedido.getCliente().getIdUsuario() + "', " +
+                "'" + fechaSql + "', " +
+                "'" + pedido.getPrecio() + "')";
+
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(insertIntoPedidos);
+            isAddOk = true;
+
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println("Error al procesar el pedido");
+            System.out.println(e.getLocalizedMessage());
+            isAddOk = false;
+        }
+        return isAddOk;
+    }
+
+    //Método para añadir los productos del pedido a la tabla detalles_pedidos de la bd
+    public static void almacenarDetallesPedidosBd(DetallesProducto producto, int id_pedido) { // (DetallesProducto producto)
+
+        Statement consulta = null;
+        String insertIntoPedidos = "INSERT INTO detalles_pedidos (id_pedido, id_producto, cantidad) " +
+                "VALUES (" +
+                "'" + id_pedido + "', " +
+                "'" + producto.getIdProducto() + "', " +
+                "'" + producto.getCantidad() + "')";
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(insertIntoPedidos);
+            consulta.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    //Método para tomar el id del pedido generado autoincrementalmente en la bd para settearlo en el objeto pedido
+    public static int getIdPedido(Pedido pedido) {
+        int idPedido = 0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fechaSql = dateFormat.format(pedido.getFecha());
+        Statement consulta = null;
+        String consultaId = "SELECT id_pedido FROM pedidos WHERE fecha=" +
+                "'" + fechaSql + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoGetId = consulta.executeQuery(consultaId);
+            if (resultadoGetId.next()) {
+                idPedido = resultadoGetId.getInt("id_pedido");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return idPedido;
+    }
+
 
     //Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
     public static boolean comprobarDatosLoginOk(String nombreUsuario, String pwd) {
@@ -132,7 +224,7 @@ public class Model {
         return admin;
     }
 
-    //Método que devuelve un objeto Cliente consultando los datos del login en la bd
+    //Método que devuelve un objeto Cliente consultando los datos del login en la bd. Se usa para crear el objeto clienteLogado
     public static Cliente getClienteLogado(String nombreUsuario, String pwd) {
         Cliente cliente = new Cliente();
 
