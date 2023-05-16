@@ -3,7 +3,6 @@ package view.UI;
 import controller.Controller;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -26,24 +25,29 @@ public class InicioSesion extends JFrame {
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Se llama al método iniciar sesión del Controller
-                HashMap<String, Boolean> resultadoLogin = Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText());
-                if (resultadoLogin.get("isInicioSesionOk")) {
-                    if (!resultadoLogin.get("isAdmin")) {
-                        //añadir aquí la pantalla principal que vería el usuario al iniciar sesión.
-                        PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
-                    } else {
-                        //página inicial que verán los admins
+                boolean userExiste = Controller.comprobarDatosLogin(nameTextField.getText(), pwdTextField.getText()); //primero se comprueba si los datos introducidos por el usuario en el login son correctos
+                if (userExiste) {
+                    if (Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText()) == false) { //se obtienen los datos introducidos por el usuario en los textField y se mandan como parámetro al método iniciarSesion. Este devuelve un boolean para saber si es o no admin
                         try {
+                            //si no es admin se muestra la ventana principal de cliente
+                            JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente como cliente.");
+                            PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al mostrar la página principal del cliente.");
+                            throw new RuntimeException(ex);
+                        }
+                        //si es admin se muestra la ventana principal de admin
+                    } else if (Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText())) {
+                        try {
+                            JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente como administrador.");
                             PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al mostrar la página principal del administrador.");
                             throw new RuntimeException(ex);
                         }
                     }
-                    inicioSesion.dispose();
                 } else {
-                    crearVentanaInicioSesion(); //si es incorrecto el inicio de sesión se vuelve a mostrar la ventana de inicio de sesion
+                    JOptionPane.showMessageDialog(null, "Los datos introducidos son incorrectos. Vuelte a intentarlo.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -57,5 +61,4 @@ public class InicioSesion extends JFrame {
         inicioSesion.setVisible(true);
     }
 }
-
 

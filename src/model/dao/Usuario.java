@@ -1,15 +1,15 @@
 package model.dao;
 
-public abstract class Usuarios<T> {
+public abstract class Usuario<T> {
     private int idUsuario;
     private int isAdmin;
     private String nombreUsuario;
     private String pwd;
 
-    public Usuarios() {
+    public Usuario() {
     }
 
-    public Usuarios(int isAdmin, String nombreUsuario, String pwd) {
+    public Usuario(int isAdmin, String nombreUsuario, String pwd) {
         /* this.idUsuario = idUsuario;*/
         this.isAdmin = isAdmin;
         this.nombreUsuario = nombreUsuario;
