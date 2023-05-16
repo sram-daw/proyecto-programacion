@@ -3,14 +3,14 @@ package model.dao;
 import java.util.ArrayList;
 
 public class HistorialPedidosTotal {
+    private ArrayList<Pedidos> totalPedidos;
+
     public HistorialPedidosTotal() {
     }
 
     public HistorialPedidosTotal(ArrayList<Pedidos> totalPedidos) {
         this.totalPedidos = totalPedidos;
     }
-
-    private ArrayList<Pedidos> totalPedidos;
 
     public ArrayList<Pedidos> getTotalPedidos() {
         return totalPedidos;

@@ -5,6 +5,9 @@ import model.dao.DetallesProducto;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class VentanaCesta extends JFrame {
@@ -16,6 +19,21 @@ public class VentanaCesta extends JFrame {
     private JLabel precioLabel;
 
     static VentanaCesta ventanaCesta = new VentanaCesta();
+
+    public VentanaCesta() {
+        volverAtrásButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                    ventanaCesta.dispose();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Ha habido un error al volver a la tienda.");
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
 
     public static void crearVentanaCesta(Cesta cesta) {
         //creacion de la ventana
@@ -40,7 +58,7 @@ public class VentanaCesta extends JFrame {
             i++;
         }
         ventanaCesta.scrollPanelTabla.setViewportView(table);
-        ventanaCesta.precioLabel.setText(String.valueOf(cesta.getPrecio())+"€");
+        ventanaCesta.precioLabel.setText(String.format("%.2f€", cesta.getPrecio())); //solo mostrará 2 decimales
 
 
     }

@@ -7,16 +7,24 @@ public class Pedidos {
 
     private ArrayList<Cesta> pedido;
     private Date fecha;
-
+    private int idPedido;
+    private int idUsuario;
     private float precio;
 
-    private Cliente cliente;
 
-    public Pedidos(ArrayList<Cesta> pedido, Date fecha, float precio, Cliente cliente) {
+    public Pedidos(ArrayList<Cesta> pedido, Date fecha, int idPedido, int idUsuario, float precio) {
         this.pedido = pedido;
         this.fecha = fecha;
+        this.idPedido = idPedido;
+        this.idUsuario = idUsuario;
         this.precio = precio;
-        this.cliente = cliente;
+    }
+
+    public Pedidos(Date fecha, int idPedido, int idUsuario, float precio) {
+        this.fecha = fecha;
+        this.idPedido = idPedido;
+        this.idUsuario = idUsuario;
+        this.precio = precio;
     }
 
     public Pedidos() {
@@ -32,6 +40,14 @@ public class Pedidos {
 
     public void setPedido(ArrayList<Cesta> pedido) {
         this.pedido = pedido;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public Date getFecha() {
@@ -50,12 +66,12 @@ public class Pedidos {
         this.precio = precio;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public int getIdPedido() {
+        return idPedido;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 }
 
