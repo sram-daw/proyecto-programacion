@@ -8,6 +8,7 @@ public class DetallesProducto extends Producto {
         this.cantidad = cantidad;
     }
 
+
     public DetallesProducto() {
     }
 
@@ -18,4 +19,6 @@ public class DetallesProducto extends Producto {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
+
+
 }
