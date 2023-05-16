@@ -2,7 +2,7 @@ package model.dao;
 
 import java.util.ArrayList;
 
-public class Cliente extends Usuarios {
+public class Cliente extends Usuario {
 
     private String direccion;
     private String numTelf;
@@ -11,10 +11,9 @@ public class Cliente extends Usuarios {
     private String nombre;
     private String apellido;
 
-
-
     public Cliente() {
     }
+
 
     public Cliente(/*int idUsuario,*/ int isAdmin, String nombreUsuario, String pwd, String direccion, String numTelf, String email, String cp, String nombre, String apellido) {
         super(/*idUsuario,*/ isAdmin, nombreUsuario, pwd);

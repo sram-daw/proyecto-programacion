@@ -15,6 +15,7 @@ public class Model {
 
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
+
     public Model() {
 
     }
@@ -23,7 +24,7 @@ public class Model {
         conexion = null;
         String url = "jdbc:mysql://localhost:3306/lurpiazon";
         String usuario = "root";
-        String passwd = "1234";
+        String passwd = "root";
         try {
             conexion = DriverManager.getConnection(url, usuario, passwd);
             System.out.println("Conexión correcta");
@@ -35,7 +36,7 @@ public class Model {
     }
 
     //Función para añadir el cliente que se acaba de registrar a la bd
-    public static boolean addClienteBd(Cliente nuevoCliente) {
+    public static boolean registrarCliente(Cliente nuevoCliente) {
         Boolean isAddOk = false;
         Statement consulta = null;
         String texto_consulta = "INSERT INTO usuarios (is_admin, nombre_usuario, nombre, apellido, pwd, direccion, num_telf, email, cp) " +
@@ -54,7 +55,7 @@ public class Model {
             consulta.executeUpdate(texto_consulta);
             System.out.println("Usuario añadido correctamente");
             isAddOk = true;
-            consulta.close();
+
         } catch (SQLException e) {
             System.out.println("Error al añadir el usuario");
             System.out.println(e.getLocalizedMessage());
@@ -63,52 +64,109 @@ public class Model {
         return isAddOk;
     }
 
-    //Función para comprobar si los datos de inicio de sesión son correctos
-
-    //modificar este metodo para que devuelva un objeto cliente
-    public static HashMap<String, Boolean> comprobarInicioSesOk(String nombreUsuario, String pwd) {
-        HashMap<String, Boolean> resultadoDevuelto = new HashMap<>();
-        Boolean isInicioSesionOk = false;
-        Boolean isAdmin = false;
+    //Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
+    public static boolean comprobarDatosLoginOk(String nombreUsuario, String pwd) {
         Statement consulta = null;
-        String texto_consulta = "SELECT * FROM usuarios WHERE nombre_usuario=" +
+        boolean userExiste = false;
+        String consultaUsrPwd = "SELECT * FROM usuarios WHERE nombre_usuario=" +
                 "'" + nombreUsuario + "'" +
                 "AND pwd=" +
                 "'" + pwd + "'";
-        String texto_comprobacion_admin = "SELECT * FROM usuarios WHERE nombre_usuario=" +
-                "'" + nombreUsuario + "'" +
-                "AND is_admin=" +
-                "1";
         try {
             consulta = conexion.createStatement();
-            ResultSet resultado = consulta.executeQuery(texto_consulta);
-            if (resultado.next()) { //si existen resultados para la consulta, significa que existe un el usuario y su contraseña es correcta
-                ResultSet resultadoAdmin = consulta.executeQuery(texto_comprobacion_admin);
-                if (resultadoAdmin.next()) {//comprueba si la consulta tiene resultados (si es admin)
-                    System.out.println("Sesión iniciada correctamente como admin.");
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
+            if (resultadoInicioSes.next()) { //si hay resultados quiere decir que existe el usuario en la bd y que la contraseña coincide con la introducida
+                userExiste = true;
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return userExiste;
+    }
+
+    //Función para comprobar si los datos de inicio de sesión pertenecen a un admin o a un cliente
+    public static boolean comprobarSiAdmin(String nombreUsuario, String pwd) {
+        Statement consulta = null;
+        boolean isAdmin = false;
+        String consultaUsrPwd = "SELECT * FROM usuarios WHERE nombre_usuario=" +
+                "'" + nombreUsuario + "'" +
+                "AND pwd=" +
+                "'" + pwd + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
+            while (resultadoInicioSes.next()) { //importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
+                if (resultadoInicioSes.getInt("is_admin") == 1) {
                     isAdmin = true;
                 } else {
-                    System.out.println("Sesión iniciada correctamente como cliente.");
                     isAdmin = false;
                 }
-                isInicioSesionOk = true;
-            } else {
-                JOptionPane.showMessageDialog(null, "Datos incorrectos. Vuelte a intentarlo.");
-                isInicioSesionOk = false;
             }
-            resultado.close();
+            consulta.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar iniciar sesión. Vuelte a intentarlo.");
             System.out.println(e.getLocalizedMessage());
-            isInicioSesionOk = false;
         }
-        resultadoDevuelto.put("isInicioSesionOk", isInicioSesionOk);
-        resultadoDevuelto.put("isAdmin", isAdmin);
-        return resultadoDevuelto;
+        return isAdmin;
+    }
+
+    //Método que devuelve un objeto administrador consultando los datos del login en la bd
+    public static Administrador getAdministradorLogado(String nombreUsuario, String pwd) {
+        Administrador admin = new Administrador();
+
+        Statement consulta = null;
+        String consultaUsrPwd = "SELECT * FROM usuarios WHERE nombre_usuario=" +
+                "'" + nombreUsuario + "'" +
+                "AND pwd=" +
+                "'" + pwd + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
+            while (resultadoInicioSes.next()) { //importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
+                //se establecen los atributos del nuevo administrador con los datos obtenidos de la bd
+                admin.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
+                admin.setPwd(resultadoInicioSes.getString("pwd"));
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return admin;
+    }
+
+    //Método que devuelve un objeto Cliente consultando los datos del login en la bd
+    public static Cliente getClienteLogado(String nombreUsuario, String pwd) {
+        Cliente cliente = new Cliente();
+
+        Statement consulta = null;
+        String consultaUsrPwd = "SELECT * FROM usuarios WHERE nombre_usuario=" +
+                "'" + nombreUsuario + "'" +
+                "AND pwd=" +
+                "'" + pwd + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
+            while (resultadoInicioSes.next()) {//importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
+                //se establecen los atributos del nuevo cliente con los datos obtenidos de la bd
+                cliente.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
+                cliente.setNombre(resultadoInicioSes.getString("nombre"));
+                cliente.setApellido(resultadoInicioSes.getString("apellido"));
+                cliente.setPwd(resultadoInicioSes.getString("pwd"));
+                cliente.setDireccion(resultadoInicioSes.getString("direccion"));
+                cliente.setNumTelf(resultadoInicioSes.getString("num_telf"));
+                cliente.setEmail(resultadoInicioSes.getString("email"));
+                cliente.setCp(resultadoInicioSes.getString("cp"));
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return cliente;
     }
 
     //funcion para mostrar los datos de la tabla productos_almacen
     public static Catalogo obtenerDatosAlmacen() throws SQLException {
+
         Catalogo catalogo = new Catalogo();
         ArrayList<ProductoEnStock> listaProductos = new ArrayList<>();
 
@@ -132,11 +190,9 @@ public class Model {
         return catalogo;
     }
 
-    //funcion para mostrar los clientes de la tabla usuarios
     public static ListaClientes obtenerDatosCliente() throws SQLException {
         ListaClientes listaCliente = new ListaClientes();
         ArrayList<Cliente> lista = new ArrayList<>();
-
         try (Statement statement = conexion.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
             while (resultSet.next()) {
@@ -160,5 +216,46 @@ public class Model {
         return listaCliente;
     }
 
+    public static HistorialPedidosTotal obtenerDatosPedidos() throws SQLException {
+        HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
+        ArrayList<Pedidos> listaPedidos = new ArrayList<>();
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM pedidos")) {
+            while (resultSet.next()) {
+                Pedidos nuevoPedido = new Pedidos();
+                nuevoPedido.setIdPedido(resultSet.getInt("id_pedido"));
+                nuevoPedido.setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoPedido.setFecha(resultSet.getDate("fecha"));
+                nuevoPedido.setPrecio(resultSet.getFloat("total_precio"));
+                listaPedidos.add(nuevoPedido);
+            }
+            historialPedidosTotal.setTotalPedidos(listaPedidos);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los pedidos.");
+            System.out.println(e.getLocalizedMessage());
+        }
+        return historialPedidosTotal;
+    }
 
+
+    //Metodo en desarollo
+    public static ProductoEnStock actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
+        ProductoEnStock catalogoActulizado = new ProductoEnStock();
+        Connection connection = null;
+        try {
+            String sql = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            // Establecer los parámetros de la sentencia SQL
+            statement.setInt(1, nuevoStock);
+            statement.setInt(2, idProducto);
+
+            // Ejecutar la sentencia SQL
+            statement.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return catalogoActulizado;
+    }
 }
