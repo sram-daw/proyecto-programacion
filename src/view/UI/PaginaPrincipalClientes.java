@@ -32,6 +32,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     private JButton addToCestaButton;
     private JPanel panelTabla;
     private JPanel panelInferiorSpiner;
+    private JButton todoButton;
 
     static PaginaPrincipalClientes paginaPrincipalClientes = new PaginaPrincipalClientes();
 
@@ -78,6 +79,113 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                 paginaPrincipalClientes.dispose();
             }
         });
+        ropaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
+                table = new JTable();
+                //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
+                DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+                modelo.setColumnIdentifiers(titulosEncabezado);
+                Catalogo catalogo = Controller.filtrarCat(1);
+                ArrayList<ProductoEnStock> productoEnStocks = catalogo.getCatalogo();
+                //se van añadiendo las filas de productos a la tabla
+                int i = 0;
+                for (ProductoEnStock e : productoEnStocks) {
+                    String[] data = {String.valueOf(productoEnStocks.get(i).getIdProducto()), productoEnStocks.get(i).getNombre(), String.valueOf(productoEnStocks.get(i).getPrecio()), productoEnStocks.get(i).getCategoriaNombre()};
+                    modelo.addRow(data);
+                    i++;
+                }
+                paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+            }
+        });
+
+        hogarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
+                table = new JTable();
+                //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
+                DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+                modelo.setColumnIdentifiers(titulosEncabezado);
+                Catalogo catalogo = Controller.filtrarCat(2);
+                ArrayList<ProductoEnStock> productoEnStocks = catalogo.getCatalogo();
+                //se van añadiendo las filas de productos a la tabla
+                int i = 0;
+                for (ProductoEnStock e : productoEnStocks) {
+                    String[] data = {String.valueOf(productoEnStocks.get(i).getIdProducto()), productoEnStocks.get(i).getNombre(), String.valueOf(productoEnStocks.get(i).getPrecio()), productoEnStocks.get(i).getCategoriaNombre()};
+                    modelo.addRow(data);
+                    i++;
+                }
+                paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+            }
+        });
+
+        alimentacionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
+                table = new JTable();
+                //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
+                DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+                modelo.setColumnIdentifiers(titulosEncabezado);
+                Catalogo catalogo = Controller.filtrarCat(3);
+                ArrayList<ProductoEnStock> productoEnStocks = catalogo.getCatalogo();
+                //se van añadiendo las filas de productos a la tabla
+                int i = 0;
+                for (ProductoEnStock e : productoEnStocks) {
+                    String[] data = {String.valueOf(productoEnStocks.get(i).getIdProducto()), productoEnStocks.get(i).getNombre(), String.valueOf(productoEnStocks.get(i).getPrecio()), productoEnStocks.get(i).getCategoriaNombre()};
+                    modelo.addRow(data);
+                    i++;
+                }
+                paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+            }
+        });
+
+        mascotasButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
+                table = new JTable();
+                //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
+                DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+                modelo.setColumnIdentifiers(titulosEncabezado);
+                Catalogo catalogo = Controller.filtrarCat(4);
+                ArrayList<ProductoEnStock> productoEnStocks = catalogo.getCatalogo();
+                //se van añadiendo las filas de productos a la tabla
+                int i = 0;
+                for (ProductoEnStock e : productoEnStocks) {
+                    String[] data = {String.valueOf(productoEnStocks.get(i).getIdProducto()), productoEnStocks.get(i).getNombre(), String.valueOf(productoEnStocks.get(i).getPrecio()), productoEnStocks.get(i).getCategoriaNombre()};
+                    modelo.addRow(data);
+                    i++;
+                }
+                paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+            }
+        });
+
+
+        todoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+
+                String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
+                table = new JTable();
+                //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
+                DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+                modelo.setColumnIdentifiers(titulosEncabezado);
+                Catalogo catalogo = Controller.catalogo; //se toma directamente el objeto catálogo del controller, que contiene todos los productos de la bd
+                ArrayList<ProductoEnStock> productoEnStocks = catalogo.getCatalogo();
+                //se van añadiendo las filas de productos a la tabla
+                int i = 0;
+                for (ProductoEnStock e : productoEnStocks) {
+                    String[] data = {String.valueOf(productoEnStocks.get(i).getIdProducto()), productoEnStocks.get(i).getNombre(), String.valueOf(productoEnStocks.get(i).getPrecio()), productoEnStocks.get(i).getCategoriaNombre()};
+                    modelo.addRow(data);
+                    i++;
+                }
+                paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+            }
+        });
+
     }
 
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {

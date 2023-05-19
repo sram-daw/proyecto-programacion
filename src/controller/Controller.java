@@ -7,13 +7,15 @@ import view.View;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad para poder devolver un objeto cliente y administrador en el método iniciarSesion
+public class Controller {
 
-    static Cesta cesta = new Cesta(); //se instancia globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
+    public static Cesta cesta = new Cesta(); //se instancian globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
 
     //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
     public static Cliente clienteLogado = new Cliente(); //es público para poder usarlo en el método getIdCliente del modelo
     static Administrador administradorLogado = new Administrador();
+
+    public static Catalogo catalogo = new Catalogo();
 
     //Método para registrar clientes
     static public boolean registrarse(String nombreUsuario, String pwd, String direccion, String tlf, String cp, String email, String nombre, String apellido) {
@@ -50,9 +52,14 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
         return isAdmin;
     }
 
-    //Metodo para agregar el modelo a la tabla Almacen
+    //Metodo para asignar a catalogo los productos según la query a la bd (se ejecuta nada más entrar a la pantalla principal de cliente para mostrar todos los productos)
     static public Catalogo agregarTablaAlmacen() throws SQLException {
-        return Model.obtenerDatosAlmacen();
+        return catalogo = Model.obtenerDatosAlmacen();
+    }
+
+    //Metodo para obtener el catálogo según el filtrado
+    public static Catalogo filtrarCat(int categoria) {
+        return Model.getCategoria(categoria);
     }
 
     //Método para agregar el modelo a la tabla de la lista de clientes
@@ -101,6 +108,7 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
         return isFinalizarCompraOk;
     }
 
+
     public static void main(String[] args) {
         Model model = new Model();
         //Instancia de view.View. El constructor contiene la llamada al método que crea la primera ventana
@@ -108,4 +116,6 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
         //Conexión a la bbdd
         model.establecerConexionBd(); //se establece la conexión con la bd antes de nada
     }
+
+
 }

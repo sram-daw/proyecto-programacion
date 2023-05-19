@@ -18,6 +18,8 @@ public class VentanaCesta extends JFrame {
     private JPanel panelTabla;
     private JScrollPane scrollPanelTabla;
     private JLabel precioLabel;
+    private JLabel vacioLabel;
+    private JPanel panelVacioLabel;
 
     static VentanaCesta ventanaCesta = new VentanaCesta();
 
@@ -43,7 +45,9 @@ public class VentanaCesta extends JFrame {
                 isFinalizarCompraOk = Controller.finalizarCompra();
                 if (isFinalizarCompraOk) {
                     JOptionPane.showMessageDialog(null, "¡Gracias por su compra!", "Compra realizada", JOptionPane.INFORMATION_MESSAGE);
-                }else {
+                    Controller.cesta = new Cesta(); //se vacía la cesta al finalizar la compra
+                    crearVentanaCesta(Controller.cesta);
+                } else {
                     JOptionPane.showMessageDialog(null, "Error al finalizar la compra. Vuelva a intentarlo.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -64,17 +68,21 @@ public class VentanaCesta extends JFrame {
         //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
         modelo.setColumnIdentifiers(titulosEncabezado);
-        ArrayList<DetallesProducto> detallesProductos = cesta.getCesta();
-        int i = 0;
-        //se obtienen los atributos de cada objeto DetallesProducto del arraylist para añadirlos como filas a la tabla
-        for (DetallesProducto e : detallesProductos) {
-            String[] data = {String.valueOf(detallesProductos.get(i).getIdProducto()), detallesProductos.get(i).getNombre(), String.valueOf(detallesProductos.get(i).getPrecio()), String.valueOf(detallesProductos.get(i).getCantidad())};
-            modelo.addRow(data);
-            i++;
+        if (cesta != null) { //si no hay cesta creada no entra al bucle para evitar nullpointerexception
+            ventanaCesta.vacioLabel.setText(null);
+            ArrayList<DetallesProducto> detallesProductos = cesta.getCesta();
+            int i = 0;
+            //se obtienen los atributos de cada objeto DetallesProducto del arraylist para añadirlos como filas a la tabla
+            for (DetallesProducto e : detallesProductos) {
+                String[] data = {String.valueOf(detallesProductos.get(i).getIdProducto()), detallesProductos.get(i).getNombre(), String.valueOf(detallesProductos.get(i).getPrecio()), String.valueOf(detallesProductos.get(i).getCantidad())};
+                modelo.addRow(data);
+                i++;
+            }
+            ventanaCesta.scrollPanelTabla.setViewportView(table);
+            ventanaCesta.precioLabel.setText(String.format("%.2f€", cesta.getPrecio())); //solo mostrará 2 decimales
+        } else if (cesta == null) {
+            ventanaCesta.vacioLabel.setText("Tu cesta está vacía");
         }
-        ventanaCesta.scrollPanelTabla.setViewportView(table);
-        ventanaCesta.precioLabel.setText(String.format("%.2f€", cesta.getPrecio())); //solo mostrará 2 decimales
-
 
     }
 

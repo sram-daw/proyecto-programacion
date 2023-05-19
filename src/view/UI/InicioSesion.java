@@ -48,8 +48,11 @@ public class InicioSesion extends JFrame {
                             throw new RuntimeException(ex);
                         }
                     }
+                    inicioSesion.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Los datos introducidos son incorrectos. Vuelte a intentarlo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    inicioSesion.dispose();
+                    crearVentanaInicioSesion();
                 }
             }
         });

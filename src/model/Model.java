@@ -254,7 +254,6 @@ public class Model {
         return cliente;
     }
 
-
     //funcion para mostrar los datos de la tabla productos_almacen
     public static Catalogo obtenerDatosAlmacen() throws SQLException {
         Catalogo catalogo = new Catalogo();
@@ -279,6 +278,21 @@ public class Model {
             System.out.println(e.getLocalizedMessage());
         }
         return catalogo;
+    }
+
+    //Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
+    public static Catalogo getCategoria(int categoria) {
+        Catalogo catalogoFiltrado = new Catalogo();
+        ArrayList<ProductoEnStock> listaFiltrada = new ArrayList<>();
+
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getCategoriaID() == categoria) {
+                listaFiltrada.add(p);
+            }
+        }
+        catalogoFiltrado.setCatalogo(listaFiltrada);
+
+        return catalogoFiltrado;
     }
 
     //funcion para mostrar los clientes de la tabla usuarios
@@ -307,6 +321,5 @@ public class Model {
         }
         return listaCliente;
     }
-
 
 }
