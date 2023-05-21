@@ -38,8 +38,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
 
     //declaración global de la tabla para poder usarla en distintos métodos
     static JTable table;
-    //declaración global de la cesta para poder usarla en distintos métodos
-    static Cesta cesta;
+
 
     public PaginaPrincipalClientes() {
 
@@ -67,15 +66,21 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                 float precio = Float.parseFloat(table.getValueAt(table.getSelectedRow(), 2).toString());
                 String categoria = table.getValueAt(table.getSelectedRow(), 3).toString();
                 int cantidad = (int) spinner1.getValue();
-                //la variable global cesta se iguala al return del método addProductoCesta para añadir el producto y cantidad que ha seleccionado el usuario
-                cesta = Controller.addProductoToCesta(id, nombre, precio, categoria, cantidad);
-                JOptionPane.showMessageDialog(null, "Artículo añadido a la cesta.");
+                Cesta cestaAux = Controller.addProductoToCesta(id, nombre, precio, categoria, cantidad);
+                if (cestaAux != null) { //ese método devuelve null si no hay suficiente stock
+                    JOptionPane.showMessageDialog(null, "Artículo añadido correctamente a la cesta.", "Artículo añadido.", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    int stock = Controller.devolverStock(id);
+                    JOptionPane.showMessageDialog(null, "Lo sentimos, no hay suficiente stock. Actualmente disponemos de " + stock + " unidades del producto seleccionado.", "Problema de stock", JOptionPane.ERROR_MESSAGE);
+                }
+
+
             }
         });
         cestaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                VentanaCesta.crearVentanaCesta(cesta);
+                VentanaCesta.crearVentanaCesta();
                 paginaPrincipalClientes.dispose();
             }
         });

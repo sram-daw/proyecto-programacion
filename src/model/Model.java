@@ -84,6 +84,25 @@ public class Model {
         return idCliente;
     }
 
+    //método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
+    public static int comprobarStock(int idProducto) {
+        int stock = 0;
+        Statement consulta = null;
+        String consultaStock = "SELECT stock FROM productos_almacen WHERE id_producto=" +
+                "'" + idProducto + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoStock = consulta.executeQuery(consultaStock);
+            if (resultadoStock.next()) {
+                stock = resultadoStock.getInt("stock");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return stock;
+    }
 
     //Método para añadir el nuevo pedido a la tabla pedidos de la bd
     public static boolean almacenarPedidosBd(Pedido pedido) {
@@ -151,6 +170,30 @@ public class Model {
         }
 
         return idPedido;
+    }
+
+    //Método para restar del stock los productos tras efectuar un pedido
+    public static boolean restarStock(Cesta pedido) {
+        boolean isRestarOk = false;
+        Statement consulta = null;
+        String actualizarStock = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
+        try {
+            PreparedStatement pstmt = conexion.prepareStatement(actualizarStock); //este tipo de objeto se usa para consultas múltiples
+            for (DetallesProducto producto : pedido.getCesta()) {
+                int idProducto = producto.getIdProducto();
+                int cantidad = producto.getCantidad();
+                int stock = comprobarStock(idProducto);
+                pstmt.setInt(1, stock - cantidad);
+                pstmt.setInt(2, idProducto);
+                pstmt.executeUpdate();
+            }
+            isRestarOk = true;
+            pstmt.close();
+        } catch (SQLException e) {
+            isRestarOk = false;
+            System.out.println(e.getLocalizedMessage());
+        }
+        return isRestarOk;
     }
 
 
@@ -262,14 +305,17 @@ public class Model {
         try (Statement statement = conexion.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM productos_almacen")) {
             while (resultSet.next()) {
-                ProductoEnStock nuevoProducto = new ProductoEnStock();
-                nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
-                nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
-                nuevoProducto.setPrecio(resultSet.getFloat("precio"));
-                nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
-                nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
-                nuevoProducto.setStock(resultSet.getInt("stock"));
-                listaProductos.add(nuevoProducto);
+                int stock = resultSet.getInt("stock");
+                if (stock >= 1) { //solo toma los productos cuyo stock sea igual o mayor que 1
+                    ProductoEnStock nuevoProducto = new ProductoEnStock();
+                    nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                    nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
+                    nuevoProducto.setPrecio(resultSet.getFloat("precio"));
+                    nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
+                    nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
+                    nuevoProducto.setStock(resultSet.getInt("stock"));
+                    listaProductos.add(nuevoProducto);
+                }
             }
             catalogo.setCatalogo(listaProductos);
 

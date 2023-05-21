@@ -69,29 +69,33 @@ public class Controller {
 
     //Método para agregar productos al arraylist de DetallesProducto que contiene Cesta
     public static Cesta addProductoToCesta(int id, String nombre, float precio, String categoria, int cantidad) {
-        DetallesProducto nuevoProducto = new DetallesProducto();
-        nuevoProducto.setIdProducto(id);
-        nuevoProducto.setNombre(nombre);
-        nuevoProducto.setPrecio(precio);
-        nuevoProducto.setCategoriaNombre(categoria);
-        nuevoProducto.setCantidad(cantidad);
-        cesta.getCesta().add(nuevoProducto);
-        //se obtiene el precio actual de la cesta
-        Float precioTotal = cesta.getPrecio();
-        //se suma el precio del producto añadido por la cantidad
-        precioTotal += precio * cantidad;
-        cesta.setPrecio(precioTotal);
-        return cesta;
+        if (Model.comprobarStock(id) >= cantidad) { //se comprueba si existen suficientes existencias del producto en el almacen
+            DetallesProducto nuevoProducto = new DetallesProducto();
+            nuevoProducto.setIdProducto(id);
+            nuevoProducto.setNombre(nombre);
+            nuevoProducto.setPrecio(precio);
+            nuevoProducto.setCategoriaNombre(categoria);
+            nuevoProducto.setCantidad(cantidad);
+            cesta.getCesta().add(nuevoProducto);
+            //se obtiene el precio actual de la cesta
+            Float precioTotal = cesta.getPrecio();
+            //se suma el precio del producto añadido por la cantidad
+            precioTotal += precio * cantidad;
+            cesta.setPrecio(precioTotal);
+            return cesta;
+        } else {
+            return null;
+        }
     }
 
-    //Método para finalizar la compra. Crea un nuevo objeto Pedido y llama a los métodos para restar los productos del stock y almacenarlo en el historial de pedidos
-    public static boolean finalizarCompra() {
-        //crear objeto pedido
-        //restar número de productos de la cesta al stock
-        //crear un nuevo item pedido
-        //almacenar el nuevo pedido en historialPedidosTotal
+    //Método que devuelve el stock de un producto, para usarlo en la vista
+    public static int devolverStock(int idProducto) {
+        int stock = Model.comprobarStock(idProducto);
+        return stock;
+    }
 
-        //se genera el objeto pedido
+    //Método para finalizar la compra. Crea un objeto pedido y lo almacena en las tablas de pedidos y detalles_pedidos de la bd. Tb llama al método de restar stock
+    public static boolean finalizarCompra() {
         boolean isFinalizarCompraOk = false;
         Pedido pedido = new Pedido();
         pedido.setPedido(cesta);
@@ -100,12 +104,19 @@ public class Controller {
         pedido.setFecha(new Timestamp(System.currentTimeMillis()));
         isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
         pedido.setIdPedido(Model.getIdPedido(pedido)); //se settea el id del objeto pedido después de añadir el pedido a bd para que se genere el id en la bd de forma autoincremental, por lo que tiene que tomarlo a posteriori
-
         //Se añaden con un bucle todos los productos de la cesta de pedido a la tabla detalles_pedidos de la bd
         for (int i = 0; i < pedido.getPedido().getCesta().size(); i++) {
             Model.almacenarDetallesPedidosBd(pedido.getPedido().getCesta().get(i), pedido.getIdPedido());
         }
+        restarStock();
+
         return isFinalizarCompraOk;
+    }
+    //Método que devuelve el resultado de la operación de restar del stock los productos comprados
+    public static boolean restarStock() {
+        boolean isRestarOk = false;
+        isRestarOk = Model.restarStock(cesta);
+        return isRestarOk;
     }
 
 

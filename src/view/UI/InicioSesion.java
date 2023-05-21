@@ -1,23 +1,20 @@
 package view.UI;
 
 import controller.Controller;
-import model.dao.Administrador;
-import model.dao.Cliente;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 public class InicioSesion extends JFrame {
     private JLabel titulo;
     private JTextField nameTextField;
-    private JTextField pwdTextField;
     private JButton iniciarSesionButton;
     private JPanel container;
     private JLabel nameLabel;
     private JLabel pwdLabel;
+    private JPasswordField pwdField;
 
     static InicioSesion inicioSesion = new InicioSesion();
 
@@ -27,9 +24,11 @@ public class InicioSesion extends JFrame {
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean userExiste = Controller.comprobarDatosLogin(nameTextField.getText(), pwdTextField.getText()); //primero se comprueba si los datos introducidos por el usuario en el login son correctos
+                String pwd = new String(pwdField.getPassword());
+                boolean userExiste = Controller.comprobarDatosLogin(nameTextField.getText(), pwd); //primero se comprueba si los datos introducidos por el usuario en el login son correctos
                 if (userExiste) {
-                    if (Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText()) == false) { //se obtienen los datos introducidos por el usuario en los textField y se mandan como parámetro al método iniciarSesion. Este devuelve un boolean para saber si es o no admin
+                    boolean isAdmin = Controller.iniciarSesion(nameTextField.getText(), pwd); //se obtienen los datos introducidos por el usuario en los textField/pwdfield y se mandan como parámetro al método iniciarSesion. Este devuelve un boolean para saber si es o no admin
+                    if (!isAdmin) {
                         try {
                             //si no es admin se muestra la ventana principal de cliente
                             JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente como cliente.");
@@ -39,7 +38,7 @@ public class InicioSesion extends JFrame {
                             throw new RuntimeException(ex);
                         }
                         //si es admin se muestra la ventana principal de admin
-                    } else if (Controller.iniciarSesion(nameTextField.getText(), pwdTextField.getText())) {
+                    } else if (isAdmin) {
                         try {
                             JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente como administrador.");
                             PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();

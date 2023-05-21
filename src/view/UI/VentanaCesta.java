@@ -20,6 +20,7 @@ public class VentanaCesta extends JFrame {
     private JLabel precioLabel;
     private JLabel vacioLabel;
     private JPanel panelVacioLabel;
+    private JButton vaciarCestaButton;
 
     static VentanaCesta ventanaCesta = new VentanaCesta();
 
@@ -46,15 +47,24 @@ public class VentanaCesta extends JFrame {
                 if (isFinalizarCompraOk) {
                     JOptionPane.showMessageDialog(null, "¡Gracias por su compra!", "Compra realizada", JOptionPane.INFORMATION_MESSAGE);
                     Controller.cesta = new Cesta(); //se vacía la cesta al finalizar la compra
-                    crearVentanaCesta(Controller.cesta);
+                    crearVentanaCesta();
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al finalizar la compra. Vuelva a intentarlo.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+        vaciarCestaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Controller.cesta = new Cesta(); //se vacía la cesta actual
+                JOptionPane.showMessageDialog(null, "Se ha vaciado su cesta", "Cesta vaciada", JOptionPane.INFORMATION_MESSAGE);
+                ventanaCesta.dispose();
+                ventanaCesta.crearVentanaCesta();
+            }
+        });
     }
 
-    public static void crearVentanaCesta(Cesta cesta) {
+    public static void crearVentanaCesta() {
         //creacion de la ventana
         ventanaCesta.setContentPane(ventanaCesta.container);
         ventanaCesta.setTitle("Cesta");
@@ -68,9 +78,10 @@ public class VentanaCesta extends JFrame {
         //se necesita un DefaultTableModel para usar la función addRow, pero se toma el modelo que tiene la propia JTable para no modificar nada (si se deja modelo= new DefaultTableModel no se muestra la tabla)
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
         modelo.setColumnIdentifiers(titulosEncabezado);
-        if (cesta != null) { //si no hay cesta creada no entra al bucle para evitar nullpointerexception
+        if (!Controller.cesta.getCesta().isEmpty()) { //si no hay cesta creada no entra al bucle para evitar nullpointerexception
             ventanaCesta.vacioLabel.setText(null);
-            ArrayList<DetallesProducto> detallesProductos = cesta.getCesta();
+            ventanaCesta.vaciarCestaButton.setEnabled(true);
+            ArrayList<DetallesProducto> detallesProductos = Controller.cesta.getCesta();
             int i = 0;
             //se obtienen los atributos de cada objeto DetallesProducto del arraylist para añadirlos como filas a la tabla
             for (DetallesProducto e : detallesProductos) {
@@ -79,9 +90,13 @@ public class VentanaCesta extends JFrame {
                 i++;
             }
             ventanaCesta.scrollPanelTabla.setViewportView(table);
-            ventanaCesta.precioLabel.setText(String.format("%.2f€", cesta.getPrecio())); //solo mostrará 2 decimales
-        } else if (cesta == null) {
+            ventanaCesta.precioLabel.setText(String.format("%.2f€", Controller.cesta.getPrecio())); //solo mostrará 2 decimales
+        } else if (Controller.cesta.getCesta().isEmpty()) {
+            modelo.setRowCount(0); //se resetea la tabla para que, en caso de haber ejecutado un borrado de productos, elimine los productos que había
+            ventanaCesta.vaciarCestaButton.setEnabled(false);
             ventanaCesta.vacioLabel.setText("Tu cesta está vacía");
+            ventanaCesta.scrollPanelTabla.setViewportView(table);
+            ventanaCesta.precioLabel.setText(String.format("%.2f€", 0.0));
         }
 
     }
