@@ -30,12 +30,13 @@ public class PaginaInicio extends JFrame { //para poder usar los métodos de Jfr
         });
     }
 
-
     public static void crearVentanaInicial() {
         paginaInicio.setContentPane(paginaInicio.container);
         paginaInicio.setTitle("Lurpiazon");
         paginaInicio.setBounds(630, 250, 600, 500);
         paginaInicio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaInicio.setVisible(true);
+        ImageIcon logo= new ImageIcon("./././resources/logo-placeholder.jpg");
+        paginaInicio.setIconImage(logo.getImage()); //thumbnail del programa
     }
 }

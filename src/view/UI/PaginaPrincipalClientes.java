@@ -203,6 +203,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
         paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaPrincipalClientes.setVisible(true);
 
+
         //tabla de productos completa, previo filtrado
         String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
         table = new JTable();
