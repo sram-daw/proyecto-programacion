@@ -67,8 +67,6 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     int stock = Controller.devolverStock(id);
                     JOptionPane.showMessageDialog(null, "Lo sentimos, no hay suficiente stock. Actualmente disponemos de " + stock + " unidades del producto seleccionado.", "Problema de stock", JOptionPane.ERROR_MESSAGE);
                 }
-
-
             }
         });
         cestaButton.addActionListener(new ActionListener() {
