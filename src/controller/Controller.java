@@ -32,6 +32,7 @@ public class Controller {
         return Model.registrarCliente(nuevoCliente);
     }
 
+
     //Método para comprobar si los datos introducidos por el usuario en el login son correctos
     static public boolean comprobarDatosLogin(String nombreUsuario, String pwd) {
         boolean existeUser = false;
