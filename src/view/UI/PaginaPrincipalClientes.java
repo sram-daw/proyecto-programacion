@@ -51,12 +51,6 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
             }
         });
 
-        ropaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
         addToCestaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
