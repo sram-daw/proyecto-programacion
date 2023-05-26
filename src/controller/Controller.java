@@ -4,19 +4,34 @@ import model.Model;
 import model.dao.*;
 import view.View;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
-public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad para poder devolver un objeto cliente y administrador en el método iniciarSesion
+public class Controller { //se usa generalidad para poder devolver un objeto cliente y administrador en el método iniciarSesion
+    static Model model = new Model();
+    //instanciamos el observer
+    ObserverStock observerStock = new ObserverStock();
 
-    static Cesta cesta = new Cesta(); //se instancia globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
+    public static Cesta cesta = new Cesta(); //se instancia globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
 
     //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
     static Cliente clienteLogado = new Cliente();
     static Administrador administradorLogado = new Administrador();
+    public static Catalogo catalogo = new Catalogo();
 
     //Método para registrar clientes
     static public boolean registrarse(String nombreUsuario, String pwd, String direccion, String tlf, String cp, String email, String nombre, String apellido) {
-        Cliente nuevoCliente = new Cliente(0, nombreUsuario, pwd, direccion, tlf, email, cp, nombre, apellido); //indicamos directamente que isadmin es false (0 porque es de tipo tinyint en la bd) porque los admins se dan de alta solo en la propia bd, no desde la app
+        Cliente nuevoCliente = new Cliente(/*0, nombreUsuario, pwd, direccion, tlf, email, cp, nombre, apellido*/);
+        nuevoCliente.setIsAdmin(0); //indicamos directamente que isadmin es false (0 porque es de tipo tinyint en la bd) porque los admins se dan de alta solo en la propia bd, no desde la app
+        nuevoCliente.setNombreUsuario(nombreUsuario);
+        nuevoCliente.setPwd(pwd);
+        nuevoCliente.setDireccion(direccion);
+        nuevoCliente.setNumTelf(tlf);
+        nuevoCliente.setCp(cp);
+        nuevoCliente.setEmail(email);
+        nuevoCliente.setNombre(nombre);
+        nuevoCliente.setApellido(apellido);
         return Model.registrarCliente(nuevoCliente);
     }
 
@@ -44,12 +59,17 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
         return Model.obtenerDatosAlmacen();
     }
 
+    //Metodo para obtener el catálogo según el filtrado
+    public static Catalogo filtrarCat(int categoria) {
+        return Model.getCategoria(categoria);
+    }
+
     //Método para agregar el modelo a la tabla de la lista de clientes
     static public ListaClientes agregarTablaCliente() throws SQLException {
         return Model.obtenerDatosCliente();
     }
 
-    static public HistorialPedidosTotal agregartTablaPedidos()throws SQLException{
+    static public HistorialPedidosTotal agregartTablaPedidos() throws SQLException {
         return Model.obtenerDatosPedidos();
     }
 
@@ -70,6 +90,54 @@ public class Controller<UsuarioGenerico extends Usuario> { //se usa generalidad 
         cesta.setPrecio(precioTotal);
         return cesta;
     }
+
+    public static boolean actulizarStock(int idProducto, int nuevoStock) throws SQLException {
+        return Model.actualizarStockProducto(idProducto, nuevoStock);
+    }
+
+    //Método que devuelve el stock de un producto, para usarlo en la vista
+    public static int devolverStock(int idProducto) {
+        int stock = model.comprobarStock(idProducto);
+        return stock;
+    }
+
+    //Método para finalizar la compra. Crea un objeto pedido y lo almacena en las tablas de pedidos y detalles_pedidos de la bd. Tb llama al método de restar stock
+    public static boolean finalizarCompra() {
+        boolean isFinalizarCompraOk = false;
+        Pedido pedido = new Pedido();
+        pedido.setPedido(cesta);
+        pedido.setPrecio(cesta.getPrecio());
+        pedido.setCliente(clienteLogado);
+        pedido.setFecha(new Timestamp(System.currentTimeMillis()));
+        isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
+        pedido.setIdPedido(Model.getIdPedido(pedido)); //se settea el id del objeto pedido después de añadir el pedido a bd para que se genere el id en la bd de forma autoincremental, por lo que tiene que tomarlo a posteriori
+        //Se añaden con un bucle todos los productos de la cesta de pedido a la tabla detalles_pedidos de la bd
+        for (int i = 0; i < pedido.getPedido().getCesta().size(); i++) {
+            Model.almacenarDetallesPedidosBd(pedido.getPedido().getCesta().get(i), pedido.getIdPedido());
+        }
+        restarStock();
+
+        return isFinalizarCompraOk;
+    }
+
+    //Método que devuelve el resultado de la operación de restar del stock los productos comprados
+    public static boolean restarStock() {
+        boolean isRestarOk = false;
+        isRestarOk = Model.restarStock(cesta);
+        return isRestarOk;
+    }
+
+    //Metodo que devuelve la tabla ordenada por stock ascendente
+    public static ResultSet ordenAscendente() throws SQLException {
+        return Model.ordenarStock();
+    }
+    //metodo que recoge el aviso de stock bajo
+    public boolean avisoStock() throws SQLException {
+        model.addObserver(observerStock);
+        return model.limiteStock();
+
+    }
+
 
     public static void main(String[] args) {
         Model model = new Model();

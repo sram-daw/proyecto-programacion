@@ -3,20 +3,20 @@ package model.dao;
 import java.util.ArrayList;
 
 public class HistorialPedidosTotal {
-    private ArrayList<Pedidos> totalPedidos;
+    private ArrayList<Pedido> totalPedidos;
 
     public HistorialPedidosTotal() {
     }
 
-    public HistorialPedidosTotal(ArrayList<Pedidos> totalPedidos) {
+    public HistorialPedidosTotal(ArrayList<Pedido> totalPedidos) {
         this.totalPedidos = totalPedidos;
     }
 
-    public ArrayList<Pedidos> getTotalPedidos() {
+    public ArrayList<Pedido> getTotalPedidos() {
         return totalPedidos;
     }
 
-    public void setTotalPedidos(ArrayList<Pedidos> totalPedidos) {
+    public void setTotalPedidos(ArrayList<Pedido> totalPedidos) {
         this.totalPedidos = totalPedidos;
     }
 }

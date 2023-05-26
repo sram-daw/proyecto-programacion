@@ -1,17 +1,18 @@
 package model;
 
+import controller.Controller;
 import model.dao.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Observable;
 
-public class Model {
+public class Model extends Observable {
 
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
@@ -62,6 +63,138 @@ public class Model {
             isAddOk = false;
         }
         return isAddOk;
+    }
+
+    //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
+    public static int getIdCliente(Cliente clienteLogado) {
+        int idCliente = 0;
+        Statement consulta = null;
+        String consultaId = "SELECT id_usuario FROM usuarios WHERE nombre_usuario=" +
+                "'" + clienteLogado.getNombreUsuario() + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaId);
+            if (resultadoInicioSes.next()) {
+                idCliente = resultadoInicioSes.getInt("id_usuario");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return idCliente;
+    }
+
+    //método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
+    public static int comprobarStock(int idProducto) {
+        int stock = 0;
+        Statement consulta = null;
+        String consultaStock = "SELECT stock FROM productos_almacen WHERE id_producto=" +
+                "'" + idProducto + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoStock = consulta.executeQuery(consultaStock);
+            if (resultadoStock.next()) {
+                stock = resultadoStock.getInt("stock");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return stock;
+    }
+
+    //Método para añadir el nuevo pedido a la tabla pedidos de la bd
+    public static boolean almacenarPedidosBd(Pedido pedido) {
+        Boolean isAddOk = false;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fechaSql = dateFormat.format(pedido.getFecha());
+
+        Statement consulta = null;
+        String insertIntoPedidos = "INSERT INTO pedidos (id_usuario, fecha, total_precio) " +
+                "VALUES (" +
+                "'" + pedido.getCliente().getIdUsuario() + "', " +
+                "'" + fechaSql + "', " +
+                "'" + pedido.getPrecio() + "')";
+
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(insertIntoPedidos);
+            isAddOk = true;
+
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println("Error al procesar el pedido");
+            System.out.println(e.getLocalizedMessage());
+            isAddOk = false;
+        }
+        return isAddOk;
+    }
+
+    //Método para añadir los productos del pedido a la tabla detalles_pedidos de la bd
+    public static void almacenarDetallesPedidosBd(DetallesProducto producto, int id_pedido) { // (DetallesProducto producto)
+
+        Statement consulta = null;
+        String insertIntoPedidos = "INSERT INTO detalles_pedidos (id_pedido, id_producto, cantidad) " +
+                "VALUES (" +
+                "'" + id_pedido + "', " +
+                "'" + producto.getIdProducto() + "', " +
+                "'" + producto.getCantidad() + "')";
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(insertIntoPedidos);
+            consulta.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    //Método para tomar el id del pedido generado autoincrementalmente en la bd para settearlo en el objeto pedido
+    public static int getIdPedido(Pedido pedido) {
+        int idPedido = 0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fechaSql = dateFormat.format(pedido.getFecha());
+        Statement consulta = null;
+        String consultaId = "SELECT id_pedido FROM pedidos WHERE fecha=" +
+                "'" + fechaSql + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoGetId = consulta.executeQuery(consultaId);
+            if (resultadoGetId.next()) {
+                idPedido = resultadoGetId.getInt("id_pedido");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return idPedido;
+    }
+
+    //Método para restar del stock los productos tras efectuar un pedido
+    public static boolean restarStock(Cesta pedido) {
+        boolean isRestarOk = false;
+        Statement consulta = null;
+        String actualizarStock = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
+        try {
+            PreparedStatement pstmt = conexion.prepareStatement(actualizarStock); //este tipo de objeto se usa para consultas múltiples
+            for (DetallesProducto producto : pedido.getCesta()) {
+                int idProducto = producto.getIdProducto();
+                int cantidad = producto.getCantidad();
+                int stock = comprobarStock(idProducto);
+                pstmt.setInt(1, stock - cantidad);
+                pstmt.setInt(2, idProducto);
+                pstmt.executeUpdate();
+            }
+            isRestarOk = true;
+            pstmt.close();
+        } catch (SQLException e) {
+            isRestarOk = false;
+            System.out.println(e.getLocalizedMessage());
+        }
+        return isRestarOk;
     }
 
     //Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
@@ -164,7 +297,7 @@ public class Model {
         return cliente;
     }
 
-    //funcion para mostrar los datos de la tabla productos_almacen
+    //funcion para mostrar los datos de la tabla productos_almacen en paginaPrincipalAdmin
     public static Catalogo obtenerDatosAlmacen() throws SQLException {
 
         Catalogo catalogo = new Catalogo();
@@ -190,6 +323,23 @@ public class Model {
         return catalogo;
     }
 
+    //Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
+    public static Catalogo getCategoria(int categoria) {
+        Catalogo catalogoFiltrado = new Catalogo();
+        ArrayList<ProductoEnStock> listaFiltrada = new ArrayList<>();
+
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getCategoriaID() == categoria) {
+                listaFiltrada.add(p);
+            }
+        }
+        catalogoFiltrado.setCatalogo(listaFiltrada);
+
+        return catalogoFiltrado;
+    }
+
+
+    //Metodo para obtener los datos de los clientes en paginaPrincipalAdmin
     public static ListaClientes obtenerDatosCliente() throws SQLException {
         ListaClientes listaCliente = new ListaClientes();
         ArrayList<Cliente> lista = new ArrayList<>();
@@ -216,16 +366,17 @@ public class Model {
         return listaCliente;
     }
 
+    //Metodo para obtener los datos de los pedidos en paginaPrincipalAdmin
     public static HistorialPedidosTotal obtenerDatosPedidos() throws SQLException {
         HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
-        ArrayList<Pedidos> listaPedidos = new ArrayList<>();
+        ArrayList<Pedido> listaPedidos = new ArrayList<>();
         try (Statement statement = conexion.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM pedidos")) {
             while (resultSet.next()) {
-                Pedidos nuevoPedido = new Pedidos();
+                Pedido nuevoPedido = new Pedido();
                 nuevoPedido.setIdPedido(resultSet.getInt("id_pedido"));
                 nuevoPedido.setIdUsuario(resultSet.getInt("id_usuario"));
-                nuevoPedido.setFecha(resultSet.getDate("fecha"));
+                nuevoPedido.setFecha(resultSet.getTimestamp("fecha"));
                 nuevoPedido.setPrecio(resultSet.getFloat("total_precio"));
                 listaPedidos.add(nuevoPedido);
             }
@@ -238,24 +389,69 @@ public class Model {
     }
 
 
-    //Metodo en desarollo
-    public static ProductoEnStock actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
-        ProductoEnStock catalogoActulizado = new ProductoEnStock();
-        Connection connection = null;
+    //Metodo para actualizar el stock en paginaPrincipalAdmin
+    public static Boolean actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
+        boolean isActualizadoOK = false;
+        //ProductoEnStock stockActualizado = new ProductoEnStock();
+        Statement consulta = null;
+        int stock = comprobarStock(idProducto);
+        String updateStock = "UPDATE productos_almacen SET stock = " +
+                "'" + (stock + nuevoStock) + "' WHERE id_producto = " +
+                "'" + idProducto + "'";
+
         try {
-            String sql = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(updateStock);
+            consulta.close();
+            isActualizadoOK = true;
 
-            // Establecer los parámetros de la sentencia SQL
-            statement.setInt(1, nuevoStock);
-            statement.setInt(2, idProducto);
-
-            // Ejecutar la sentencia SQL
-            statement.executeUpdate();
-
-        }catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+            isActualizadoOK = false;
         }
-        return catalogoActulizado;
+        return isActualizadoOK;
+    }
+
+    //metodo para ordenar la tabla almacen por stock ascendente
+    public static ResultSet ordenarStock()throws SQLException {
+        Statement consulta = null;
+        String consultaStockOrdenado = "SELECT * FROM productos_almacen ORDER BY stock ASC";
+        ResultSet resultadoStock = null;
+        try {
+            consulta = conexion.createStatement();
+            resultadoStock = consulta.executeQuery(consultaStockOrdenado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoStock;
+
+    }
+
+    //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
+    public boolean limiteStock() throws SQLException {
+        boolean stockIsOk=false;
+        int datoStock = 0;
+        Statement consulta = null;
+        String consultaStockInferior = "SELECT stock FROM productos_almacen WHERE stock <= 20 ";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoStock = consulta.executeQuery(consultaStockInferior);
+            if (resultadoStock.next()) {
+                datoStock = resultadoStock.getInt("stock");
+                if (datoStock <= 20) {
+                    String mensaje = "El stock de uno de los productos está a punto de agotarse";
+                    String[] opciones = {"Cerrar"};
+                    int seleccion = JOptionPane.showOptionDialog(null, mensaje, "Aviso de stock bajo",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                            null, opciones, opciones[0]);
+                }
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        setChanged();
+        notifyObservers(datoStock);
+        return stockIsOk;
     }
 }

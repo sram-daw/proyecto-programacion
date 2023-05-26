@@ -1,60 +1,48 @@
 package model.dao;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Pedidos {
+public class Pedido {
 
-    private ArrayList<Cesta> pedido;
-    private Date fecha;
     private int idPedido;
     private int idUsuario;
+    private Cesta pedido;
+    private Timestamp fecha;
     private float precio;
 
+    private Cliente cliente;
 
-    public Pedidos(ArrayList<Cesta> pedido, Date fecha, int idPedido, int idUsuario, float precio) {
+    public Pedido(int idPedido, int idUsuario, Cesta pedido, Timestamp fecha, float precio, Cliente cliente) {
+        this.idPedido = idPedido;
+        this.idUsuario = idUsuario;
         this.pedido = pedido;
         this.fecha = fecha;
-        this.idPedido = idPedido;
-        this.idUsuario = idUsuario;
         this.precio = precio;
+        this.cliente = cliente;
     }
 
-    public Pedidos(Date fecha, int idPedido, int idUsuario, float precio) {
-        this.fecha = fecha;
-        this.idPedido = idPedido;
-        this.idUsuario = idUsuario;
-        this.precio = precio;
-    }
-
-    public Pedidos() {
+    public Pedido() {
     }
 
     public ArrayList<DetallesProducto> mostrarPedido() {
         return null;
     }
 
-    public ArrayList<Cesta> getPedido() {
+    public Cesta getPedido() {
         return pedido;
     }
 
-    public void setPedido(ArrayList<Cesta> pedido) {
+    public void setPedido(Cesta pedido) {
         this.pedido = pedido;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Date getFecha() {
+    public Timestamp getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(Timestamp fecha) {
         this.fecha = fecha;
     }
 
@@ -66,12 +54,28 @@ public class Pedidos {
         this.precio = precio;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
     public int getIdPedido() {
         return idPedido;
     }
 
     public void setIdPedido(int idPedido) {
         this.idPedido = idPedido;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }
 

@@ -83,7 +83,7 @@ public class Cliente extends Usuario {
         this.apellido = apellido;
     }
 
-    public ArrayList<Pedidos> mostrarHistorialPedidos(String idUsuario) {
+    public ArrayList<Pedido> mostrarHistorialPedidos(String idUsuario) {
         return null;
     }
 

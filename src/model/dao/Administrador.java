@@ -10,7 +10,7 @@ public class Administrador extends Usuario {
         super(isAdmin, nombreUsuario, pwd);
     }
 
-    public ArrayList<Pedidos> mostrarHistorialTotalPedidos(){
+    public ArrayList<Pedido> mostrarHistorialTotalPedidos(){
         return null;
     }
     /*public ListaUsers mostrarListaUsuarios(){
