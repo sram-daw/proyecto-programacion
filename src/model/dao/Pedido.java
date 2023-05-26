@@ -10,7 +10,6 @@ public class Pedido {
     private Cesta pedido;
     private Timestamp fecha;
     private float precio;
-
     private Cliente cliente;
 
     public Pedido(int idPedido, Cesta pedido, Timestamp fecha, float precio, Cliente cliente) {

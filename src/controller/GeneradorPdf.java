@@ -1,41 +1,35 @@
 package controller;
 
+
+import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.geom.Rectangle;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
-
-import static com.itextpdf.layout.borders.Border.NO_BORDER;
 
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
+
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
 import model.dao.DetallesProducto;
 import model.dao.HistorialPedidosTotal;
 import model.dao.Pedido;
 
 import javax.swing.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,42 +58,98 @@ public class GeneradorPdf {
             // Se crea un nuevo document
             Document document = new Document(pdf);
 
+            // Se añade el logo
+            String rutaImagen = "././resources/logo-placeholder.jpg";
+            ImageData imageData = ImageDataFactory.create(rutaImagen);
+            com.itextpdf.layout.element.Image image = new com.itextpdf.layout.element.Image(imageData);
+            image.setHeight(80);
+            image.setRelativePosition(400, 2, 30, 30);
+            image.setMarginBottom(10);
+            document.add(image);
+
+
+            //Creación de la tabla para los datos del cliente
+            Table infoTable = new Table(new float[]{1, 1, 1});
+            infoTable.setWidth(UnitValue.createPercentValue(80));
+            infoTable.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+            Text tituloNombre = new Text("Nombre: ").setBold();
             // Se añaden los datos del cliente
-            Paragraph nombre = new Paragraph("Nombre: " + Controller.clienteLogado.getNombre());
-            document.add(nombre);
+            Paragraph nombre = new Paragraph();
+            nombre.add(tituloNombre)
+                    .add(Controller.clienteLogado.getNombre());
 
-            Paragraph apellido = new Paragraph("Apellido: " + Controller.clienteLogado.getApellido());
-            document.add(apellido);
+            Text tituloApellido = new Text("Apellido: ").setBold();
+            Paragraph apellido = new Paragraph();
+            apellido.add(tituloApellido)
+                    .add(Controller.clienteLogado.getApellido());
 
-            Paragraph direccion = new Paragraph("Dirección: " + Controller.clienteLogado.getDireccion());
-            document.add(direccion);
+            Text tituloDireccion = new Text("Dirección: ").setBold();
+            Paragraph direccion = new Paragraph();
+            direccion.add(tituloDireccion)
+                    .add(Controller.clienteLogado.getDireccion());
 
-            Paragraph cp = new Paragraph("Código Postal: " + Controller.clienteLogado.getCp());
-            document.add(cp);
+            Text tituloCp = new Text("Código Postal: ").setBold();
+            Paragraph cp = new Paragraph();
+            cp.add(tituloCp)
+                    .add(Controller.clienteLogado.getCp());
 
-            Paragraph tlf = new Paragraph("Teléfono: " + Controller.clienteLogado.getNumTelf());
-            document.add(tlf);
+            Text tituloTlf = new Text("Teléfono: ").setBold();
+            Paragraph tlf = new Paragraph();
+            tlf.add(tituloTlf)
+                    .add(Controller.clienteLogado.getNumTelf());
 
-            Paragraph email = new Paragraph("Email: " + Controller.clienteLogado.getEmail());
-            document.add(email);
+            Text tituloEmail = new Text("Email: ").setBold();
+            Paragraph email = new Paragraph();
+            email.add(tituloEmail)
+                    .add(Controller.clienteLogado.getEmail());
 
-            Paragraph fecha = new Paragraph("Fecha del pedido: " + pedido.getFecha());
-            document.add(fecha);
+            Text tituloFecha = new Text("Fecha: ").setBold();
+            Paragraph fecha = new Paragraph();
+            fecha.add(tituloFecha)
+                    .add(String.valueOf(pedido.getFecha()));
+
 
             // Se añaden los detalles del pedido
-            Paragraph numPedido = new Paragraph("Número de pedido: " + idPedido);
-            document.add(numPedido);
-            Paragraph empty = new Paragraph("");
+            Text tituloPedido = new Text("Número de pedido: ").setBold();
+            Paragraph numPedido = new Paragraph();
+            numPedido.add(tituloPedido)
+                    .add(String.valueOf(idPedido));
 
-            // Create a table with 3 columns
+
+            Cell cell1 = new Cell().add(nombre);
+            Cell cell2 = new Cell().add(apellido);
+            Cell cell3 = new Cell().add(direccion);
+            Cell cell4 = new Cell().add(cp);
+            Cell cell5 = new Cell().add(tlf);
+            Cell cell6 = new Cell().add(email);
+            Cell cell7 = new Cell().add(fecha);
+            Cell cell8 = new Cell().add(numPedido);
+
+            infoTable.addCell(cell1);
+            infoTable.addCell(cell2);
+            infoTable.addCell(cell3);
+            infoTable.addCell(cell4);
+            infoTable.addCell(cell5);
+            infoTable.addCell(cell6);
+            infoTable.addCell(cell7);
+            infoTable.addCell(cell8);
+
+            document.add(infoTable);
+
+
+            //Creación de la tabla del desglose del pedido
             Table table = new Table(new float[]{4, 1.5f, 1.5f, 2.5f});
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
             table.setWidth(UnitValue.createPercentValue(80));
-            table.setMarginTop(20);
+            table.setMarginTop(50);
             // Se añaden los encabezados de la tabla
             List<String> headers = Arrays.asList("Producto", "Unidades", "Precio por unidad", "Precio total");
+
             for (String header : headers) {
-                table.addHeaderCell(new Paragraph(header).setTextAlignment(TextAlignment.CENTER));
+                Cell headerCell = new Cell();
+                headerCell.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER)).setBackgroundColor(new DeviceRgb(34, 255, 58));
+                table.addHeaderCell(headerCell);
             }
 
             // Se añaden las filas con los detalles de cada producto
