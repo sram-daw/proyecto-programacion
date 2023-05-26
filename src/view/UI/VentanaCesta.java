@@ -59,7 +59,7 @@ public class VentanaCesta extends JFrame {
                 Controller.cesta = new Cesta(); //se vacía la cesta actual
                 JOptionPane.showMessageDialog(null, "Se ha vaciado su cesta", "Cesta vaciada", JOptionPane.INFORMATION_MESSAGE);
                 ventanaCesta.dispose();
-                ventanaCesta.crearVentanaCesta();
+                crearVentanaCesta();
             }
         });
     }

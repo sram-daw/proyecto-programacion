@@ -7,6 +7,7 @@ import model.dao.ProductoEnStock;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -183,6 +184,13 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
             }
         });
 
+        ItemPedidos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PaginaPedidosCliente.crearVentanaPaginaPedidosCliente();
+                paginaPrincipalClientes.dispose();
+            }
+        });
     }
 
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {
@@ -195,6 +203,8 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
         paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaPrincipalClientes.setVisible(true);
 
+        //Cambio de nombre en el texto del menu dropdown
+        paginaPrincipalClientes.ClienteMenu.setText("Hola, " + Controller.clienteLogado.getNombre());
 
         //tabla de productos completa, previo filtrado
         String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos

@@ -14,12 +14,11 @@ public class Controller {
     //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
     public static Cliente clienteLogado = new Cliente(); //es público para poder usarlo en el método getIdCliente del modelo
     static Administrador administradorLogado = new Administrador();
-
     public static Catalogo catalogo = new Catalogo();
 
     //Método para registrar clientes
     static public boolean registrarse(String nombreUsuario, String pwd, String direccion, String tlf, String cp, String email, String nombre, String apellido) {
-        Cliente nuevoCliente = new Cliente(/*0, nombreUsuario, pwd, direccion, tlf, email, cp, nombre, apellido*/);
+        Cliente nuevoCliente = new Cliente();
         nuevoCliente.setIsAdmin(0); //indicamos directamente que isadmin es false (0 porque es de tipo tinyint en la bd) porque los admins se dan de alta solo en la propia bd, no desde la app
         nuevoCliente.setNombreUsuario(nombreUsuario);
         nuevoCliente.setPwd(pwd);
@@ -66,6 +65,12 @@ public class Controller {
     static public ListaClientes agregarTablaCliente() throws SQLException {
         return Model.obtenerDatosCliente();
     }
+
+    //método para agregar la tabla de pedidos a la ventana PaginaPedidosCliente
+    public  static HistorialPedidosTotal agregarTablaPedidos(){
+        return Model.obtenerDatosPedidos();
+    }
+
 
     //Método para agregar productos al arraylist de DetallesProducto que contiene Cesta
     public static Cesta addProductoToCesta(int id, String nombre, float precio, String categoria, int cantidad) {

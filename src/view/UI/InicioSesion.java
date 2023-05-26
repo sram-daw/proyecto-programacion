@@ -15,6 +15,7 @@ public class InicioSesion extends JFrame {
     private JLabel nameLabel;
     private JLabel pwdLabel;
     private JPasswordField pwdField;
+    private JPanel panelBoton;
 
     static InicioSesion inicioSesion = new InicioSesion();
 

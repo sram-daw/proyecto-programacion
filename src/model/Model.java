@@ -19,6 +19,7 @@ public class Model {
 
     }
 
+
     //Método para establecer la conexión a la bd
     public void establecerConexionBd() {
         conexion = null;
@@ -325,6 +326,82 @@ public class Model {
         }
         return catalogo;
     }
+
+    //Función para obtener los pedidos de la bd
+    public static HistorialPedidosTotal obtenerDatosPedidos() {
+        HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
+        ArrayList<Pedido> listaPedidos = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM pedidos")) {
+            while (resultSet.next()) {
+                Pedido nuevoPedido = new Pedido();
+                Cliente nuevoCliente = new Cliente();
+                nuevoPedido.setIdPedido(resultSet.getInt("id_pedido"));
+                nuevoPedido.setCliente(nuevoCliente);
+                nuevoPedido.getCliente().setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoPedido.setFecha(resultSet.getTimestamp("fecha"));
+                nuevoPedido.setPrecio(resultSet.getFloat("total_precio"));
+                listaPedidos.add(nuevoPedido);
+            }
+            historialPedidosTotal.setTotalPedidos(listaPedidos);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
+            System.out.println(e.getLocalizedMessage());
+        }
+
+
+        return historialPedidosTotal;
+    }
+
+    //Función para obtener los productos de un pedido
+    public static ArrayList<DetallesProducto> obtenerDetallesPedido(int idPedido) {
+        ArrayList<DetallesProducto> productos = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM detalles_pedidos")) {
+            while (resultSet.next()) {
+                if (resultSet.getInt("id_pedido") == idPedido) {
+                    DetallesProducto nuevoProducto = new DetallesProducto();
+                    nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                    nuevoProducto.setCantidad(resultSet.getInt("cantidad"));
+                    nuevoProducto.setNombre(obtenerNombreProducto(nuevoProducto.getIdProducto()));
+                    nuevoProducto.setPrecio(obtenerPrecioProducto(nuevoProducto.getIdProducto()));
+                    productos.add(nuevoProducto);
+                }
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return productos;
+    }
+
+    //Método para obtener el nombre de un producto. Se usa en el método obtenerDetallesPedido
+    public static String obtenerNombreProducto(int idProducto) {
+        String nombreProd = "";
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getIdProducto() == idProducto) {
+                nombreProd = p.getNombre();
+            }
+        }
+        return nombreProd;
+    }
+
+    //Método para obtener el precio de un producto. Se usa en el método obtenerDetallesPedido
+    public static Float obtenerPrecioProducto(int idProducto) {
+        Float precio = 0f;
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getIdProducto() == idProducto) {
+                precio = p.getPrecio();
+            }
+        }
+        return precio;
+    }
+
 
     //Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
     public static Catalogo getCategoria(int categoria) {
