@@ -167,7 +167,12 @@ public class GeneradorPdf {
             Table totalTable = new Table(1);
             totalTable.setHorizontalAlignment(HorizontalAlignment.RIGHT);
             totalTable.setMarginRight(52);
-            Cell totalCell = new Cell().add(new Paragraph("TOTAL: " + pedido.getPrecio()));
+            Text tituloTotal = new Text("TOTAL: ").setBold();
+            Paragraph total = new Paragraph();
+            total.add(tituloTotal)
+                    .add(String.valueOf(pedido.getPrecio()));
+
+            Cell totalCell = new Cell().add(total);
             totalCell.setBorder(new SolidBorder(1));
             totalCell.setTextAlignment(TextAlignment.CENTER);
             totalTable.addCell(totalCell);
