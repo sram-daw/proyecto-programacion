@@ -191,6 +191,13 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                 paginaPrincipalClientes.dispose();
             }
         });
+        ItemCuenta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PaginaDetallesCliente.crearVentanaDetallesCliente();
+                paginaPrincipalClientes.dispose();
+            }
+        });
     }
 
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {

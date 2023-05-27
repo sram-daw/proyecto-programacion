@@ -67,27 +67,39 @@ public class Controller {
     }
 
     //método para agregar la tabla de pedidos a la ventana PaginaPedidosCliente
-    public  static HistorialPedidosTotal agregarTablaPedidos(){
+    public static HistorialPedidosTotal agregarTablaPedidos() {
         return Model.obtenerDatosPedidos();
     }
 
 
     //Método para agregar productos al arraylist de DetallesProducto que contiene Cesta
     public static Cesta addProductoToCesta(int id, String nombre, float precio, String categoria, int cantidad) {
+        //se obtiene el precio actual de la cesta
+        Float precioTotal = cesta.getPrecio();
         if (Model.comprobarStock(id) >= cantidad) { //se comprueba si existen suficientes existencias del producto en el almacen
-            DetallesProducto nuevoProducto = new DetallesProducto();
-            nuevoProducto.setIdProducto(id);
-            nuevoProducto.setNombre(nombre);
-            nuevoProducto.setPrecio(precio);
-            nuevoProducto.setCategoriaNombre(categoria);
-            nuevoProducto.setCantidad(cantidad);
-            cesta.getCesta().add(nuevoProducto);
-            //se obtiene el precio actual de la cesta
-            Float precioTotal = cesta.getPrecio();
-            //se suma el precio del producto añadido por la cantidad
-            precioTotal += precio * cantidad;
-            cesta.setPrecio(precioTotal);
-            return cesta;
+            if (!Model.comprobarProductoEnCesta(id)) { //se comprueba si ese producto está ya en la cesta
+                DetallesProducto nuevoProducto = new DetallesProducto();
+                nuevoProducto.setIdProducto(id);
+                nuevoProducto.setNombre(nombre);
+                nuevoProducto.setPrecio(precio);
+                nuevoProducto.setCategoriaNombre(categoria);
+                nuevoProducto.setCantidad(cantidad);
+                cesta.getCesta().add(nuevoProducto);
+                //se suma el precio del producto añadido por la cantidad
+                precioTotal += precio * cantidad;
+                cesta.setPrecio(precioTotal);
+                return cesta;
+            } else {//si el producto ya está en la cesta, se actualiza la cantidad para que no añada dos productos iguales
+                for (DetallesProducto p : cesta.getCesta()) {
+                    if (p.getIdProducto() == id) {
+                        p.setCantidad(p.getCantidad() + cantidad);
+                        //se suma el precio de las unidades extra del producto añadidas a posteriori
+                        precioTotal += precio * cantidad;
+                        cesta.setPrecio(precioTotal);
+                    }
+                }
+                return cesta;
+            }
         } else {
             return null;
         }
@@ -108,6 +120,7 @@ public class Controller {
         pedido.setCliente(clienteLogado);
         pedido.setFecha(new Timestamp(System.currentTimeMillis()));
         isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
+        isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
         pedido.setIdPedido(Model.getIdPedido(pedido)); //se settea el id del objeto pedido después de añadir el pedido a bd para que se genere el id en la bd de forma autoincremental, por lo que tiene que tomarlo a posteriori
         //Se añaden con un bucle todos los productos de la cesta de pedido a la tabla detalles_pedidos de la bd
         for (int i = 0; i < pedido.getPedido().getCesta().size(); i++) {
@@ -117,6 +130,7 @@ public class Controller {
 
         return isFinalizarCompraOk;
     }
+
     //Método que devuelve el resultado de la operación de restar del stock los productos comprados
     public static boolean restarStock() {
         boolean isRestarOk = false;

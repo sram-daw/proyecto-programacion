@@ -151,6 +151,17 @@ public class Model {
         }
     }
 
+    //Método para comprobar si el producto añadido a la cesta ya existía
+    public static boolean comprobarProductoEnCesta(int id) {
+        boolean isProductoInCesta = false;
+        for (DetallesProducto p : Controller.cesta.getCesta()) {
+            if (p.getIdProducto() == id) {
+                isProductoInCesta = true;
+            }
+        }
+        return isProductoInCesta;
+    }
+
     //Método para tomar el id del pedido generado autoincrementalmente en la bd para settearlo en el objeto pedido
     public static int getIdPedido(Pedido pedido) {
         int idPedido = 0;
