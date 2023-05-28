@@ -65,7 +65,7 @@ public class Model {
         return isAddOk;
     }
 
-    //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
+  /*  //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
     public static int getIdCliente(Cliente clienteLogado) {
         int idCliente = 0;
         Statement consulta = null;
@@ -83,7 +83,7 @@ public class Model {
         }
 
         return idCliente;
-    }
+    }*/
 
     //método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
     public static int comprobarStock(int idProducto) {
@@ -187,7 +187,6 @@ public class Model {
     //Método para restar del stock los productos tras efectuar un pedido
     public static boolean restarStock(Cesta pedido) {
         boolean isRestarOk = false;
-        Statement consulta = null;
         String actualizarStock = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
         try {
             PreparedStatement pstmt = conexion.prepareStatement(actualizarStock); //este tipo de objeto se usa para consultas múltiples
@@ -271,6 +270,7 @@ public class Model {
                 //se establecen los atributos del nuevo administrador con los datos obtenidos de la bd
                 admin.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
                 admin.setPwd(resultadoInicioSes.getString("pwd"));
+                admin.setIdUsuario(resultadoInicioSes.getInt("id_usuario"));
             }
             consulta.close();
         } catch (SQLException e) {
@@ -301,6 +301,7 @@ public class Model {
                 cliente.setNumTelf(resultadoInicioSes.getString("num_telf"));
                 cliente.setEmail(resultadoInicioSes.getString("email"));
                 cliente.setCp(resultadoInicioSes.getString("cp"));
+                cliente.setIdUsuario(resultadoInicioSes.getInt("id_usuario"));
             }
             consulta.close();
         } catch (SQLException e) {

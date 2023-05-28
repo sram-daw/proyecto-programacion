@@ -46,7 +46,7 @@ public class Controller {
             administradorLogado = Model.getAdministradorLogado(nombreUsuario, pwd); //aquí se asigna la variable global administradorLogado usando el método getAdministradorLogado, que devuelve un objeto Administrador
         } else {
             clienteLogado = Model.getClienteLogado(nombreUsuario, pwd); //aquí se asigna la variable global clienteLogado usando el método getAClienteLogado, que devuelve un objeto Cliente
-            clienteLogado.setIdUsuario(Model.getIdCliente(clienteLogado));
+            /*clienteLogado.setIdUsuario(Model.getIdCliente(clienteLogado));*/
         }
         return isAdmin;
     }
