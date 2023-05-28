@@ -21,10 +21,6 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     private JButton mascotasButton;
     private JPanel Usuario;
     private JPanel CategoriasPanel;
-    private JMenu ClienteMenu;
-    private JMenuItem ItemCuenta;
-    private JMenuItem ItemPedidos;
-    private JMenuBar Barramenu;
     private JScrollPane scrollPanelTabla;
     private JPanel container;
     private JButton cestaButton;
@@ -33,6 +29,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     private JPanel panelTabla;
     private JPanel panelInferiorSpiner;
     private JButton todoButton;
+    private JButton botonMiCuenta;
 
     static PaginaPrincipalClientes paginaPrincipalClientes = new PaginaPrincipalClientes();
 
@@ -183,14 +180,22 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
             }
         });
 
+        botonMiCuenta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    VentanaCuentaCliente.crearVentanaCuentaCliente();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                paginaPrincipalClientes.dispose();
+            }
+        });
     }
 
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {
         //añadimos el contenindo a la ventana
         paginaPrincipalClientes.setContentPane(paginaPrincipalClientes.container);
-        //Añadimos los items al menu
-        paginaPrincipalClientes.ClienteMenu.add(paginaPrincipalClientes.ItemCuenta);
-        paginaPrincipalClientes.ClienteMenu.add(paginaPrincipalClientes.ItemPedidos);
         paginaPrincipalClientes.setBounds(630, 250, 1000, 700);
         paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaPrincipalClientes.setVisible(true);

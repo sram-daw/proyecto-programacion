@@ -16,7 +16,7 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
     public static Cesta cesta = new Cesta(); //se instancia globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
 
     //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
-    static Cliente clienteLogado = new Cliente();
+    public static Cliente clienteLogado = new Cliente();
     static Administrador administradorLogado = new Administrador();
     public static Catalogo catalogo = new Catalogo();
 
@@ -131,13 +131,19 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
     public static ResultSet ordenAscendente() throws SQLException {
         return Model.ordenarStock();
     }
-    //metodo que recoge el aviso de stock bajo
+    //metodo que recoge el aviso de stock bajo usando el patron observer
     public boolean avisoStock() throws SQLException {
         model.addObserver(observerStock);
         return model.limiteStock();
-
     }
 
+    public static boolean datosClienteActualizados(Cliente cliente) throws SQLException{
+        return Model.actualizarDatosCliente(cliente);
+    }
+
+    public static void actualizarObjetoCliente(){
+       clienteLogado=Model.getDatosCliente(clienteLogado.getIdUsuario());
+    }
 
     public static void main(String[] args) {
         Model model = new Model();

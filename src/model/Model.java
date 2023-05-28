@@ -289,6 +289,35 @@ public class Model extends Observable {
                 cliente.setNumTelf(resultadoInicioSes.getString("num_telf"));
                 cliente.setEmail(resultadoInicioSes.getString("email"));
                 cliente.setCp(resultadoInicioSes.getString("cp"));
+                cliente.setIdUsuario(resultadoInicioSes.getInt("id_usuario"));
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return cliente;
+    }
+
+    public static Cliente getDatosCliente(int idUsuario) {
+        Cliente cliente = new Cliente();
+
+        Statement consulta = null;
+        String consultaUsrPwd = "SELECT * FROM usuarios WHERE id_usuario=" +
+                "'" + idUsuario + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
+            while (resultadoInicioSes.next()) {//importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
+                //se establecen los atributos del nuevo cliente con los datos obtenidos de la bd
+                cliente.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
+                cliente.setNombre(resultadoInicioSes.getString("nombre"));
+                cliente.setApellido(resultadoInicioSes.getString("apellido"));
+                cliente.setPwd(resultadoInicioSes.getString("pwd"));
+                cliente.setDireccion(resultadoInicioSes.getString("direccion"));
+                cliente.setNumTelf(resultadoInicioSes.getString("num_telf"));
+                cliente.setEmail(resultadoInicioSes.getString("email"));
+                cliente.setCp(resultadoInicioSes.getString("cp"));
+                cliente.setIdUsuario(resultadoInicioSes.getInt("id_usuario"));
             }
             consulta.close();
         } catch (SQLException e) {
@@ -366,29 +395,33 @@ public class Model extends Observable {
         return listaCliente;
     }
 
-    //Metodo para obtener los datos de los pedidos en paginaPrincipalAdmin
-    public static HistorialPedidosTotal obtenerDatosPedidos() throws SQLException {
+    //Función para obtener los pedidos de la bd
+    public static HistorialPedidosTotal obtenerDatosPedidos() {
         HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
         ArrayList<Pedido> listaPedidos = new ArrayList<>();
+
         try (Statement statement = conexion.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM pedidos")) {
             while (resultSet.next()) {
                 Pedido nuevoPedido = new Pedido();
+                Cliente nuevoCliente = new Cliente();
                 nuevoPedido.setIdPedido(resultSet.getInt("id_pedido"));
-                nuevoPedido.setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoPedido.setCliente(nuevoCliente);
+                nuevoPedido.getCliente().setIdUsuario(resultSet.getInt("id_usuario"));
                 nuevoPedido.setFecha(resultSet.getTimestamp("fecha"));
                 nuevoPedido.setPrecio(resultSet.getFloat("total_precio"));
                 listaPedidos.add(nuevoPedido);
             }
             historialPedidosTotal.setTotalPedidos(listaPedidos);
+
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los pedidos.");
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
             System.out.println(e.getLocalizedMessage());
         }
+
+
         return historialPedidosTotal;
     }
-
-
     //Metodo para actualizar el stock en paginaPrincipalAdmin
     public static Boolean actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
         boolean isActualizadoOK = false;
@@ -413,7 +446,7 @@ public class Model extends Observable {
     }
 
     //metodo para ordenar la tabla almacen por stock ascendente
-    public static ResultSet ordenarStock()throws SQLException {
+    public static ResultSet ordenarStock() throws SQLException {
         Statement consulta = null;
         String consultaStockOrdenado = "SELECT * FROM productos_almacen ORDER BY stock ASC";
         ResultSet resultadoStock = null;
@@ -429,16 +462,16 @@ public class Model extends Observable {
 
     //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
     public boolean limiteStock() throws SQLException {
-        boolean stockIsOk=false;
+        boolean stockIsOk = false;
         int datoStock = 0;
         Statement consulta = null;
-        String consultaStockInferior = "SELECT stock FROM productos_almacen WHERE stock <= 20 ";
+        String consultaStockInferior = "SELECT stock FROM productos_almacen WHERE stock <= 10 ";
         try {
             consulta = conexion.createStatement();
             ResultSet resultadoStock = consulta.executeQuery(consultaStockInferior);
             if (resultadoStock.next()) {
                 datoStock = resultadoStock.getInt("stock");
-                if (datoStock <= 20) {
+                if (datoStock <= 10) {
                     String mensaje = "El stock de uno de los productos está a punto de agotarse";
                     String[] opciones = {"Cerrar"};
                     int seleccion = JOptionPane.showOptionDialog(null, mensaje, "Aviso de stock bajo",
@@ -454,4 +487,32 @@ public class Model extends Observable {
         notifyObservers(datoStock);
         return stockIsOk;
     }
+
+    public static boolean actualizarDatosCliente(Cliente cliente) throws SQLException {
+        boolean actualizarDatosIsOk = false;
+        Statement consulta = null;
+
+        String actualizarDatos = "UPDATE usuarios SET nombre = '" + cliente.getNombre() + "', " +
+                "apellido = '" + cliente.getApellido() + "', " +
+                "direccion = '" + cliente.getDireccion() + "', " +
+                "num_telf = '" + cliente.getNumTelf() + "', " +
+                "email = '" + cliente.getEmail() + "', " +
+                "cp = '" + cliente.getCp() + "', " +
+                "nombre_usuario = '" + cliente.getNombreUsuario() + "', " +
+                "pwd = '" + cliente.getPwd() + "' " +
+                "WHERE id_usuario = " + cliente.getIdUsuario();
+
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(actualizarDatos);
+            consulta.close();
+            actualizarDatosIsOk = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return actualizarDatosIsOk;
+    }
+
+
 }

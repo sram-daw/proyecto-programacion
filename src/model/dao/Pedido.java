@@ -7,16 +7,14 @@ import java.util.Date;
 public class Pedido {
 
     private int idPedido;
-    private int idUsuario;
     private Cesta pedido;
     private Timestamp fecha;
     private float precio;
 
     private Cliente cliente;
 
-    public Pedido(int idPedido, int idUsuario, Cesta pedido, Timestamp fecha, float precio, Cliente cliente) {
+    public Pedido(int idPedido, Cesta pedido, Timestamp fecha, float precio, Cliente cliente) {
         this.idPedido = idPedido;
-        this.idUsuario = idUsuario;
         this.pedido = pedido;
         this.fecha = fecha;
         this.precio = precio;
@@ -70,12 +68,5 @@ public class Pedido {
         this.idPedido = idPedido;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 }
 

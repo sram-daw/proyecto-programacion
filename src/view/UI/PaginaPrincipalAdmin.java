@@ -65,7 +65,7 @@ public class PaginaPrincipalAdmin extends JFrame {
 
                 int y = 0;
                 for (Pedido p : conjuntoPedidos) {
-                    String[] dataPeidos = {String.valueOf(conjuntoPedidos.get(y).getIdPedido()), String.valueOf(conjuntoPedidos.get(y).getIdUsuario()), String.valueOf(conjuntoPedidos.get(y).getFecha()), String.valueOf(conjuntoPedidos.get(y).getPrecio())};
+                    String[] dataPeidos = {String.valueOf(conjuntoPedidos.get(y).getIdPedido()), String.valueOf(conjuntoPedidos.get(y).getCliente().getIdUsuario()), String.valueOf(conjuntoPedidos.get(y).getFecha()), String.valueOf(conjuntoPedidos.get(y).getPrecio())};
                     modeloPedidos.addRow(dataPeidos);
                     y++;
                 }
@@ -244,6 +244,9 @@ public class PaginaPrincipalAdmin extends JFrame {
         paginaPrincipalAdmin.panelAlmacen.setVisible(false);
 
 
+        SwingUtilities.invokeLater(() -> {
+            paginaPrincipalAdmin.botonPedidos.setSelected(true);
+        });
 
         //añadimos imagen al boton salir
         try {
@@ -257,8 +260,7 @@ public class PaginaPrincipalAdmin extends JFrame {
         //hacemos que el panelAlmacen solo sea visible cuando el usuario pulse el boton almacen
         paginaPrincipalAdmin.panelAlmacen.setVisible(false);
 
-        //hacemos que el scrollTablas solo sea visible cuando el usuario pulse alguno de los botones
-        paginaPrincipalAdmin.scrollTablas.setVisible(false);
+
 
     }
 
