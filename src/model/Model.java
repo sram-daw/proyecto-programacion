@@ -2,7 +2,6 @@ package model;
 
 import controller.Controller;
 import model.dao.*;
-
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,8 +9,9 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Observable;
 
-public class Model {
+public class Model extends Observable {
 
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
@@ -207,6 +207,71 @@ public class Model {
         return isRestarOk;
     }
 
+    //Metodo para actualizar el stock en paginaPrincipalAdmin
+    public static Boolean actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
+        boolean isActualizadoOK = false;
+        //ProductoEnStock stockActualizado = new ProductoEnStock();
+        Statement consulta = null;
+        int stock = comprobarStock(idProducto);
+        String updateStock = "UPDATE productos_almacen SET stock = " +
+                "'" + (stock + nuevoStock) + "' WHERE id_producto = " +
+                "'" + idProducto + "'";
+
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(updateStock);
+            consulta.close();
+            isActualizadoOK = true;
+
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+            isActualizadoOK = false;
+        }
+        return isActualizadoOK;
+    }
+
+    //metodo para ordenar la tabla almacen por stock ascendente
+    public static ResultSet ordenarStock() throws SQLException {
+        Statement consulta = null;
+        String consultaStockOrdenado = "SELECT * FROM productos_almacen ORDER BY stock ASC";
+        ResultSet resultadoStock = null;
+        try {
+            consulta = conexion.createStatement();
+            resultadoStock = consulta.executeQuery(consultaStockOrdenado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoStock;
+
+    }
+
+    //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
+    public boolean avisarLimiteStock() throws SQLException {
+        boolean stockIsOk = false;
+        int datoStock = 0;
+        Statement consulta = null;
+        String consultaStockInferior = "SELECT stock FROM productos_almacen WHERE stock <= 10 ";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoStock = consulta.executeQuery(consultaStockInferior);
+            if (resultadoStock.next()) {
+                datoStock = resultadoStock.getInt("stock");
+                if (datoStock <= 10) {
+                    String mensaje = "El stock de alguno de los productos está a punto de agotarse";
+                    String[] opciones = {"Cerrar"};
+                    int seleccion = JOptionPane.showOptionDialog(null, mensaje, "Aviso de stock bajo",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                            null, opciones, opciones[0]);
+                }
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        setChanged();
+        notifyObservers(datoStock);
+        return stockIsOk;
+    }
 
     //Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
     public static boolean comprobarDatosLoginOk(String nombreUsuario, String pwd) {
@@ -310,6 +375,62 @@ public class Model {
         return cliente;
     }
 
+    //método para obtener los datos personales del cliente de la bd
+        public static Cliente getDatosCliente(int idUsuario) {
+        Cliente cliente = new Cliente();
+
+        Statement consulta = null;
+        String consultaUsrPwd = "SELECT * FROM usuarios WHERE id_usuario=" +
+                "'" + idUsuario + "'";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoInicioSes = consulta.executeQuery(consultaUsrPwd);
+            while (resultadoInicioSes.next()) {//importante usar el bucle con .next() ya que ResulSet está pensado para traer varios registros, aunque en este caso solo sea uno. Si no se pone da error ResultSet exception: before start of result set
+                //se establecen los atributos del nuevo cliente con los datos obtenidos de la bd
+                cliente.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
+                cliente.setNombre(resultadoInicioSes.getString("nombre"));
+                cliente.setApellido(resultadoInicioSes.getString("apellido"));
+                cliente.setPwd(resultadoInicioSes.getString("pwd"));
+                cliente.setDireccion(resultadoInicioSes.getString("direccion"));
+                cliente.setNumTelf(resultadoInicioSes.getString("num_telf"));
+                cliente.setEmail(resultadoInicioSes.getString("email"));
+                cliente.setCp(resultadoInicioSes.getString("cp"));
+                cliente.setIdUsuario(resultadoInicioSes.getInt("id_usuario"));
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return cliente;
+    }
+
+    //método para actualizar en la bd los campos de usuarios cuando el cliente modifica sus datos
+    public static boolean actualizarDatosCliente(Cliente cliente) throws SQLException {
+        boolean actualizarDatosIsOk = false;
+        Statement consulta = null;
+
+        String actualizarDatos = "UPDATE usuarios SET nombre = '" + cliente.getNombre() + "', " +
+                "apellido = '" + cliente.getApellido() + "', " +
+                "direccion = '" + cliente.getDireccion() + "', " +
+                "num_telf = '" + cliente.getNumTelf() + "', " +
+                "email = '" + cliente.getEmail() + "', " +
+                "cp = '" + cliente.getCp() + "', " +
+                "nombre_usuario = '" + cliente.getNombreUsuario() + "', " +
+                "pwd = '" + cliente.getPwd() + "' " +
+                "WHERE id_usuario = " + cliente.getIdUsuario();
+
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(actualizarDatos);
+            consulta.close();
+            actualizarDatosIsOk = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return actualizarDatosIsOk;
+    }
+
     //funcion para mostrar los datos de la tabla productos_almacen
     public static Catalogo obtenerDatosAlmacen() throws SQLException {
         Catalogo catalogo = new Catalogo();
@@ -337,6 +458,33 @@ public class Model {
             System.out.println(e.getLocalizedMessage());
         }
         return catalogo;
+    }
+
+    //Metodo para obtener los datos de los clientes en paginaPrincipalAdmin
+    public static ListaClientes obtenerListaClientes() throws SQLException {
+        ListaClientes listaCliente = new ListaClientes();
+        ArrayList<Cliente> lista = new ArrayList<>();
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
+            while (resultSet.next()) {
+                Cliente nuevoCliente = new Cliente();
+                nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                nuevoCliente.setNombre(resultSet.getString("nombre"));
+                nuevoCliente.setApellido(resultSet.getString("apellido"));
+                nuevoCliente.setPwd(resultSet.getString("pwd"));
+                nuevoCliente.setDireccion(resultSet.getString("direccion"));
+                nuevoCliente.setNumTelf(resultSet.getString("num_telf"));
+                nuevoCliente.setEmail(resultSet.getString("email"));
+                nuevoCliente.setCp(resultSet.getString("cp"));
+                lista.add(nuevoCliente);
+            }
+            listaCliente.setListaClientes(lista);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
+            System.out.println(e.getLocalizedMessage());
+        }
+        return listaCliente;
     }
 
     //Función para obtener los pedidos de la bd
@@ -430,31 +578,5 @@ public class Model {
         return catalogoFiltrado;
     }
 
-    //funcion para mostrar los clientes de la tabla usuarios
-    public static ListaClientes obtenerDatosCliente() throws SQLException {
-        ListaClientes listaCliente = new ListaClientes();
-        ArrayList<Cliente> lista = new ArrayList<>();
-
-        try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
-            while (resultSet.next()) {
-                Cliente nuevoCliente = new Cliente();
-                nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
-                nuevoCliente.setNombre(resultSet.getString("nombre"));
-                nuevoCliente.setApellido(resultSet.getString("apellido"));
-                nuevoCliente.setPwd(resultSet.getString("pwd"));
-                nuevoCliente.setDireccion(resultSet.getString("direccion"));
-                nuevoCliente.setNumTelf(resultSet.getString("num_telf"));
-                nuevoCliente.setEmail(resultSet.getString("email"));
-                nuevoCliente.setCp(resultSet.getString("cp"));
-                lista.add(nuevoCliente);
-            }
-            listaCliente.setListaClientes(lista);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
-            System.out.println(e.getLocalizedMessage());
-        }
-        return listaCliente;
-    }
 
 }

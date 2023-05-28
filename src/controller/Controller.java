@@ -2,8 +2,10 @@ package controller;
 
 import model.Model;
 import model.dao.*;
+import model.dao.ObserverStock;
 import view.View;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -15,6 +17,12 @@ public class Controller {
     public static Cliente clienteLogado = new Cliente(); //es público para poder usarlo en el método getIdCliente del modelo
     static Administrador administradorLogado = new Administrador();
     public static Catalogo catalogo = new Catalogo();
+
+    //hay que instanciar de manera estática el model para poder hacer uso de él en el observer
+    static Model model = new Model();
+    //instanciamos el observer
+    ObserverStock observerStock = new ObserverStock();
+
 
     //Método para registrar clientes
     static public boolean registrarse(String nombreUsuario, String pwd, String direccion, String tlf, String cp, String email, String nombre, String apellido) {
@@ -63,7 +71,7 @@ public class Controller {
 
     //Método para agregar el modelo a la tabla de la lista de clientes
     static public ListaClientes agregarTablaCliente() throws SQLException {
-        return Model.obtenerDatosCliente();
+        return Model.obtenerListaClientes();
     }
 
     //método para agregar la tabla de pedidos a la ventana PaginaPedidosCliente
@@ -105,6 +113,11 @@ public class Controller {
         }
     }
 
+    //método para actualizar el stock cuando el admin añade nuevas unidades
+    public static boolean actulizarStock(int idProducto, int nuevoStock) throws SQLException {
+        return Model.actualizarStockProducto(idProducto, nuevoStock);
+    }
+
     //Método que devuelve el stock de un producto, para usarlo en la vista
     public static int devolverStock(int idProducto) {
         int stock = Model.comprobarStock(idProducto);
@@ -138,6 +151,24 @@ public class Controller {
         return isRestarOk;
     }
 
+    //Metodo que devuelve la tabla ordenada por stock ascendente
+    public static ResultSet ordenAscendente() throws SQLException {
+        return Model.ordenarStock();
+    }
+
+    //metodo que recoge el aviso de stock bajo usando el patron observer
+    public boolean avisoStock() throws SQLException {
+        model.addObserver(observerStock);
+        return model.avisarLimiteStock();
+    }
+
+    public static boolean datosClienteActualizados(Cliente cliente) throws SQLException {
+        return Model.actualizarDatosCliente(cliente);
+    }
+
+    public static void actualizarObjetoCliente() {
+        clienteLogado = Model.getDatosCliente(clienteLogado.getIdUsuario());
+    }
 
     public static void main(String[] args) {
         Model model = new Model();

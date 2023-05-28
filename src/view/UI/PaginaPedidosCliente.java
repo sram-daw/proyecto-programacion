@@ -31,7 +31,8 @@ public class PaginaPedidosCliente extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 paginaPedidosCliente.dispose();
                 try {
-                    PaginaPrincipalClientes.crearVentanaPaginaPrincipalCliente();
+                    VentanaCuentaCliente.crearVentanaCuentaCliente();
+                    paginaPedidosCliente.dispose();
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

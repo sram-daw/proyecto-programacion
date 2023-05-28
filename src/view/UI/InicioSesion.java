@@ -43,6 +43,7 @@ public class InicioSesion extends JFrame {
                         try {
                             JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente como administrador.");
                             PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();
+                            PaginaPrincipalAdmin.mostrarMensajeStock(); //lanza un mensaje usando el observer para avisar de que el stock es menor que 10 unidades en algún producto
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al mostrar la página principal del administrador.");
                             throw new RuntimeException(ex);
