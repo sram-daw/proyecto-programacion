@@ -133,7 +133,6 @@ public class Controller {
         pedido.setCliente(clienteLogado);
         pedido.setFecha(new Timestamp(System.currentTimeMillis()));
         isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
-        isFinalizarCompraOk = Model.almacenarPedidosBd(pedido); //se almacena el pedido en la tabla pedidos
         pedido.setIdPedido(Model.getIdPedido(pedido)); //se settea el id del objeto pedido después de añadir el pedido a bd para que se genere el id en la bd de forma autoincremental, por lo que tiene que tomarlo a posteriori
         //Se añaden con un bucle todos los productos de la cesta de pedido a la tabla detalles_pedidos de la bd
         for (int i = 0; i < pedido.getPedido().getCesta().size(); i++) {
