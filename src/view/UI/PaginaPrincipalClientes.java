@@ -58,19 +58,24 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
         addToCestaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //se recogen los datos de la fila seleccionada
-                int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-                String nombre = table.getValueAt(table.getSelectedRow(), 1).toString();
-                float precio = Float.parseFloat(table.getValueAt(table.getSelectedRow(), 2).toString());
-                String categoria = table.getValueAt(table.getSelectedRow(), 3).toString();
-                int cantidad = (int) spinner1.getValue();
-                Cesta cestaAux = Controller.addProductoToCesta(id, nombre, precio, categoria, cantidad);
-                if (cestaAux != null) { //ese método devuelve null si no hay suficiente stock
-                    JOptionPane.showMessageDialog(null, "Artículo añadido correctamente a la cesta.", "Artículo añadido.", JOptionPane.INFORMATION_MESSAGE);
+                if (table.getSelectedRow() == -1) {
+                    JOptionPane.showMessageDialog(null, "Selecciona un producto para añadirlo a la cesta.", "Ningún producto seleccionado.", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    int stock = Controller.devolverStock(id);
-                    JOptionPane.showMessageDialog(null, "Lo sentimos, no hay suficiente stock. Actualmente disponemos de " + stock + " unidades del producto seleccionado.", "Problema de stock", JOptionPane.ERROR_MESSAGE);
+                    //se recogen los datos de la fila seleccionada
+                    int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+                    String nombre = table.getValueAt(table.getSelectedRow(), 1).toString();
+                    float precio = Float.parseFloat(table.getValueAt(table.getSelectedRow(), 2).toString());
+                    String categoria = table.getValueAt(table.getSelectedRow(), 3).toString();
+                    int cantidad = (int) spinner1.getValue();
+                    Cesta cestaAux = Controller.addProductoToCesta(id, nombre, precio, categoria, cantidad);
+                    if (cestaAux != null) { //ese método devuelve null si no hay suficiente stock
+                        JOptionPane.showMessageDialog(null, "Artículo añadido correctamente a la cesta.", "Artículo añadido.", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        int stock = Controller.devolverStock(id);
+                        JOptionPane.showMessageDialog(null, "Lo sentimos, no hay suficiente stock. Actualmente disponemos de " + stock + " unidades del producto seleccionado.", "Problema de stock", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
+
             }
         });
         cestaButton.addActionListener(new ActionListener() {
@@ -242,6 +247,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
             modelo.addRow(data);
             i++;
         }
+        paginaPrincipalClientes.spinner1.setModel(new SpinnerNumberModel(1, 1, 100, 1));
         paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
     }
 

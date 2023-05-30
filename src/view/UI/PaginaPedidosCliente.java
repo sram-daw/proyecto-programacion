@@ -41,11 +41,15 @@ public class PaginaPedidosCliente extends JFrame {
         generarFacturaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int idPedido = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-                try {
-                    GeneradorPdf.generarFactura(idPedido);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                if (table.getSelectedRow() == -1) {
+                    JOptionPane.showMessageDialog(null, "Selecciona un pedido para generar la factura.", "Ningún pedido seleccionado.", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    int idPedido = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+                    try {
+                        GeneradorPdf.generarFactura(idPedido);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
