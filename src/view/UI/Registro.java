@@ -52,6 +52,9 @@ public class Registro extends JFrame {
         registro.setTitle("Registro");
         registro.setBounds(630, 250, 650, 600);
         registro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        registro.setIconImage(logo.getImage()); //thumbnail del programa
         registro.setVisible(true);
     }
 }

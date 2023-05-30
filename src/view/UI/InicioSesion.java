@@ -76,6 +76,9 @@ public class InicioSesion extends JFrame {
         inicioSesion.setTitle("Inicio de sesión");
         inicioSesion.setBounds(630, 250, 600, 500);
         inicioSesion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        inicioSesion.setIconImage(logo.getImage()); //thumbnail del programa
         inicioSesion.setVisible(true);
     }
 }

@@ -44,5 +44,4 @@ public class ListaClientes {
     public void setListaClientes(ArrayList<Cliente> listaClientes) {
         this.listaClientes = listaClientes;
     }
-
 }

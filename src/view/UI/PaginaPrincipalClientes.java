@@ -5,29 +5,29 @@ import model.dao.Catalogo;
 import model.dao.Cesta;
 import model.dao.ProductoEnStock;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Clase Pagina principal clientes.
+ */
 public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para trabajar con la ventana
     private JPanel PanelBotonesSuperiores;
-    private JButton logoButton;
     private JButton ropaButton;
     private JButton hogarButton;
     private JButton alimentacionButton;
     private JButton mascotasButton;
     private JPanel Usuario;
     private JPanel CategoriasPanel;
-
-
-    /*  private JMenu ClienteMenu;
-      private JMenuItem ItemCuenta;
-      private JMenuItem ItemPedidos;
-      private JMenuBar Barramenu;*/
     private JButton botonMiCuenta;
     private JScrollPane scrollPanelTabla;
     private JPanel container;
@@ -47,23 +47,24 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     private JLabel labelAlimentacion;
     private JPanel panelMascotas;
     private JLabel labelMascotas;
+    private JButton salirButton;
     private JButton botonPresionadoActual;
+    /**
+     * Pagina principal clientes.
+     */
     static PaginaPrincipalClientes paginaPrincipalClientes = new PaginaPrincipalClientes();
 
-    //declaración global de la tabla para poder usarla en distintos métodos
+    /**
+     * Constante table.
+     */
+//declaración global de la tabla para poder usarla en distintos métodos
     static JTable table;
 
 
+    /**
+     * Constructor Pagina principal clientes.
+     */
     public PaginaPrincipalClientes() {
-
-
-        //Mostramos mensaje por consola de la funcionalidad que tendra el boton
-        logoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Este boton llevara al usuario a la pagina de inicio");
-            }
-        });
 
         addToCestaButton.addActionListener(new ActionListener() {
             @Override
@@ -120,7 +121,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = ropaButton;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //Hacemos que solo sea visible el panelRopa en este boton
                 panelTodo.setVisible(false);
@@ -155,7 +156,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = hogarButton;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //Hacemos que solo sea visible el panelHogar en este boton
                 panelTodo.setVisible(false);
@@ -190,7 +191,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = alimentacionButton;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //Hacemos que solo sea visible el panelAlimentacion en este boton
                 panelTodo.setVisible(false);
@@ -225,7 +226,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = mascotasButton;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //Hacemos que solo sea visible el panelMascotas en este boton
                 panelTodo.setVisible(false);
@@ -262,7 +263,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = todoButton;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //Hacemos que solo sea visible el panelTodo en este boton
                 panelTodo.setVisible(true);
@@ -284,13 +285,25 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                 paginaPrincipalClientes.dispose();
             }
         });
+        salirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paginaPrincipalClientes.dispose();
+            }
+        });
     }
 
+    /**
+     * Crear ventana pagina principal cliente.
+     *
+     * @throws SQLException la excepcion sql
+     */
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {
         //añadimos el contenindo a la ventana
         paginaPrincipalClientes.setContentPane(paginaPrincipalClientes.container);
         paginaPrincipalClientes.setBounds(330, 60, 1000, 700);
         paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        paginaPrincipalClientes.setTitle("Página principal");
         paginaPrincipalClientes.setVisible(true);
 
         //tabla de productos completa, previo filtrado
@@ -315,7 +328,17 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
         ActionListener todoButtonActionListener = paginaPrincipalClientes.todoButton.getActionListeners()[0];
         // Llamamos al ActionListener del botón "todoButton"
         todoButtonActionListener.actionPerformed(null);
-
+        //añadimos imagen al boton salir
+        try {
+            BufferedImage img = ImageIO.read(new File("resources/cerrar_sesion.png"));
+            Image scaledImg = img.getScaledInstance(30, 30, Image.SCALE_AREA_AVERAGING);
+            paginaPrincipalClientes.salirButton.setIcon(new ImageIcon(scaledImg));
+        } catch (IOException ex) {
+            System.err.println("Error al cargar la imagen: " + ex.getMessage());
+        }
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        paginaPrincipalClientes.setIconImage(logo.getImage()); //thumbnail del programa
         //Hacemos que solo sea visible el panelTodo en el todoButton y al crear la ventana
         paginaPrincipalClientes.panelTodo.setVisible(true);
         paginaPrincipalClientes.panelRopa.setVisible(false);

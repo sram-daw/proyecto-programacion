@@ -66,26 +66,6 @@ public class Model extends Observable {
         return isAddOk;
     }
 
-  /*  //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
-    public static int getIdCliente(Cliente clienteLogado) {
-        int idCliente = 0;
-        Statement consulta = null;
-        String consultaId = "SELECT id_usuario FROM usuarios WHERE nombre_usuario=" +
-                "'" + clienteLogado.getNombreUsuario() + "'";
-        try {
-            consulta = conexion.createStatement();
-            ResultSet resultadoInicioSes = consulta.executeQuery(consultaId);
-            if (resultadoInicioSes.next()) {
-                idCliente = resultadoInicioSes.getInt("id_usuario");
-            }
-            consulta.close();
-        } catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-
-        return idCliente;
-    }*/
-
     //método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
     public static int comprobarStock(int idProducto) {
         int stock = 0;
