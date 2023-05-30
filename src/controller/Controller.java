@@ -8,21 +8,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-public class Controller { //se usa generalidad para poder devolver un objeto cliente y administrador en el método iniciarSesion
+public class Controller {
+
+    public static Cesta cesta = new Cesta(); //se instancian globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
+
+    //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
+    public static Cliente clienteLogado = new Cliente(); //es público para poder usarlo en el método getIdCliente del modelo
+    static Administrador administradorLogado = new Administrador();
+    public static Catalogo catalogo = new Catalogo();
+
+    //hay que instanciar de manera estática el model para poder hacer uso de él en el observer
     static Model model = new Model();
     //instanciamos el observer
     ObserverStock observerStock = new ObserverStock();
 
-    public static Cesta cesta = new Cesta(); //se instancia globalmente un objeto cesta para usarlo repetidas veces si se añaden varios productos
-
-    //los objetos cliente y administrador se instancian globalmente para poder hacer uso de ellos más adelante cuando queramos comprobar sus datos en el historial de pedidos o en los datos personales
-    public static Cliente clienteLogado = new Cliente();
-    static Administrador administradorLogado = new Administrador();
-    public static Catalogo catalogo = new Catalogo();
 
     //Método para registrar clientes
     static public boolean registrarse(String nombreUsuario, String pwd, String direccion, String tlf, String cp, String email, String nombre, String apellido) {
-        Cliente nuevoCliente = new Cliente(/*0, nombreUsuario, pwd, direccion, tlf, email, cp, nombre, apellido*/);
+        Cliente nuevoCliente = new Cliente();
         nuevoCliente.setIsAdmin(0); //indicamos directamente que isadmin es false (0 porque es de tipo tinyint en la bd) porque los admins se dan de alta solo en la propia bd, no desde la app
         nuevoCliente.setNombreUsuario(nombreUsuario);
         nuevoCliente.setPwd(pwd);
@@ -50,13 +53,14 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
             administradorLogado = Model.getAdministradorLogado(nombreUsuario, pwd); //aquí se asigna la variable global administradorLogado usando el método getAdministradorLogado, que devuelve un objeto Administrador
         } else {
             clienteLogado = Model.getClienteLogado(nombreUsuario, pwd); //aquí se asigna la variable global clienteLogado usando el método getAClienteLogado, que devuelve un objeto Cliente
+            /*clienteLogado.setIdUsuario(Model.getIdCliente(clienteLogado));*/
         }
         return isAdmin;
     }
 
-    //Metodo para agregar el modelo a la tabla Almacen
+    //Metodo para asignar a catalogo los productos según la query a la bd (se ejecuta nada más entrar a la pantalla principal de cliente para mostrar todos los productos)
     static public Catalogo agregarTablaAlmacen() throws SQLException {
-        return Model.obtenerDatosAlmacen();
+        return catalogo = Model.obtenerDatosAlmacen();
     }
 
     //Metodo para obtener el catálogo según el filtrado
@@ -66,38 +70,56 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
 
     //Método para agregar el modelo a la tabla de la lista de clientes
     static public ListaClientes agregarTablaCliente() throws SQLException {
-        return Model.obtenerDatosCliente();
+        return Model.obtenerListaClientes();
     }
 
-    static public HistorialPedidosTotal agregartTablaPedidos() throws SQLException {
+    //método para agregar la tabla de pedidos a la ventana PaginaPedidosCliente
+    public static HistorialPedidosTotal agregarTablaPedidos() throws SQLException {
         return Model.obtenerDatosPedidos();
     }
 
 
     //Método para agregar productos al arraylist de DetallesProducto que contiene Cesta
     public static Cesta addProductoToCesta(int id, String nombre, float precio, String categoria, int cantidad) {
-        DetallesProducto nuevoProducto = new DetallesProducto();
-        nuevoProducto.setIdProducto(id);
-        nuevoProducto.setNombre(nombre);
-        nuevoProducto.setPrecio(precio);
-        nuevoProducto.setCategoriaNombre(categoria);
-        nuevoProducto.setCantidad(cantidad);
-        cesta.getCesta().add(nuevoProducto);
         //se obtiene el precio actual de la cesta
         Float precioTotal = cesta.getPrecio();
-        //se suma el precio del producto añadido por la cantidad
-        precioTotal += precio * cantidad;
-        cesta.setPrecio(precioTotal);
-        return cesta;
+        if (Model.comprobarStock(id) >= cantidad) { //se comprueba si existen suficientes existencias del producto en el almacen
+            if (!Model.comprobarProductoEnCesta(id)) { //se comprueba si ese producto está ya en la cesta
+                DetallesProducto nuevoProducto = new DetallesProducto();
+                nuevoProducto.setIdProducto(id);
+                nuevoProducto.setNombre(nombre);
+                nuevoProducto.setPrecio(precio);
+                nuevoProducto.setCategoriaNombre(categoria);
+                nuevoProducto.setCantidad(cantidad);
+                cesta.getCesta().add(nuevoProducto);
+                //se suma el precio del producto añadido por la cantidad
+                precioTotal += precio * cantidad;
+                cesta.setPrecio(precioTotal);
+                return cesta;
+            } else {//si el producto ya está en la cesta, se actualiza la cantidad para que no añada dos productos iguales
+                for (DetallesProducto p : cesta.getCesta()) {
+                    if (p.getIdProducto() == id) {
+                        p.setCantidad(p.getCantidad() + cantidad);
+                        //se suma el precio de las unidades extra del producto añadidas a posteriori
+                        precioTotal += precio * cantidad;
+                        cesta.setPrecio(precioTotal);
+                    }
+                }
+                return cesta;
+            }
+        } else {
+            return null;
+        }
     }
 
+    //método para actualizar el stock cuando el admin añade nuevas unidades
     public static boolean actulizarStock(int idProducto, int nuevoStock) throws SQLException {
         return Model.actualizarStockProducto(idProducto, nuevoStock);
     }
 
     //Método que devuelve el stock de un producto, para usarlo en la vista
     public static int devolverStock(int idProducto) {
-        int stock = model.comprobarStock(idProducto);
+        int stock = Model.comprobarStock(idProducto);
         return stock;
     }
 
@@ -120,6 +142,16 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
         return isFinalizarCompraOk;
     }
 
+    //Metodo que devuelve el resultado de filtrar clientes por su telefono
+    public static ResultSet clienteFiltrado(int numTelf) throws SQLException{
+        return Model.obtenerClienteFiltradoTelefono(numTelf);
+    }
+
+    public static ResultSet pedidoFlitrado(int idPedido) throws SQLException{
+        return Model.obtenerPedidoFiltradoID(idPedido);
+    }
+
+
     //Método que devuelve el resultado de la operación de restar del stock los productos comprados
     public static boolean restarStock() {
         boolean isRestarOk = false;
@@ -131,18 +163,19 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
     public static ResultSet ordenAscendente() throws SQLException {
         return Model.ordenarStock();
     }
+
     //metodo que recoge el aviso de stock bajo usando el patron observer
     public boolean avisoStock() throws SQLException {
         model.addObserver(observerStock);
-        return model.limiteStock();
+        return model.avisarLimiteStock();
     }
 
-    public static boolean datosClienteActualizados(Cliente cliente) throws SQLException{
+    public static boolean datosClienteActualizados(Cliente cliente) throws SQLException {
         return Model.actualizarDatosCliente(cliente);
     }
 
-    public static void actualizarObjetoCliente(){
-       clienteLogado=Model.getDatosCliente(clienteLogado.getIdUsuario());
+    public static void actualizarObjetoCliente() {
+        clienteLogado = Model.getDatosCliente(clienteLogado.getIdUsuario());
     }
 
     public static void main(String[] args) {
@@ -152,4 +185,6 @@ public class Controller { //se usa generalidad para poder devolver un objeto cli
         //Conexión a la bbdd
         model.establecerConexionBd(); //se establece la conexión con la bd antes de nada
     }
+
+
 }

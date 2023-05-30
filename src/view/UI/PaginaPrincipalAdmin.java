@@ -6,7 +6,6 @@ import model.dao.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +16,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class PaginaPrincipalAdmin extends JFrame {
     private JPanel PanelPrincipalAdmin;
@@ -36,6 +33,23 @@ public class PaginaPrincipalAdmin extends JFrame {
     private JButton aumentarStock;
     private JButton ordenAscendente;
     private JLabel labelStock;
+    private JPanel panelClientesAdmin;
+    private JTextField txtTelefono;
+    private JButton botonBuscarTelefono;
+    private JLabel labelIntroduceTelefono;
+    private JPanel panelPedidosAdmin;
+    private JTextField txtIdPedido;
+    private JButton botonBuscarID;
+    private JLabel labelIntroducirIdPedido;
+    private JPanel panelLabelPedidos;
+    private JLabel labelPedidos;
+    private JPanel panelBuscador;
+    private JPanel panelBuscadorClientes;
+    private JPanel panelLabelClientes;
+    private JLabel labelClientes;
+    private JPanel panelAnadirOrdenar;
+    private JPanel panelLabelAlmacen;
+    private JLabel labelAlmacen;
     static JTable tablaPedidosAdmin;
     static JTable tablaClientesAdmin;
     static JTable tablaAlmacenAdmin;
@@ -43,6 +57,7 @@ public class PaginaPrincipalAdmin extends JFrame {
     static PaginaPrincipalAdmin paginaPrincipalAdmin = new PaginaPrincipalAdmin();
     static Controller controller = new Controller();
     private static boolean mensajeMostrado = false;
+
     public PaginaPrincipalAdmin() {
 
         botonPedidos.setBackground(UIManager.getColor("Button.background"));
@@ -57,8 +72,10 @@ public class PaginaPrincipalAdmin extends JFrame {
                 modeloPedidos.setColumnIdentifiers(titulosEncabezadoPedidos);
                 HistorialPedidosTotal listaPedidos = null;
                 try {
-                    listaPedidos = Controller.agregartTablaPedidos();
+                    listaPedidos = Controller.agregarTablaPedidos();
                 } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
+                    System.out.println(ex.getLocalizedMessage());
                     throw new RuntimeException(ex);
                 }
                 ArrayList<Pedido> conjuntoPedidos = listaPedidos.getTotalPedidos();
@@ -72,6 +89,10 @@ public class PaginaPrincipalAdmin extends JFrame {
                 paginaPrincipalAdmin.scrollTablas.setViewportView(tablaPedidosAdmin);
                 paginaPrincipalAdmin.panelAlmacen.setVisible(false);
                 paginaPrincipalAdmin.scrollTablas.setVisible(true);
+                //Hacemos que el panelClientesAdmin no sea visible al pulsar este boton
+                paginaPrincipalAdmin.panelClientesAdmin.setVisible(false);
+                //Hacemos que el panelPedidosAdmin sea visible al pulsar este boton
+                paginaPrincipalAdmin.panelPedidosAdmin.setVisible(true);
 
                 //hacemos que el boton cambie de color cuando este seleccionado
                 if (botonPresionadoActual != null) {
@@ -93,6 +114,8 @@ public class PaginaPrincipalAdmin extends JFrame {
                 try {
                     listaClientes = Controller.agregarTablaCliente();
                 } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
+                    System.out.println(ex.getLocalizedMessage());
                     throw new RuntimeException(ex);
                 }
                 ArrayList<Cliente> grupoClientes = listaClientes.getListaClientes();
@@ -106,6 +129,10 @@ public class PaginaPrincipalAdmin extends JFrame {
                 paginaPrincipalAdmin.scrollTablas.setViewportView(tablaClientesAdmin);
                 paginaPrincipalAdmin.panelAlmacen.setVisible(false);
                 paginaPrincipalAdmin.scrollTablas.setVisible(true);
+                //Hacemos que el panelClientesAdmin sea visible al pulsar este boton
+                paginaPrincipalAdmin.panelClientesAdmin.setVisible(true);
+                //Hacemos que el panelPedidosAdmin no sea visible al pulsar este boton
+                paginaPrincipalAdmin.panelPedidosAdmin.setVisible(false);
 
                 //hacemos que el boton cambie de color cuando este seleccionado
                 if (botonPresionadoActual != null) {
@@ -127,6 +154,8 @@ public class PaginaPrincipalAdmin extends JFrame {
                 try {
                     catalogo = Controller.agregarTablaAlmacen();
                 } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los productos del almacén.");
+                    System.out.println(ex.getLocalizedMessage());
                     throw new RuntimeException(ex);
                 }
                 ArrayList<ProductoEnStock> productoEnStocks = catalogo.getCatalogo();
@@ -143,11 +172,15 @@ public class PaginaPrincipalAdmin extends JFrame {
                 SpinnerNumberModel spinnerModel = (SpinnerNumberModel) paginaPrincipalAdmin.spinnerStock.getModel();
                 spinnerModel.setMaximum(50); // Establecer los valores mínimo y máximo
                 spinnerModel.setMinimum(10);
-                spinnerModel.setStepSize(10); // Establecer el incremento/decremento
-                spinnerModel.setValue(10);
+                spinnerModel.setStepSize(10); // Establecer el incremento
+                spinnerModel.setValue(10);//Valor inicial
                 paginaPrincipalAdmin.panelAlmacen.setVisible(true);
 
                 paginaPrincipalAdmin.scrollTablas.setVisible(true);
+                //Hacemos que el panelClientesAdmin no sea visible al pulsar este boton
+                paginaPrincipalAdmin.panelClientesAdmin.setVisible(false);
+                //Hacemos que el panelPedidosAdmin no sea visible al pulsar este boton
+                paginaPrincipalAdmin.panelPedidosAdmin.setVisible(false);
 
                 //hacemos que el boton cambie de color cuando este seleccionado
                 if (botonPresionadoActual != null) {
@@ -227,26 +260,128 @@ public class PaginaPrincipalAdmin extends JFrame {
             }
         });
 
+        botonBuscarTelefono.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    int numTelf = Integer.parseInt(txtTelefono.getText());
+                    ResultSet resultadoClienteTelefono = Controller.clienteFiltrado(numTelf);
+                    DefaultTableModel modeloClientes = (DefaultTableModel) tablaClientesAdmin.getModel();
+
+                    // Limpiar el modelo de la tabla
+                    modeloClientes.setRowCount(0);
+
+                    // Obtener el número de columnas en el ResultSet
+                    ResultSetMetaData metaData = resultadoClienteTelefono.getMetaData();
+                    int columnCount = metaData.getColumnCount();
+
+                    // Verificar si hay resultados en el ResultSet
+                    if (!resultadoClienteTelefono.isBeforeFirst()) {
+                        // No hay resultados, mostrar mensaje de error
+                        JOptionPane.showMessageDialog(null, "No se encontraron clientes con ese número de teléfono.");
+                    } else {
+                        // Iterar sobre los resultados y agregarlos a la tabla
+                        while (resultadoClienteTelefono.next()) {
+                            Object[] rowData = new Object[columnCount];
+                            for (int i = 1; i <= columnCount; i++) {
+                                rowData[i - 1] = resultadoClienteTelefono.getObject(i);
+                            }
+                            modeloClientes.addRow(rowData);
+                        }
+                        // Actualizar la vista de la tabla
+                        tablaClientesAdmin.repaint();
+                    }
+
+                    // Cerrar el ResultSet después de usarlo
+                    resultadoClienteTelefono.close();
+
+                    // Actualizar la vista de la tabla
+                    tablaClientesAdmin.repaint();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingresa un número de teléfono válido.");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al buscar el cliente.");
+                    ex.printStackTrace();
+                }
+            }
+        });
+        botonBuscarID.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    int idPedido = Integer.parseInt(txtIdPedido.getText());
+                    ResultSet resultadoPedidoId = Controller.pedidoFlitrado(idPedido);
+                    DefaultTableModel modeloPedidos = (DefaultTableModel) tablaPedidosAdmin.getModel();
+
+                    // Limpiar el modelo de la tabla
+                    modeloPedidos.setRowCount(0);
+
+                    // Obtener el número de columnas en el ResultSet
+                    ResultSetMetaData metaData = resultadoPedidoId.getMetaData();
+                    int columnCount = metaData.getColumnCount();
+
+                    // Verificar si hay resultados en el ResultSet
+                    if (!resultadoPedidoId.isBeforeFirst()) {
+                        // No hay resultados, mostrar mensaje de error
+                        JOptionPane.showMessageDialog(null, "No se encontraron pedidos con ese ID.");
+                    } else {
+                        // Iterar sobre los resultados y agregarlos a la tabla
+                        while (resultadoPedidoId.next()) {
+                            Object[] rowData = new Object[columnCount];
+                            for (int i = 1; i <= columnCount; i++) {
+                                rowData[i - 1] = resultadoPedidoId.getObject(i);
+                            }
+                            modeloPedidos.addRow(rowData);
+                        }
+                        // Actualizar la vista de la tabla
+                        tablaPedidosAdmin.repaint();
+                    }
+
+                    // Cerrar el ResultSet después de usarlo
+                    resultadoPedidoId.close();
+
+                    // Actualizar la vista de la tabla
+                    tablaPedidosAdmin.repaint();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingresa un ID válido (número entero).");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al buscar el pedido.");
+                    ex.printStackTrace();
+                }
+            }
+        });
+
     }
 
-    public static void mostrarMensajeStock() throws SQLException{
+    public static void mostrarMensajeStock() throws SQLException {
         //llamamos al metodo para lanzar el aviso en caso de stock bajo cuando entre el administrador
-            controller.avisoStock();
+        boolean stockIsOk = false;
+        if (!stockIsOk) {
+            String mensaje = "El stock de alguno de los productos está a punto de agotarse";
+            String[] opciones = {"Cerrar"};
+            int seleccion = JOptionPane.showOptionDialog(null, mensaje, "Aviso de stock bajo",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                    null, opciones, opciones[0]);
+        }
+        controller.avisoStock();
     }
 
     //Metodo para la creacion de la ventana
     public static void crearVentanaPaginaPrincipalAdmin() throws SQLException {
         paginaPrincipalAdmin.setContentPane(paginaPrincipalAdmin.PanelPrincipalAdmin);
         paginaPrincipalAdmin.setTitle("Pagina principal del administrador");
-        paginaPrincipalAdmin.setBounds(630, 250, 1200, 900);
+        paginaPrincipalAdmin.setBounds(230, 15, 1200, 800);
         paginaPrincipalAdmin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaPrincipalAdmin.setVisible(true);
         paginaPrincipalAdmin.panelAlmacen.setVisible(false);
 
+        //Poniendo el actionListener en null logramos que nos muestre el contenido del boton pedidos al crear la ventana
+        ActionListener pedidosActionListener = paginaPrincipalAdmin.botonPedidos.getActionListeners()[0];
+        // Llamamos al ActionListener del botón "Pedidos"
+        pedidosActionListener.actionPerformed(null);
 
-        SwingUtilities.invokeLater(() -> {
-            paginaPrincipalAdmin.botonPedidos.setSelected(true);
-        });
 
         //añadimos imagen al boton salir
         try {
@@ -259,9 +394,9 @@ public class PaginaPrincipalAdmin extends JFrame {
 
         //hacemos que el panelAlmacen solo sea visible cuando el usuario pulse el boton almacen
         paginaPrincipalAdmin.panelAlmacen.setVisible(false);
-
+        //hacemos que el panelClientesAdmin solo no sea visible cuando la ventana se cree
+        paginaPrincipalAdmin.panelClientesAdmin.setVisible(false);
 
 
     }
-
 }

@@ -16,11 +16,12 @@ public class Model extends Observable {
 
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
-
     public Model() {
 
     }
 
+
+    //Método para establecer la conexión a la bd
     public void establecerConexionBd() {
         conexion = null;
         String url = "jdbc:mysql://localhost:3306/lurpiazon";
@@ -56,7 +57,7 @@ public class Model extends Observable {
             consulta.executeUpdate(texto_consulta);
             System.out.println("Usuario añadido correctamente");
             isAddOk = true;
-
+            consulta.close();
         } catch (SQLException e) {
             System.out.println("Error al añadir el usuario");
             System.out.println(e.getLocalizedMessage());
@@ -65,7 +66,7 @@ public class Model extends Observable {
         return isAddOk;
     }
 
-    //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
+  /*  //Método para obtener el id del cliente en la bd y poder asignárselo al objeto Cliente clienteLogado (el id se genera de forma autoincremental en la bd)
     public static int getIdCliente(Cliente clienteLogado) {
         int idCliente = 0;
         Statement consulta = null;
@@ -83,7 +84,7 @@ public class Model extends Observable {
         }
 
         return idCliente;
-    }
+    }*/
 
     //método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
     public static int comprobarStock(int idProducto) {
@@ -151,6 +152,17 @@ public class Model extends Observable {
         }
     }
 
+    //Método para comprobar si el producto añadido a la cesta ya existía
+    public static boolean comprobarProductoEnCesta(int id) {
+        boolean isProductoInCesta = false;
+        for (DetallesProducto p : Controller.cesta.getCesta()) {
+            if (p.getIdProducto() == id) {
+                isProductoInCesta = true;
+            }
+        }
+        return isProductoInCesta;
+    }
+
     //Método para tomar el id del pedido generado autoincrementalmente en la bd para settearlo en el objeto pedido
     public static int getIdPedido(Pedido pedido) {
         int idPedido = 0;
@@ -176,7 +188,6 @@ public class Model extends Observable {
     //Método para restar del stock los productos tras efectuar un pedido
     public static boolean restarStock(Cesta pedido) {
         boolean isRestarOk = false;
-        Statement consulta = null;
         String actualizarStock = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
         try {
             PreparedStatement pstmt = conexion.prepareStatement(actualizarStock); //este tipo de objeto se usa para consultas múltiples
@@ -195,6 +206,90 @@ public class Model extends Observable {
             System.out.println(e.getLocalizedMessage());
         }
         return isRestarOk;
+    }
+
+    //Metodo para actualizar el stock en paginaPrincipalAdmin
+    public static Boolean actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
+        boolean isActualizadoOK = false;
+        //ProductoEnStock stockActualizado = new ProductoEnStock();
+        Statement consulta = null;
+        int stock = comprobarStock(idProducto);
+        String updateStock = "UPDATE productos_almacen SET stock = " +
+                "'" + (stock + nuevoStock) + "' WHERE id_producto = " +
+                "'" + idProducto + "'";
+
+        try {
+            consulta = conexion.createStatement();
+            consulta.executeUpdate(updateStock);
+            consulta.close();
+            isActualizadoOK = true;
+
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+            isActualizadoOK = false;
+        }
+        return isActualizadoOK;
+    }
+
+    //metodo para ordenar la tabla almacen por stock ascendente
+    public static ResultSet ordenarStock() throws SQLException {
+        Statement consulta = null;
+        String consultaStockOrdenado = "SELECT * FROM productos_almacen ORDER BY stock ASC";
+        ResultSet resultadoStock = null;
+        try {
+            consulta = conexion.createStatement();
+            resultadoStock = consulta.executeQuery(consultaStockOrdenado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoStock;
+    }
+
+    public static ResultSet obtenerClienteFiltradoTelefono(int numTelf) throws SQLException {
+        Statement consulta = null;
+        String consultaClienteFiltrado = "SELECT id_usuario, nombre_usuario, nombre, apellido, pwd, direccion, num_telf, email, cp FROM usuarios WHERE is_admin=0 AND num_telf = '" + numTelf + "'";
+        ResultSet resultadoClienteTelefono = null;
+        try {
+            consulta = conexion.createStatement();
+            resultadoClienteTelefono = consulta.executeQuery(consultaClienteFiltrado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoClienteTelefono;
+    }
+
+    public static ResultSet obtenerPedidoFiltradoID(int idPedido) throws SQLException {
+        Statement consultaPedido = null;
+        String consultaPedidoFiltrado = "SELECT * FROM pedidos WHERE id_pedido = '" + idPedido + "'";
+        ResultSet resultadoPedidoID = null;
+        try {
+            consultaPedido = conexion.createStatement();
+            resultadoPedidoID = consultaPedido.executeQuery(consultaPedidoFiltrado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoPedidoID;
+    }
+
+    //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
+    public boolean avisarLimiteStock() throws SQLException {
+        boolean stockIsOk = false;
+        int datoStock = 0;
+        Statement consulta = null;
+        String consultaStockInferior = "SELECT stock FROM productos_almacen WHERE stock <= 10 ";
+        try {
+            consulta = conexion.createStatement();
+            ResultSet resultadoStock = consulta.executeQuery(consultaStockInferior);
+            if (resultadoStock.next()) {
+                datoStock = resultadoStock.getInt("stock");
+            }
+            consulta.close();
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        setChanged();
+        notifyObservers(datoStock);
+        return stockIsOk;
     }
 
     //Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
@@ -259,6 +354,7 @@ public class Model extends Observable {
                 //se establecen los atributos del nuevo administrador con los datos obtenidos de la bd
                 admin.setNombreUsuario(resultadoInicioSes.getString("nombre_usuario"));
                 admin.setPwd(resultadoInicioSes.getString("pwd"));
+                admin.setIdUsuario(resultadoInicioSes.getInt("id_usuario"));
             }
             consulta.close();
         } catch (SQLException e) {
@@ -267,7 +363,7 @@ public class Model extends Observable {
         return admin;
     }
 
-    //Método que devuelve un objeto Cliente consultando los datos del login en la bd
+    //Método que devuelve un objeto Cliente consultando los datos del login en la bd. Se usa para crear el objeto clienteLogado
     public static Cliente getClienteLogado(String nombreUsuario, String pwd) {
         Cliente cliente = new Cliente();
 
@@ -298,6 +394,7 @@ public class Model extends Observable {
         return cliente;
     }
 
+    //método para obtener los datos personales del cliente de la bd
     public static Cliente getDatosCliente(int idUsuario) {
         Cliente cliente = new Cliente();
 
@@ -326,168 +423,7 @@ public class Model extends Observable {
         return cliente;
     }
 
-    //funcion para mostrar los datos de la tabla productos_almacen en paginaPrincipalAdmin
-    public static Catalogo obtenerDatosAlmacen() throws SQLException {
-
-        Catalogo catalogo = new Catalogo();
-        ArrayList<ProductoEnStock> listaProductos = new ArrayList<>();
-
-        try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM productos_almacen")) {
-            while (resultSet.next()) {
-                ProductoEnStock nuevoProducto = new ProductoEnStock();
-                nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
-                nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
-                nuevoProducto.setPrecio(resultSet.getFloat("precio"));
-                nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
-                nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
-                nuevoProducto.setStock(resultSet.getInt("stock"));
-                listaProductos.add(nuevoProducto);
-            }
-            catalogo.setCatalogo(listaProductos);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los productos del almacén.");
-            System.out.println(e.getLocalizedMessage());
-        }
-        return catalogo;
-    }
-
-    //Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
-    public static Catalogo getCategoria(int categoria) {
-        Catalogo catalogoFiltrado = new Catalogo();
-        ArrayList<ProductoEnStock> listaFiltrada = new ArrayList<>();
-
-        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
-            if (p.getCategoriaID() == categoria) {
-                listaFiltrada.add(p);
-            }
-        }
-        catalogoFiltrado.setCatalogo(listaFiltrada);
-
-        return catalogoFiltrado;
-    }
-
-
-    //Metodo para obtener los datos de los clientes en paginaPrincipalAdmin
-    public static ListaClientes obtenerDatosCliente() throws SQLException {
-        ListaClientes listaCliente = new ListaClientes();
-        ArrayList<Cliente> lista = new ArrayList<>();
-        try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
-            while (resultSet.next()) {
-                Cliente nuevoCliente = new Cliente();
-                nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
-                nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
-                nuevoCliente.setNombre(resultSet.getString("nombre"));
-                nuevoCliente.setApellido(resultSet.getString("apellido"));
-                nuevoCliente.setPwd(resultSet.getString("pwd"));
-                nuevoCliente.setDireccion(resultSet.getString("direccion"));
-                nuevoCliente.setNumTelf(resultSet.getString("num_telf"));
-                nuevoCliente.setEmail(resultSet.getString("email"));
-                nuevoCliente.setCp(resultSet.getString("cp"));
-                lista.add(nuevoCliente);
-            }
-            listaCliente.setListaClientes(lista);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
-            System.out.println(e.getLocalizedMessage());
-        }
-        return listaCliente;
-    }
-
-    //Función para obtener los pedidos de la bd
-    public static HistorialPedidosTotal obtenerDatosPedidos() {
-        HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
-        ArrayList<Pedido> listaPedidos = new ArrayList<>();
-
-        try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM pedidos")) {
-            while (resultSet.next()) {
-                Pedido nuevoPedido = new Pedido();
-                Cliente nuevoCliente = new Cliente();
-                nuevoPedido.setIdPedido(resultSet.getInt("id_pedido"));
-                nuevoPedido.setCliente(nuevoCliente);
-                nuevoPedido.getCliente().setIdUsuario(resultSet.getInt("id_usuario"));
-                nuevoPedido.setFecha(resultSet.getTimestamp("fecha"));
-                nuevoPedido.setPrecio(resultSet.getFloat("total_precio"));
-                listaPedidos.add(nuevoPedido);
-            }
-            historialPedidosTotal.setTotalPedidos(listaPedidos);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
-            System.out.println(e.getLocalizedMessage());
-        }
-
-
-        return historialPedidosTotal;
-    }
-    //Metodo para actualizar el stock en paginaPrincipalAdmin
-    public static Boolean actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
-        boolean isActualizadoOK = false;
-        //ProductoEnStock stockActualizado = new ProductoEnStock();
-        Statement consulta = null;
-        int stock = comprobarStock(idProducto);
-        String updateStock = "UPDATE productos_almacen SET stock = " +
-                "'" + (stock + nuevoStock) + "' WHERE id_producto = " +
-                "'" + idProducto + "'";
-
-        try {
-            consulta = conexion.createStatement();
-            consulta.executeUpdate(updateStock);
-            consulta.close();
-            isActualizadoOK = true;
-
-        } catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
-            isActualizadoOK = false;
-        }
-        return isActualizadoOK;
-    }
-
-    //metodo para ordenar la tabla almacen por stock ascendente
-    public static ResultSet ordenarStock() throws SQLException {
-        Statement consulta = null;
-        String consultaStockOrdenado = "SELECT * FROM productos_almacen ORDER BY stock ASC";
-        ResultSet resultadoStock = null;
-        try {
-            consulta = conexion.createStatement();
-            resultadoStock = consulta.executeQuery(consultaStockOrdenado);
-        } catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-        return resultadoStock;
-
-    }
-
-    //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
-    public boolean limiteStock() throws SQLException {
-        boolean stockIsOk = false;
-        int datoStock = 0;
-        Statement consulta = null;
-        String consultaStockInferior = "SELECT stock FROM productos_almacen WHERE stock <= 10 ";
-        try {
-            consulta = conexion.createStatement();
-            ResultSet resultadoStock = consulta.executeQuery(consultaStockInferior);
-            if (resultadoStock.next()) {
-                datoStock = resultadoStock.getInt("stock");
-                if (datoStock <= 10) {
-                    String mensaje = "El stock de uno de los productos está a punto de agotarse";
-                    String[] opciones = {"Cerrar"};
-                    int seleccion = JOptionPane.showOptionDialog(null, mensaje, "Aviso de stock bajo",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, opciones, opciones[0]);
-                }
-            }
-            consulta.close();
-        } catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-        setChanged();
-        notifyObservers(datoStock);
-        return stockIsOk;
-    }
-
+    //método para actualizar en la bd los campos de usuarios cuando el cliente modifica sus datos
     public static boolean actualizarDatosCliente(Cliente cliente) throws SQLException {
         boolean actualizarDatosIsOk = false;
         Statement consulta = null;
@@ -512,6 +448,147 @@ public class Model extends Observable {
             e.printStackTrace();
         }
         return actualizarDatosIsOk;
+    }
+
+    //funcion para mostrar los datos de la tabla productos_almacen
+    public static Catalogo obtenerDatosAlmacen() throws SQLException {
+        Catalogo catalogo = new Catalogo();
+        ArrayList<ProductoEnStock> listaProductos = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM productos_almacen")) {
+            while (resultSet.next()) {
+                int stock = resultSet.getInt("stock");
+                if (stock >= 1) { //solo toma los productos cuyo stock sea igual o mayor que 1
+                    ProductoEnStock nuevoProducto = new ProductoEnStock();
+                    nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                    nuevoProducto.setNombre(resultSet.getString("nombre_producto"));
+                    nuevoProducto.setPrecio(resultSet.getFloat("precio"));
+                    nuevoProducto.setCategoriaID(resultSet.getInt("id_categoria"));
+                    nuevoProducto.setCategoriaNombre(resultSet.getString("nombre_categoria"));
+                    nuevoProducto.setStock(resultSet.getInt("stock"));
+                    listaProductos.add(nuevoProducto);
+                }
+            }
+            catalogo.setCatalogo(listaProductos);
+
+        } catch (SQLException e) {
+            throw e;
+        }
+        return catalogo;
+    }
+
+    //Metodo para obtener los datos de los clientes en paginaPrincipalAdmin
+    public static ListaClientes obtenerListaClientes() throws SQLException {
+        ListaClientes listaCliente = new ListaClientes();
+        ArrayList<Cliente> lista = new ArrayList<>();
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT id_usuario, nombre_usuario, nombre, apellido, pwd, direccion, num_telf, email, cp FROM usuarios where is_admin=0")) { //recoge solo los clientes
+            while (resultSet.next()) {
+                Cliente nuevoCliente = new Cliente();
+                nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoCliente.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                nuevoCliente.setNombre(resultSet.getString("nombre"));
+                nuevoCliente.setApellido(resultSet.getString("apellido"));
+                nuevoCliente.setPwd(resultSet.getString("pwd"));
+                nuevoCliente.setDireccion(resultSet.getString("direccion"));
+                nuevoCliente.setNumTelf(resultSet.getString("num_telf"));
+                nuevoCliente.setEmail(resultSet.getString("email"));
+                nuevoCliente.setCp(resultSet.getString("cp"));
+                lista.add(nuevoCliente);
+            }
+            listaCliente.setListaClientes(lista);
+        } catch (SQLException e) {
+            throw e;
+        }
+        return listaCliente;
+    }
+
+
+    //Función para obtener los pedidos de la bd
+    public static HistorialPedidosTotal obtenerDatosPedidos() throws SQLException {
+        HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
+        ArrayList<Pedido> listaPedidos = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM pedidos")) {
+            while (resultSet.next()) {
+                Pedido nuevoPedido = new Pedido();
+                Cliente nuevoCliente = new Cliente();
+                nuevoPedido.setIdPedido(resultSet.getInt("id_pedido"));
+                nuevoPedido.setCliente(nuevoCliente);
+                nuevoPedido.getCliente().setIdUsuario(resultSet.getInt("id_usuario"));
+                nuevoPedido.setFecha(resultSet.getTimestamp("fecha"));
+                nuevoPedido.setPrecio(resultSet.getFloat("total_precio"));
+                listaPedidos.add(nuevoPedido);
+            }
+            historialPedidosTotal.setTotalPedidos(listaPedidos);
+
+        } catch (SQLException e) {
+            throw e;
+        }
+        return historialPedidosTotal;
+    }
+
+    //Función para obtener los productos de un pedido
+    public static ArrayList<DetallesProducto> obtenerDetallesPedido(int idPedido) {
+        ArrayList<DetallesProducto> productos = new ArrayList<>();
+
+        try (Statement statement = conexion.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM detalles_pedidos")) {
+            while (resultSet.next()) {
+                if (resultSet.getInt("id_pedido") == idPedido) {
+                    DetallesProducto nuevoProducto = new DetallesProducto();
+                    nuevoProducto.setIdProducto(resultSet.getInt("id_producto"));
+                    nuevoProducto.setCantidad(resultSet.getInt("cantidad"));
+                    nuevoProducto.setNombre(obtenerNombreProducto(nuevoProducto.getIdProducto()));
+                    nuevoProducto.setPrecio(obtenerPrecioProducto(nuevoProducto.getIdProducto()));
+                    productos.add(nuevoProducto);
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
+            System.out.println(e.getLocalizedMessage());
+        }
+        return productos;
+    }
+
+    //Método para obtener el nombre de un producto. Se usa en el método obtenerDetallesPedido
+    public static String obtenerNombreProducto(int idProducto) {
+        String nombreProd = "";
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getIdProducto() == idProducto) {
+                nombreProd = p.getNombre();
+            }
+        }
+        return nombreProd;
+    }
+
+    //Método para obtener el precio de un producto. Se usa en el método obtenerDetallesPedido
+    public static Float obtenerPrecioProducto(int idProducto) {
+        Float precio = 0f;
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getIdProducto() == idProducto) {
+                precio = p.getPrecio();
+            }
+        }
+        return precio;
+    }
+
+
+    //Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
+    public static Catalogo getCategoria(int categoria) {
+        Catalogo catalogoFiltrado = new Catalogo();
+        ArrayList<ProductoEnStock> listaFiltrada = new ArrayList<>();
+
+        for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
+            if (p.getCategoriaID() == categoria) {
+                listaFiltrada.add(p);
+            }
+        }
+        catalogoFiltrado.setCatalogo(listaFiltrada);
+
+        return catalogoFiltrado;
     }
 
 

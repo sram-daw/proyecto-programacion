@@ -1,13 +1,15 @@
 package view.UI;
 
 import controller.Controller;
-import model.dao.ObserverStock;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+/**
+ * Clase Inicio sesion.
+ */
 public class InicioSesion extends JFrame {
     private JLabel titulo;
     private JTextField nameTextField;
@@ -16,11 +18,18 @@ public class InicioSesion extends JFrame {
     private JLabel nameLabel;
     private JLabel pwdLabel;
     private JPasswordField pwdField;
+    private JPanel panelBoton;
 
+    /**
+     * Instanciamos Inicio sesion.
+     */
     static InicioSesion inicioSesion = new InicioSesion();
 
 
-    //Botón iniciar sesión
+    /**
+     * Constructor de Inicio sesion.
+     */
+//Botón iniciar sesión
     public InicioSesion() {
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
@@ -43,8 +52,7 @@ public class InicioSesion extends JFrame {
                         try {
                             JOptionPane.showMessageDialog(null, "Sesión iniciada correctamente como administrador.");
                             PaginaPrincipalAdmin.crearVentanaPaginaPrincipalAdmin();
-                            PaginaPrincipalAdmin.mostrarMensajeStock();
-
+                            PaginaPrincipalAdmin.mostrarMensajeStock(); //lanza un mensaje usando el observer para avisar de que el stock es menor que 10 unidades en algún producto
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al mostrar la página principal del administrador.");
                             throw new RuntimeException(ex);
@@ -60,6 +68,9 @@ public class InicioSesion extends JFrame {
         });
     }
 
+    /**
+     * Crear ventana inicio sesion.
+     */
     public static void crearVentanaInicioSesion() {
         inicioSesion.setContentPane(inicioSesion.container);
         inicioSesion.setTitle("Inicio de sesión");
@@ -68,4 +79,5 @@ public class InicioSesion extends JFrame {
         inicioSesion.setVisible(true);
     }
 }
+
 
