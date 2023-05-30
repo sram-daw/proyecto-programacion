@@ -29,7 +29,6 @@ public class PaginaPedidosCliente extends JFrame {
         volverAtrásButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                paginaPedidosCliente.dispose();
                 try {
                     VentanaCuentaCliente.crearVentanaCuentaCliente();
                     paginaPedidosCliente.dispose();
@@ -47,7 +46,7 @@ public class PaginaPedidosCliente extends JFrame {
                     int idPedido = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
                     try {
                         GeneradorPdf.generarFactura(idPedido);
-                    } catch (IOException ex) {
+                    } catch (IOException | SQLException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
@@ -56,11 +55,12 @@ public class PaginaPedidosCliente extends JFrame {
     }
 
     //Método para crear la ventana de pedidos del cliente
-    public static void crearVentanaPaginaPedidosCliente() {
+    public static void crearVentanaPaginaPedidosCliente() throws SQLException {
         //añadimos el contenindo a la ventana
         paginaPedidosCliente.setContentPane(paginaPedidosCliente.container);
-        paginaPedidosCliente.setBounds(630, 250, 1000, 700);
+        paginaPedidosCliente.setBounds(330, 60, 1000, 700);
         paginaPedidosCliente.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        paginaPedidosCliente.setTitle("Pedidos");
         paginaPedidosCliente.setVisible(true);
 
         //creación de la tabla de pedidos
@@ -80,6 +80,9 @@ public class PaginaPedidosCliente extends JFrame {
             }
             i++;
         }
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        paginaPedidosCliente.setIconImage(logo.getImage()); //thumbnail del programa
         paginaPedidosCliente.scrollPaneTabla.setViewportView(table);
 
     }

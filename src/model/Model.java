@@ -2,6 +2,7 @@ package model;
 
 import controller.Controller;
 import model.dao.*;
+
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -242,7 +243,32 @@ public class Model extends Observable {
             System.out.println(e.getLocalizedMessage());
         }
         return resultadoStock;
+    }
 
+    public static ResultSet obtenerClienteFiltradoTelefono(int numTelf) throws SQLException {
+        Statement consulta = null;
+        String consultaClienteFiltrado = "SELECT id_usuario, nombre_usuario, nombre, apellido, pwd, direccion, num_telf, email, cp FROM usuarios WHERE is_admin=0 AND num_telf = '" + numTelf + "'";
+        ResultSet resultadoClienteTelefono = null;
+        try {
+            consulta = conexion.createStatement();
+            resultadoClienteTelefono = consulta.executeQuery(consultaClienteFiltrado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoClienteTelefono;
+    }
+
+    public static ResultSet obtenerPedidoFiltradoID(int idPedido) throws SQLException {
+        Statement consultaPedido = null;
+        String consultaPedidoFiltrado = "SELECT * FROM pedidos WHERE id_pedido = '" + idPedido + "'";
+        ResultSet resultadoPedidoID = null;
+        try {
+            consultaPedido = conexion.createStatement();
+            resultadoPedidoID = consultaPedido.executeQuery(consultaPedidoFiltrado);
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        return resultadoPedidoID;
     }
 
     //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
@@ -256,13 +282,6 @@ public class Model extends Observable {
             ResultSet resultadoStock = consulta.executeQuery(consultaStockInferior);
             if (resultadoStock.next()) {
                 datoStock = resultadoStock.getInt("stock");
-                if (datoStock <= 10) {
-                    String mensaje = "El stock de alguno de los productos está a punto de agotarse";
-                    String[] opciones = {"Cerrar"};
-                    int seleccion = JOptionPane.showOptionDialog(null, mensaje, "Aviso de stock bajo",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                            null, opciones, opciones[0]);
-                }
             }
             consulta.close();
         } catch (SQLException e) {
@@ -376,7 +395,7 @@ public class Model extends Observable {
     }
 
     //método para obtener los datos personales del cliente de la bd
-        public static Cliente getDatosCliente(int idUsuario) {
+    public static Cliente getDatosCliente(int idUsuario) {
         Cliente cliente = new Cliente();
 
         Statement consulta = null;
@@ -454,8 +473,7 @@ public class Model extends Observable {
             catalogo.setCatalogo(listaProductos);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los productos del almacén.");
-            System.out.println(e.getLocalizedMessage());
+            throw e;
         }
         return catalogo;
     }
@@ -465,7 +483,7 @@ public class Model extends Observable {
         ListaClientes listaCliente = new ListaClientes();
         ArrayList<Cliente> lista = new ArrayList<>();
         try (Statement statement = conexion.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios where is_admin=0")) { //recoge solo los clientes
+             ResultSet resultSet = statement.executeQuery("SELECT id_usuario, nombre_usuario, nombre, apellido, pwd, direccion, num_telf, email, cp FROM usuarios where is_admin=0")) { //recoge solo los clientes
             while (resultSet.next()) {
                 Cliente nuevoCliente = new Cliente();
                 nuevoCliente.setIdUsuario(resultSet.getInt("id_usuario"));
@@ -481,14 +499,14 @@ public class Model extends Observable {
             }
             listaCliente.setListaClientes(lista);
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los datos de los clientes.");
-            System.out.println(e.getLocalizedMessage());
+            throw e;
         }
         return listaCliente;
     }
 
+
     //Función para obtener los pedidos de la bd
-    public static HistorialPedidosTotal obtenerDatosPedidos() {
+    public static HistorialPedidosTotal obtenerDatosPedidos() throws SQLException {
         HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
         ArrayList<Pedido> listaPedidos = new ArrayList<>();
 
@@ -507,11 +525,8 @@ public class Model extends Observable {
             historialPedidosTotal.setTotalPedidos(listaPedidos);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
-            System.out.println(e.getLocalizedMessage());
+            throw e;
         }
-
-
         return historialPedidosTotal;
     }
 
@@ -531,12 +546,10 @@ public class Model extends Observable {
                     productos.add(nuevoProducto);
                 }
             }
-
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al intentar recuperar los pedidos.");
             System.out.println(e.getLocalizedMessage());
         }
-
         return productos;
     }
 

@@ -2,7 +2,6 @@ package controller;
 
 import model.Model;
 import model.dao.*;
-import model.dao.ObserverStock;
 import view.View;
 
 import java.sql.ResultSet;
@@ -38,6 +37,7 @@ public class Controller {
         nuevoCliente.setApellido(apellido);
         return Model.registrarCliente(nuevoCliente);
     }
+
 
     //Método para comprobar si los datos introducidos por el usuario en el login son correctos
     static public boolean comprobarDatosLogin(String nombreUsuario, String pwd) {
@@ -75,7 +75,7 @@ public class Controller {
     }
 
     //método para agregar la tabla de pedidos a la ventana PaginaPedidosCliente
-    public static HistorialPedidosTotal agregarTablaPedidos() {
+    public static HistorialPedidosTotal agregarTablaPedidos() throws SQLException {
         return Model.obtenerDatosPedidos();
     }
 
@@ -142,6 +142,16 @@ public class Controller {
 
         return isFinalizarCompraOk;
     }
+
+    //Metodo que devuelve el resultado de filtrar clientes por su telefono
+    public static ResultSet clienteFiltrado(int numTelf) throws SQLException{
+        return Model.obtenerClienteFiltradoTelefono(numTelf);
+    }
+
+    public static ResultSet pedidoFlitrado(int idPedido) throws SQLException{
+        return Model.obtenerPedidoFiltradoID(idPedido);
+    }
+
 
     //Método que devuelve el resultado de la operación de restar del stock los productos comprados
     public static boolean restarStock() {

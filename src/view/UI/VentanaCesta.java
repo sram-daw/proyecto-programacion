@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Clase Ventana cesta.
+ */
 public class VentanaCesta extends JFrame {
     private JButton volverAtrásButton;
     private JPanel container;
@@ -22,8 +25,14 @@ public class VentanaCesta extends JFrame {
     private JPanel panelVacioLabel;
     private JButton vaciarCestaButton;
 
+    /**
+     * Instanciar Ventana cesta.
+     */
     static VentanaCesta ventanaCesta = new VentanaCesta();
 
+    /**
+     * Constructor de Ventana cesta.
+     */
     public VentanaCesta() {
         //Botón para retroceder a la página principal de la tienda
         volverAtrásButton.addActionListener(new ActionListener() {
@@ -64,6 +73,9 @@ public class VentanaCesta extends JFrame {
         });
     }
 
+    /**
+     * Crear ventana cesta.
+     */
     public static void crearVentanaCesta() {
         //creacion de la ventana
         ventanaCesta.setContentPane(ventanaCesta.container);
@@ -98,6 +110,9 @@ public class VentanaCesta extends JFrame {
             ventanaCesta.scrollPanelTabla.setViewportView(table);
             ventanaCesta.precioLabel.setText(String.format("%.2f€", 0.0));
         }
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        ventanaCesta.setIconImage(logo.getImage()); //thumbnail del programa
 
     }
 

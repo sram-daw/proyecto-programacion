@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 
 import controller.Controller;
 
+/**
+ * Clase Registro.
+ */
 public class Registro extends JFrame {
     private JPanel container;
     private JPanel containerForm;
@@ -21,6 +24,9 @@ public class Registro extends JFrame {
 
     private static Registro registro = new Registro(); //instancia de la propia clase para poder usarla en distintos métodos
 
+    /**
+     * Constructor de Registro.
+     */
     public Registro() {
         registrarseButton.addActionListener(new ActionListener() {
             @Override
@@ -38,11 +44,17 @@ public class Registro extends JFrame {
         });
     }
 
+    /**
+     * Crear ventana registro.
+     */
     public static void crearVentanaRegistro() {
         registro.setContentPane(registro.container);
         registro.setTitle("Registro");
         registro.setBounds(630, 250, 650, 600);
         registro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        registro.setIconImage(logo.getImage()); //thumbnail del programa
         registro.setVisible(true);
     }
 }

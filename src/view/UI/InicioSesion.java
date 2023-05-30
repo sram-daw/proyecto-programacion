@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+/**
+ * Clase Inicio sesion.
+ */
 public class InicioSesion extends JFrame {
     private JLabel titulo;
     private JTextField nameTextField;
@@ -17,10 +20,16 @@ public class InicioSesion extends JFrame {
     private JPasswordField pwdField;
     private JPanel panelBoton;
 
+    /**
+     * Instanciamos Inicio sesion.
+     */
     static InicioSesion inicioSesion = new InicioSesion();
 
 
-    //Botón iniciar sesión
+    /**
+     * Constructor de Inicio sesion.
+     */
+//Botón iniciar sesión
     public InicioSesion() {
         iniciarSesionButton.addActionListener(new ActionListener() {
             @Override
@@ -59,11 +68,17 @@ public class InicioSesion extends JFrame {
         });
     }
 
+    /**
+     * Crear ventana inicio sesion.
+     */
     public static void crearVentanaInicioSesion() {
         inicioSesion.setContentPane(inicioSesion.container);
         inicioSesion.setTitle("Inicio de sesión");
         inicioSesion.setBounds(630, 250, 600, 500);
         inicioSesion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        inicioSesion.setIconImage(logo.getImage()); //thumbnail del programa
         inicioSesion.setVisible(true);
     }
 }
