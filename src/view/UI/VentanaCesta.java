@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Clase Ventana cesta.
+ */
 public class VentanaCesta extends JFrame {
     private JButton volverAtrásButton;
     private JPanel container;
@@ -22,8 +25,14 @@ public class VentanaCesta extends JFrame {
     private JPanel panelVacioLabel;
     private JButton vaciarCestaButton;
 
+    /**
+     * Instanciar Ventana cesta.
+     */
     static VentanaCesta ventanaCesta = new VentanaCesta();
 
+    /**
+     * Constructor de Ventana cesta.
+     */
     public VentanaCesta() {
         //Botón para retroceder a la página principal de la tienda
         volverAtrásButton.addActionListener(new ActionListener() {
@@ -59,11 +68,14 @@ public class VentanaCesta extends JFrame {
                 Controller.cesta = new Cesta(); //se vacía la cesta actual
                 JOptionPane.showMessageDialog(null, "Se ha vaciado su cesta", "Cesta vaciada", JOptionPane.INFORMATION_MESSAGE);
                 ventanaCesta.dispose();
-                ventanaCesta.crearVentanaCesta();
+                crearVentanaCesta();
             }
         });
     }
 
+    /**
+     * Crear ventana cesta.
+     */
     public static void crearVentanaCesta() {
         //creacion de la ventana
         ventanaCesta.setContentPane(ventanaCesta.container);

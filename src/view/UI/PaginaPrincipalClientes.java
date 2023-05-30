@@ -7,6 +7,7 @@ import model.dao.ProductoEnStock;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -21,10 +22,13 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     private JButton mascotasButton;
     private JPanel Usuario;
     private JPanel CategoriasPanel;
-    private JMenu ClienteMenu;
-    private JMenuItem ItemCuenta;
-    private JMenuItem ItemPedidos;
-    private JMenuBar Barramenu;
+
+
+    /*  private JMenu ClienteMenu;
+      private JMenuItem ItemCuenta;
+      private JMenuItem ItemPedidos;
+      private JMenuBar Barramenu;*/
+    private JButton botonMiCuenta;
     private JScrollPane scrollPanelTabla;
     private JPanel container;
     private JButton cestaButton;
@@ -33,7 +37,17 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     private JPanel panelTabla;
     private JPanel panelInferiorSpiner;
     private JButton todoButton;
-
+    private JPanel panelTodo;
+    private JLabel labelTodo;
+    private JPanel panelRopa;
+    private JLabel labelRopa;
+    private JPanel panelHogar;
+    private JLabel labelHogar;
+    private JPanel panelAlimentacion;
+    private JLabel labelAlimentacion;
+    private JPanel panelMascotas;
+    private JLabel labelMascotas;
+    private JButton botonPresionadoActual;
     static PaginaPrincipalClientes paginaPrincipalClientes = new PaginaPrincipalClientes();
 
     //declaración global de la tabla para poder usarla en distintos métodos
@@ -54,24 +68,30 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
         addToCestaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //se recogen los datos de la fila seleccionada
-                int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-                String nombre = table.getValueAt(table.getSelectedRow(), 1).toString();
-                float precio = Float.parseFloat(table.getValueAt(table.getSelectedRow(), 2).toString());
-                String categoria = table.getValueAt(table.getSelectedRow(), 3).toString();
-                int cantidad = (int) spinner1.getValue();
-                Cesta cestaAux = Controller.addProductoToCesta(id, nombre, precio, categoria, cantidad);
-                if (cestaAux != null) { //ese método devuelve null si no hay suficiente stock
-                    JOptionPane.showMessageDialog(null, "Artículo añadido correctamente a la cesta.", "Artículo añadido.", JOptionPane.INFORMATION_MESSAGE);
+                if (table.getSelectedRow() == -1) {
+                    JOptionPane.showMessageDialog(null, "Selecciona un producto para añadirlo a la cesta.", "Ningún producto seleccionado.", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    int stock = Controller.devolverStock(id);
-                    JOptionPane.showMessageDialog(null, "Lo sentimos, no hay suficiente stock. Actualmente disponemos de " + stock + " unidades del producto seleccionado.", "Problema de stock", JOptionPane.ERROR_MESSAGE);
+                    //se recogen los datos de la fila seleccionada
+                    int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+                    String nombre = table.getValueAt(table.getSelectedRow(), 1).toString();
+                    float precio = Float.parseFloat(table.getValueAt(table.getSelectedRow(), 2).toString());
+                    String categoria = table.getValueAt(table.getSelectedRow(), 3).toString();
+                    int cantidad = (int) spinner1.getValue();
+                    Cesta cestaAux = Controller.addProductoToCesta(id, nombre, precio, categoria, cantidad);
+                    if (cestaAux != null) { //ese método devuelve null si no hay suficiente stock
+                        JOptionPane.showMessageDialog(null, "Artículo añadido correctamente a la cesta.", "Artículo añadido.", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        int stock = Controller.devolverStock(id);
+                        JOptionPane.showMessageDialog(null, "Lo sentimos, no hay suficiente stock. Actualmente disponemos de " + stock + " unidades del producto seleccionado.", "Problema de stock", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
+
             }
         });
         cestaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 VentanaCesta.crearVentanaCesta();
                 paginaPrincipalClientes.dispose();
             }
@@ -94,6 +114,20 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     i++;
                 }
                 paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+
+                //hacemos que el boton cambie de color cuando este seleccionado
+                if (botonPresionadoActual != null) {
+                    botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
+                }
+                botonPresionadoActual = ropaButton;
+                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+
+                //Hacemos que solo sea visible el panelRopa en este boton
+                panelTodo.setVisible(false);
+                panelRopa.setVisible(true);
+                panelHogar.setVisible(false);
+                panelAlimentacion.setVisible(false);
+                panelMascotas.setVisible(false);
             }
         });
 
@@ -115,6 +149,20 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     i++;
                 }
                 paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+
+                //hacemos que el boton cambie de color cuando este seleccionado
+                if (botonPresionadoActual != null) {
+                    botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
+                }
+                botonPresionadoActual = hogarButton;
+                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+
+                //Hacemos que solo sea visible el panelHogar en este boton
+                panelTodo.setVisible(false);
+                panelRopa.setVisible(false);
+                panelHogar.setVisible(true);
+                panelAlimentacion.setVisible(false);
+                panelMascotas.setVisible(false);
             }
         });
 
@@ -136,6 +184,20 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     i++;
                 }
                 paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+
+                //hacemos que el boton cambie de color cuando este seleccionado
+                if (botonPresionadoActual != null) {
+                    botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
+                }
+                botonPresionadoActual = alimentacionButton;
+                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+
+                //Hacemos que solo sea visible el panelAlimentacion en este boton
+                panelTodo.setVisible(false);
+                panelRopa.setVisible(false);
+                panelHogar.setVisible(false);
+                panelAlimentacion.setVisible(true);
+                panelMascotas.setVisible(false);
             }
         });
 
@@ -157,6 +219,20 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     i++;
                 }
                 paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+
+                //hacemos que el boton cambie de color cuando este seleccionado
+                if (botonPresionadoActual != null) {
+                    botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
+                }
+                botonPresionadoActual = mascotasButton;
+                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+
+                //Hacemos que solo sea visible el panelMascotas en este boton
+                panelTodo.setVisible(false);
+                panelRopa.setVisible(false);
+                panelHogar.setVisible(false);
+                panelAlimentacion.setVisible(false);
+                panelMascotas.setVisible(true);
             }
         });
 
@@ -180,21 +256,42 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
                     i++;
                 }
                 paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+
+                //hacemos que el boton cambie de color cuando este seleccionado
+                if (botonPresionadoActual != null) {
+                    botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
+                }
+                botonPresionadoActual = todoButton;
+                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+
+                //Hacemos que solo sea visible el panelTodo en este boton
+                panelTodo.setVisible(true);
+                panelRopa.setVisible(false);
+                panelHogar.setVisible(false);
+                panelAlimentacion.setVisible(false);
+                panelMascotas.setVisible(false);
             }
         });
 
+        botonMiCuenta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    VentanaCuentaCliente.crearVentanaCuentaCliente();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                paginaPrincipalClientes.dispose();
+            }
+        });
     }
 
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {
         //añadimos el contenindo a la ventana
         paginaPrincipalClientes.setContentPane(paginaPrincipalClientes.container);
-        //Añadimos los items al menu
-        paginaPrincipalClientes.ClienteMenu.add(paginaPrincipalClientes.ItemCuenta);
-        paginaPrincipalClientes.ClienteMenu.add(paginaPrincipalClientes.ItemPedidos);
-        paginaPrincipalClientes.setBounds(630, 250, 1000, 700);
+        paginaPrincipalClientes.setBounds(330, 60, 1000, 700);
         paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaPrincipalClientes.setVisible(true);
-
 
         //tabla de productos completa, previo filtrado
         String titulosEncabezado[] = {"ID", "Nombre", "Precio", "Categoría"}; //a los clientes solo se les muestra estos campos
@@ -211,7 +308,22 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
             modelo.addRow(data);
             i++;
         }
+        paginaPrincipalClientes.spinner1.setModel(new SpinnerNumberModel(1, 1, 100, 1));
         paginaPrincipalClientes.scrollPanelTabla.setViewportView(table);
+
+        //Poniendo el actionListener en null logramos que nos muestre el contenido del todoButton al crear la ventana
+        ActionListener todoButtonActionListener = paginaPrincipalClientes.todoButton.getActionListeners()[0];
+        // Llamamos al ActionListener del botón "todoButton"
+        todoButtonActionListener.actionPerformed(null);
+
+        //Hacemos que solo sea visible el panelTodo en el todoButton y al crear la ventana
+        paginaPrincipalClientes.panelTodo.setVisible(true);
+        paginaPrincipalClientes.panelRopa.setVisible(false);
+        paginaPrincipalClientes.panelHogar.setVisible(false);
+        paginaPrincipalClientes.panelAlimentacion.setVisible(false);
+        paginaPrincipalClientes.panelMascotas.setVisible(false);
+
+
     }
 
 
