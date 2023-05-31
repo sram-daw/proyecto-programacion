@@ -24,31 +24,5 @@ public class Administrador extends Usuario {
         super(idUsuario, isAdmin, nombreUsuario, pwd);
     }
 
-    /**
-     * Mostrar historial total pedidos array list.
-     *
-     * @return array list
-     */
-    public ArrayList<Pedido> mostrarHistorialTotalPedidos(){
-        return null;
-    }
-    /*public ListaUsers mostrarListaUsuarios(){
-        return null;
-    }*/
 
-    /**
-     * Reponer stock.
-     */
-    public void reponerStock(){
-
-    }
-
-    /**
-     * Comprobar stock catalogo.
-     *
-     * @return el catalogo
-     */
-    public Catalogo comprobarStock(){
-        return null;
-    }
 }

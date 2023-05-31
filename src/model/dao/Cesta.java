@@ -29,15 +29,6 @@ public class Cesta {
         this.cesta = new ArrayList<DetallesProducto>();
     }
 
-    /**
-     * Finalizar compra boolean.
-     *
-     * @param cesta la cesta
-     * @return un boolean
-     */
-    public boolean finalizarCompra(ArrayList<DetallesProducto> cesta) {
-        return true;
-    }
 
     /**
      * Gets cesta.
@@ -48,14 +39,6 @@ public class Cesta {
         return cesta;
     }
 
-    /**
-     * Sets cesta.
-     *
-     * @param cesta es cesta
-     */
-    public void setCesta(ArrayList<DetallesProducto> cesta) {
-        this.cesta = cesta;
-    }
 
     /**
      * Gets precio.
