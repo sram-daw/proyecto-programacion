@@ -30,16 +30,6 @@ public class Cesta {
     }
 
     /**
-     * Finalizar compra boolean.
-     *
-     * @param cesta la cesta
-     * @return un boolean
-     */
-    public boolean finalizarCompra(ArrayList<DetallesProducto> cesta) {
-        return true;
-    }
-
-    /**
      * Gets cesta.
      *
      * @return la cesta
