@@ -290,7 +290,7 @@ public class PaginaPrincipalClientes extends JFrame {//extendemos de JFrame para
     public static void crearVentanaPaginaPrincipalCliente() throws SQLException {
         //añadimos el contenindo a la ventana
         paginaPrincipalClientes.setContentPane(paginaPrincipalClientes.container);
-        paginaPrincipalClientes.setBounds(330, 60, 1000, 700);
+        paginaPrincipalClientes.setBounds(300, 90, 1000, 700);
         paginaPrincipalClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         paginaPrincipalClientes.setTitle("Página principal");
         paginaPrincipalClientes.setVisible(true);
