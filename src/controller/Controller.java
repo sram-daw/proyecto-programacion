@@ -9,6 +9,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
+ * Lurpiazon.
+ *
+ * @author Alejandra Domínguez
+ * @author Sara Ramilo
+ * @version 1.0 04/06/23
+ */
+
+/**
  * Clase Controller.
  */
 public class Controller {
