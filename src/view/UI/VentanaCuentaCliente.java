@@ -3,10 +3,14 @@ package view.UI;
 import controller.Controller;
 import model.dao.Cliente;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -102,7 +106,7 @@ public class VentanaCuentaCliente extends JFrame {
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = verPerfilBoton;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //hacemos que el panelPerfil solo sea visible en este boton
                 panelEditarPerfil.setVisible(false);
@@ -142,7 +146,7 @@ public class VentanaCuentaCliente extends JFrame {
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = botonEditarPerfil;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
                 //hacemos que el panelEditarPerfil solo sea visible en este boton
                 panelEditarPerfil.setVisible(true);
@@ -234,7 +238,17 @@ public class VentanaCuentaCliente extends JFrame {
         ActionListener verPerfilBotonActionListener = ventanaCuentaCliente.verPerfilBoton.getActionListeners()[0];
         // Llamamos al ActionListener del botón "verPerfilBoton"
         verPerfilBotonActionListener.actionPerformed(null);
-
+        //añadimos imagen al boton salir
+        try {
+            BufferedImage img = ImageIO.read(new File("resources/cerrar_sesion.png"));
+            Image scaledImg = img.getScaledInstance(30, 30, Image.SCALE_AREA_AVERAGING);
+            ventanaCuentaCliente.botonSalir.setIcon(new ImageIcon(scaledImg));
+        } catch (IOException ex) {
+            System.err.println("Error al cargar la imagen: " + ex.getMessage());
+        }
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        ventanaCuentaCliente.setIconImage(logo.getImage()); //thumbnail del programa
         //hacemos que el panelEditarPerfil solo sea visible al crear la ventana
         ventanaCuentaCliente.panelEditarPerfil.setVisible(true);
         ventanaCuentaCliente.panelPerfil.setVisible(false);

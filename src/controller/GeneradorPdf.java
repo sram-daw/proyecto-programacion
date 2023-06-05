@@ -70,17 +70,18 @@ public class GeneradorPdf {
             Document document = new Document(pdf);
 
             // Se añade el logo
-            String rutaImagen = "././resources/logo-placeholder.jpg";
+            String rutaImagen = "././resources/logo_lurpiazon_1.png";
             ImageData imageData = ImageDataFactory.create(rutaImagen);
             com.itextpdf.layout.element.Image image = new com.itextpdf.layout.element.Image(imageData);
-            image.setHeight(80);
-            image.setRelativePosition(400, 2, 30, 30);
-            image.setMarginBottom(10);
+            image.setHeight(70);
+            image.setRelativePosition(243, 2, 30, 35);
+            image.setMarginBottom(20);
             document.add(image);
 
 
             //Creación de la tabla para los datos del cliente
             Table infoTable = new Table(new float[]{1, 1, 1});
+            infoTable.setMarginTop(10);
             infoTable.setWidth(UnitValue.createPercentValue(80));
             infoTable.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
@@ -159,7 +160,7 @@ public class GeneradorPdf {
 
             for (String header : headers) {
                 Cell headerCell = new Cell();
-                headerCell.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER)).setBackgroundColor(new DeviceRgb(34, 255, 58));
+                headerCell.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER)).setBackgroundColor(new DeviceRgb(168, 239, 208));
                 table.addHeaderCell(headerCell);
             }
 

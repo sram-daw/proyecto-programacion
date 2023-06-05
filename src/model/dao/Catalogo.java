@@ -25,25 +25,6 @@ public class Catalogo {
     }
 
     /**
-     * Mostrar catalogo array list.
-     *
-     * @return el array list
-     */
-    public ArrayList<ProductoEnStock> mostrarCatalogo() {
-        return null;
-    }
-
-    /**
-     * Mostrar catalogo por categoria array list.
-     *
-     * @param idProducto es id producto
-     * @return el array list
-     */
-    public ArrayList<ProductoEnStock> mostrarCatalogoPorCategoria(String idProducto) {
-        return null;
-    }
-
-    /**
      * Gets catalogo.
      *
      * @return el catalogo

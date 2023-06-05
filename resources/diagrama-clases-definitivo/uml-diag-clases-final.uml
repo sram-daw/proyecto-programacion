@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>E:/Mi unidad/PROG/Trimestre 3/Proyecto/proyecto-programacion</OriginalElement>
+  <nodes>
+    <node x="1047.3877909389892" y="1066.274621389709">view.UI.InicioSesion</node>
+    <node x="476.9466008272461" y="674.6013257895031">view.UI.PaginaPedidosCliente</node>
+    <node x="450.8143933193475" y="904.5201821009683">view.UI.VentanaCuentaCliente</node>
+    <node x="3197.597066876829" y="148.0642443054144">model.dao.Administrador</node>
+    <node x="4032.6338936891984" y="387.27544700731573">model.dao.Catalogo</node>
+    <node x="2730.6761763838836" y="21.908536651637235">model.dao.Usuario</node>
+    <node x="817.1261267369908" y="-14.420737660589339">controller.Controller</node>
+    <node x="2999.3477983831385" y="340.69470071332086">model.dao.ListaClientes</node>
+    <node x="-101.86469333946053" y="485.2006475611259">view.UI.VentanaCesta</node>
+    <node x="1383.7802904770567" y="905.8465292375876">view.UI.Registro</node>
+    <node x="830.334183320842" y="547.0761743631047">view.UI.PaginaPrincipalAdmin</node>
+    <node x="3352.123228193728" y="322.3592389422312">model.Model</node>
+    <node x="2301.434457346562" y="11.0360650709695">model.dao.Producto</node>
+    <node x="138.23450598394643" y="292.00356167169366">model.dao.DetallesProducto</node>
+    <node x="2598.2577729214645" y="375.5835143948319">controller.GeneradorPdf</node>
+    <node x="1950.6148998279732" y="139.60076621882553">model.dao.Pedido</node>
+    <node x="1142.3571871447389" y="750.5757522968134">view.UI.PaginaInicio</node>
+    <node x="771.6610255217231" y="927.8434305071141">view.View</node>
+    <node x="805.2622781210046" y="789.2866245026247">view.UI.PaginaPrincipalClientes</node>
+    <node x="1238.1010319072223" y="277.6369418837104">model.dao.Cesta</node>
+    <node x="1102.0757768432832" y="927.5622564204389">controller.ObserverStock</node>
+    <node x="518.8705122346136" y="348.8905635706059">model.dao.HistorialPedidosTotal</node>
+    <node x="1571.6136985445162" y="131.08381086816883">model.dao.Cliente</node>
+    <node x="3722.5133731974424" y="113.09843836288763">model.dao.ProductoEnStock</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="model.dao.HistorialPedidosTotal" target="model.dao.Pedido" relationship="TO_MANY">
+      <point x="-108.5" y="33.61299810108781" />
+      <point x="-164.36469333946053" y="433.50356167169366" />
+      <point x="-164.36469333946053" y="-156.0" />
+      <point x="2080.615" y="-156.0" />
+      <point x="-14.999899827973195" y="-162.0" />
+    </edge>
+    <edge source="model.Model" target="model.dao.Catalogo" relationship="CREATE">
+      <point x="-173.50022819372816" y="45.74176105776883" />
+      <point x="2047.0" y="682.101" />
+      <point x="2047.0" y="967.859" />
+      <point x="4163.134" y="967.859" />
+      <point x="1.0631080158418627E-4" y="61.999552992684244" />
+    </edge>
+    <edge source="controller.Controller" target="model.Model" relationship="TO_ONE">
+      <point x="29.999873263009135" y="-237.0" />
+      <point x="1026.626" y="-126.0" />
+      <point x="3555.623" y="-126.0" />
+      <point x="29.999771806271838" y="-314.0" />
+    </edge>
+    <edge source="view.UI.PaginaPrincipalAdmin" target="controller.Controller" relationship="CREATE">
+      <point x="0.0" y="-50.0" />
+      <point x="-30.791943416148797" y="237.0" />
+    </edge>
+    <edge source="model.dao.Pedido" target="model.dao.Cesta" relationship="TO_ONE">
+      <point x="1.0017202680501214E-4" y="-161.99976621882553" />
+      <point x="2095.615" y="113.584" />
+      <point x="1200.0" y="113.584" />
+      <point x="1200.0" y="350.5" />
+      <point x="-136.50003190722225" y="-23.136941883710392" />
+    </edge>
+    <edge source="model.dao.Pedido" target="model.dao.Cliente" relationship="TO_ONE">
+      <point x="-144.9998998279732" y="2.3378117447236946E-4" />
+      <point x="1921.0" y="301.601" />
+      <point x="1921.0" y="303.084" />
+      <point x="159.00030145548385" y="1.891318311777468E-4" />
+    </edge>
+    <edge source="model.Model" target="model.dao.Administrador" relationship="CREATE">
+      <point x="-173.50022819372816" y="-56.35923894223117" />
+      <point x="2973.176" y="580.0" />
+      <point x="2973.176" y="552.0" />
+      <point x="3320.597" y="552.0" />
+      <point x="-6.68768288960564E-5" y="37.9997556945856" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Cesta" relationship="TO_ONE">
+      <point x="179.49987326300914" y="-2.6233941066067246E-4" />
+      <point x="1200.0" y="222.579" />
+      <point x="1200.0" y="350.5" />
+      <point x="-136.50003190722225" y="-23.136941883710392" />
+    </edge>
+    <edge source="model.Model" target="model.dao.ProductoEnStock" relationship="CREATE">
+      <point x="173.5" y="0.0" />
+      <point x="3894.513" y="636.3592389422312" />
+      <point x="14.999626802557486" y="62.00000000000001" />
+    </edge>
+    <edge source="model.dao.Cliente" target="model.dao.Usuario" relationship="GENERALIZATION">
+      <point x="3.0145548385007714E-4" y="-171.99981086816882" />
+      <point x="1730.614" y="98.584" />
+      <point x="2283.934" y="98.584" />
+      <point x="2283.934" y="344.0" />
+      <point x="2835.676" y="344.0" />
+      <point x="-1.7638388362684054E-4" y="128.00046334836276" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Cliente" relationship="TO_ONE">
+      <point x="-1.2673699086462875E-4" y="236.99973766058935" />
+      <point x="996.626" y="498.0" />
+      <point x="1921.0" y="498.0" />
+      <point x="1921.0" y="303.084" />
+      <point x="159.00030145548385" y="1.891318311777468E-4" />
+    </edge>
+    <edge source="view.UI.VentanaCesta" target="model.dao.Cesta" relationship="CREATE">
+      <point x="90.99969333946052" y="-1.2006475611258907" />
+      <point x="659.5" y="523.0" />
+      <point x="659.5" y="534.0" />
+      <point x="1234.3571871447389" y="534.0" />
+      <point x="1234.3571871447389" y="373.637" />
+      <point x="-136.50003190722225" y="5.811628960827875E-5" />
+    </edge>
+    <edge source="controller.Controller" target="controller.ObserverStock" relationship="TO_ONE">
+      <point x="-179.5" y="-30.0" />
+      <point x="-134.36469333946053" y="192.57926233941066" />
+      <point x="-134.36469333946053" y="1025.0201821009682" />
+      <point x="1212.5757768432832" y="1025.0201821009682" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.DetallesProducto" relationship="CREATE">
+      <point x="-1.2673699086462875E-4" y="-237.00026233941065" />
+      <point x="996.626" y="-36.0" />
+      <point x="294.735" y="-36.0" />
+      <point x="4.940160535653604E-4" y="-61.999561671693655" />
+    </edge>
+    <edge source="model.dao.DetallesProducto" target="model.dao.Producto" relationship="GENERALIZATION">
+      <point x="-14.999505983946435" y="-61.999561671693655" />
+      <point x="279.735" y="-51.0" />
+      <point x="2669.5" y="-51.0" />
+      <point x="2669.5" y="170.5" />
+      <point x="2650.0" y="170.5" />
+      <point x="2650.0" y="161.036" />
+      <point x="125.49954265343831" y="-6.507096949803781E-5" />
+    </edge>
+    <edge source="model.dao.ListaClientes" target="model.dao.Cliente" relationship="TO_MANY">
+      <point x="2.0161686143183033E-4" y="62.00029928667914" />
+      <point x="3111.848" y="498.0" />
+      <point x="1921.0" y="498.0" />
+      <point x="1921.0" y="303.084" />
+      <point x="159.00030145548385" y="1.891318311777468E-4" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Catalogo" relationship="TO_ONE">
+      <point x="-30.000126736990865" y="-237.0" />
+      <point x="966.626" y="-111.0" />
+      <point x="-149.36469333946053" y="-111.0" />
+      <point x="-149.36469333946053" y="1040.0201821009682" />
+      <point x="4178.134" y="1040.0201821009682" />
+      <point x="15.000106310801584" y="62.0" />
+    </edge>
+    <edge source="model.dao.Cesta" target="model.dao.DetallesProducto" relationship="TO_MANY">
+      <point x="0.0" y="-96.0" />
+      <point x="1374.6010319072223" y="-141.0" />
+      <point x="264.735" y="-141.0" />
+      <point x="-29.99950598394645" y="-62.0" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Cliente" relationship="CREATE">
+      <point x="179.49987326300914" y="-229.04326233941066" />
+      <point x="2958.176" y="-6.463999999999999" />
+      <point x="2958.176" y="580.0" />
+      <point x="1730.614" y="580.0" />
+      <point x="3.0145548385007714E-4" y="172.00018913183118" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Pedido" relationship="CREATE">
+      <point x="-15.000126736990865" y="236.99973766058935" />
+      <point x="981.626" y="523.0" />
+      <point x="2095.615" y="523.0" />
+      <point x="1.0017202680501214E-4" y="162.00023378117447" />
+    </edge>
+    <edge source="model.Model" target="model.dao.Cliente" relationship="CREATE">
+      <point x="-173.50022819372816" y="-15.000238942231192" />
+      <point x="2227.0" y="621.3589999999999" />
+      <point x="2227.0" y="580.0" />
+      <point x="1730.614" y="580.0" />
+      <point x="3.0145548385007714E-4" y="172.00018913183118" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Cesta" relationship="CREATE">
+      <point x="14.999873263009135" y="236.99973766058935" />
+      <point x="1102.626" y="459.579" />
+      <point x="1102.626" y="478.329" />
+      <point x="1193.626" y="478.329" />
+      <point x="1193.626" y="373.637" />
+      <point x="-136.50003190722225" y="5.811628960827875E-5" />
+    </edge>
+    <edge source="controller.GeneradorPdf" target="model.dao.Pedido" relationship="CREATE">
+      <point x="2.2707853531755973E-4" y="39.00048560516808" />
+      <point x="2687.258" y="523.0" />
+      <point x="2095.615" y="523.0" />
+      <point x="1.0017202680501214E-4" y="162.00023378117447" />
+    </edge>
+    <edge source="model.Model" target="model.dao.ListaClientes" relationship="CREATE">
+      <point x="-173.5" y="-233.66453822891032" />
+      <point x="112.5" y="0.0" />
+    </edge>
+    <edge source="model.dao.ProductoEnStock" target="model.dao.Producto" relationship="GENERALIZATION">
+      <point x="-3.7319744251362863E-4" y="61.99956163711237" />
+      <point x="3879.513" y="295.409" />
+      <point x="2650.0" y="295.409" />
+      <point x="2650.0" y="161.036" />
+      <point x="125.49954265343831" y="-6.507096949803781E-5" />
+    </edge>
+    <edge source="view.UI.PaginaPrincipalAdmin" target="controller.Controller" relationship="TO_ONE">
+      <point x="-15.0" y="-50.0" />
+      <point x="-45.7919434161488" y="237.0" />
+    </edge>
+    <edge source="controller.Controller" target="view.View" relationship="CREATE">
+      <point x="-179.5" y="0.0" />
+      <point x="787.7622781210046" y="222.57926233941066" />
+      <point x="-26.398747400718605" y="-27.0" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Administrador" relationship="TO_ONE">
+      <point x="14.999873263009135" y="-237.0" />
+      <point x="1011.626" y="-171.0" />
+      <point x="3320.597066876829" y="-171.0" />
+      <point x="0.0" y="-38.0" />
+    </edge>
+    <edge source="model.Model" target="model.dao.HistorialPedidosTotal" relationship="CREATE">
+      <point x="-173.5" y="60.74176105776883" />
+      <point x="779.1610255217231" y="697.101" />
+      <point x="779.1610255217231" y="399.8905635706059" />
+      <point x="108.5" y="0.0" />
+    </edge>
+    <edge source="model.dao.Administrador" target="model.dao.Usuario" relationship="GENERALIZATION">
+      <point x="-123.0000668768289" y="-2.4430541439812714E-4" />
+      <point x="2973.176" y="186.064" />
+      <point x="2973.176" y="344.0" />
+      <point x="2835.676" y="344.0" />
+      <point x="-1.7638388362684054E-4" y="128.00046334836276" />
+    </edge>
+    <edge source="model.Model" target="model.dao.DetallesProducto" relationship="CREATE">
+      <point x="-2.2819372816229588E-4" y="-314.00023894223114" />
+      <point x="3525.623" y="-36.0" />
+      <point x="294.735" y="-36.0" />
+      <point x="4.940160535653604E-4" y="-61.999561671693655" />
+    </edge>
+    <edge source="controller.Controller" target="controller.ObserverStock" relationship="CREATE">
+      <point x="-179.5" y="-15.0" />
+      <point x="-119.36469333946053" y="207.57926233941066" />
+      <point x="-119.36469333946053" y="1000.0201821009683" />
+      <point x="-110.5" y="33.457925680529456" />
+    </edge>
+    <edge source="model.dao.Catalogo" target="model.dao.ProductoEnStock" relationship="TO_MANY">
+      <point x="0.0" y="-62.0" />
+      <point x="4163.133893689199" y="175.09843836288763" />
+      <point x="157.0" y="0.0" />
+    </edge>
+    <edge source="model.Model" target="model.dao.Pedido" relationship="CREATE">
+      <point x="-173.50022819372816" y="-2.3894223119214075E-4" />
+      <point x="2062.0" y="636.3589999999999" />
+      <point x="2062.0" y="523.0" />
+      <point x="2095.615" y="523.0" />
+      <point x="1.0017202680501214E-4" y="162.00023378117447" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Administrador" relationship="CREATE">
+      <point x="127.87387326300916" y="236.99973766058935" />
+      <point x="1124.5" y="552.0" />
+      <point x="3320.597" y="552.0" />
+      <point x="-6.68768288960564E-5" y="37.9997556945856" />
+    </edge>
+    <edge source="controller.Controller" target="model.dao.Catalogo" relationship="CREATE">
+      <point x="142.87387326300916" y="236.99973766058935" />
+      <point x="1139.5" y="597.0761743631047" />
+      <point x="1234.3571871447389" y="597.0761743631047" />
+      <point x="1234.3571871447389" y="601.0" />
+      <point x="2047.0" y="601.0" />
+      <point x="2047.0" y="967.859" />
+      <point x="4163.134" y="967.859" />
+      <point x="1.0631080158418627E-4" y="61.999552992684244" />
+    </edge>
+    <edge source="controller.Controller" target="model.Model" relationship="CREATE">
+      <point x="-15.000126736990865" y="-237.0" />
+      <point x="981.626" y="-186.0" />
+      <point x="3570.623" y="-186.0" />
+      <point x="44.99977180627184" y="-314.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.8" showDependencies="true" x="2100.75" y="702.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

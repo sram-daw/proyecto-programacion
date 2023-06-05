@@ -110,6 +110,9 @@ public class VentanaCesta extends JFrame {
             ventanaCesta.scrollPanelTabla.setViewportView(table);
             ventanaCesta.precioLabel.setText(String.format("%.2f€", 0.0));
         }
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        ventanaCesta.setIconImage(logo.getImage()); //thumbnail del programa
 
     }
 

@@ -45,15 +45,6 @@ public class Cliente extends Usuario {
         this.apellido = apellido;
     }
 
-    /*public ArrayList<Pedidos> getListaPedidos() {
-        return listaPedidos;
-    }
-
-    public void setListaPedidos(ArrayList<Pedidos> listaPedidos) {
-        this.listaPedidos = listaPedidos;
-    }
-*/
-
     /**
      * Gets direccion.
      *
@@ -162,8 +153,5 @@ public class Cliente extends Usuario {
         this.apellido = apellido;
     }
 
- /*   public ArrayList<Pedido> mostrarHistorialPedidos(String idUsuario) {
-        return null;
-    }*/
 
 }

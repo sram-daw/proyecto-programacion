@@ -17,6 +17,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Clase Pagina principal admin.
+ */
 public class PaginaPrincipalAdmin extends JFrame {
     private JPanel PanelPrincipalAdmin;
     private JPanel PanelMenuAdmin;
@@ -50,14 +53,32 @@ public class PaginaPrincipalAdmin extends JFrame {
     private JPanel panelAnadirOrdenar;
     private JPanel panelLabelAlmacen;
     private JLabel labelAlmacen;
+    /**
+     * Tabla pedidos admin.
+     */
     static JTable tablaPedidosAdmin;
+    /**
+     * Tabla clientes admin.
+     */
     static JTable tablaClientesAdmin;
+    /**
+     * Tabla almacen admin.
+     */
     static JTable tablaAlmacenAdmin;
     private JButton botonPresionadoActual;
+    /**
+     * Pagina principal admin.
+     */
     static PaginaPrincipalAdmin paginaPrincipalAdmin = new PaginaPrincipalAdmin();
+    /**
+     * Controller.
+     */
     static Controller controller = new Controller();
     private static boolean mensajeMostrado = false;
 
+    /**
+     * Constructor Pagina principal admin.
+     */
     public PaginaPrincipalAdmin() {
 
         botonPedidos.setBackground(UIManager.getColor("Button.background"));
@@ -99,7 +120,7 @@ public class PaginaPrincipalAdmin extends JFrame {
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = botonPedidos;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
             }
         });
@@ -139,7 +160,7 @@ public class PaginaPrincipalAdmin extends JFrame {
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = botonClientes;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
 
             }
         });
@@ -187,7 +208,7 @@ public class PaginaPrincipalAdmin extends JFrame {
                     botonPresionadoActual.setBackground(UIManager.getColor("Button.background"));
                 }
                 botonPresionadoActual = botonAlmacen;
-                botonPresionadoActual.setBackground(new Color(185, 206, 172));
+                botonPresionadoActual.setBackground(new Color(168, 239, 208));
             }
         });
         botonSalir.addActionListener(new ActionListener() {
@@ -195,7 +216,6 @@ public class PaginaPrincipalAdmin extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 System.exit(0);
-                System.out.println("El boton salir funciona para el admin");
             }
         });
 
@@ -355,6 +375,11 @@ public class PaginaPrincipalAdmin extends JFrame {
 
     }
 
+    /**
+     * Mostrar mensaje stock.
+     *
+     * @throws SQLException la excepcion sql
+     */
     public static void mostrarMensajeStock() throws SQLException {
         //llamamos al metodo para lanzar el aviso en caso de stock bajo cuando entre el administrador
         boolean stockIsOk = false;
@@ -368,7 +393,12 @@ public class PaginaPrincipalAdmin extends JFrame {
         controller.avisoStock();
     }
 
-    //Metodo para la creacion de la ventana
+    /**
+     * Crear ventana pagina principal admin.
+     *
+     * @throws SQLException la excepcion sql
+     */
+//Metodo para la creacion de la ventana
     public static void crearVentanaPaginaPrincipalAdmin() throws SQLException {
         paginaPrincipalAdmin.setContentPane(paginaPrincipalAdmin.PanelPrincipalAdmin);
         paginaPrincipalAdmin.setTitle("Pagina principal del administrador");
@@ -391,7 +421,9 @@ public class PaginaPrincipalAdmin extends JFrame {
         } catch (IOException ex) {
             System.err.println("Error al cargar la imagen: " + ex.getMessage());
         }
-
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        paginaPrincipalAdmin.setIconImage(logo.getImage()); //thumbnail del programa
         //hacemos que el panelAlmacen solo sea visible cuando el usuario pulse el boton almacen
         paginaPrincipalAdmin.panelAlmacen.setVisible(false);
         //hacemos que el panelClientesAdmin solo no sea visible cuando la ventana se cree
