@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Clase Pagina pedidos cliente.
+ */
 public class PaginaPedidosCliente extends JFrame {
     private JPanel panelLabel;
     private JPanel panelTabla;
@@ -22,9 +25,18 @@ public class PaginaPedidosCliente extends JFrame {
     private JButton generarFacturaButton;
     private JPanel panelBotonAtras;
     private JPanel panelBotonFactura;
+    /**
+     * Tabla table
+     */
     static JTable table;
+    /**
+     * Pagina pedidos cliente.
+     */
     static PaginaPedidosCliente paginaPedidosCliente = new PaginaPedidosCliente();
 
+    /**
+     * Constructor Pagina pedidos cliente.
+     */
     public PaginaPedidosCliente() {
         volverAtrásButton.addActionListener(new ActionListener() {
             @Override
@@ -54,12 +66,18 @@ public class PaginaPedidosCliente extends JFrame {
         });
     }
 
-    //Método para crear la ventana de pedidos del cliente
+    /**
+     * Crear ventana pagina pedidos cliente.
+     *
+     * @throws SQLException la excepcion sql
+     */
+//Método para crear la ventana de pedidos del cliente
     public static void crearVentanaPaginaPedidosCliente() throws SQLException {
         //añadimos el contenindo a la ventana
         paginaPedidosCliente.setContentPane(paginaPedidosCliente.container);
         paginaPedidosCliente.setBounds(330, 60, 1000, 700);
         paginaPedidosCliente.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        paginaPedidosCliente.setTitle("Pedidos");
         paginaPedidosCliente.setVisible(true);
 
         //creación de la tabla de pedidos
@@ -79,6 +97,9 @@ public class PaginaPedidosCliente extends JFrame {
             }
             i++;
         }
+        //miniatura de ventana
+        ImageIcon logo= new ImageIcon("./././resources/logo_lurpiazon_2.png");
+        paginaPedidosCliente.setIconImage(logo.getImage()); //thumbnail del programa
         paginaPedidosCliente.scrollPaneTabla.setViewportView(table);
 
     }
