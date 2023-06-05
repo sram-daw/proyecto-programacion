@@ -12,16 +12,28 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Observable;
 
+/**
+ * Clase Model.
+ */
 public class Model extends Observable {
 
+    /**
+     * Constante conexion.
+     */
     public static Connection conexion; //se establece como atributo para poder usarlo en distintos métodos
 
+    /**
+     * Constructor vacio Model.
+     */
     public Model() {
 
     }
 
 
-    //Método para establecer la conexión a la bd
+    /**
+     * Establecer conexion bd.
+     */
+//Método para establecer la conexión a la bd
     public void establecerConexionBd() {
         conexion = null;
         String url = "jdbc:mysql://localhost:3306/lurpiazon";
@@ -37,7 +49,13 @@ public class Model extends Observable {
         }
     }
 
-    //Función para añadir el cliente que se acaba de registrar a la bd
+    /**
+     * Registrar cliente boolean.
+     *
+     * @param nuevoCliente el nuevo cliente
+     * @return el boolean
+     */
+//Función para añadir el cliente que se acaba de registrar a la bd
     public static boolean registrarCliente(Cliente nuevoCliente) {
         Boolean isAddOk = false;
         Statement consulta = null;
@@ -66,7 +84,13 @@ public class Model extends Observable {
         return isAddOk;
     }
 
-    //método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
+    /**
+     * Comprobar stock int.
+     *
+     * @param idProducto el id producto
+     * @return el int
+     */
+//método para comprobar que existe el suficiente stock de un producto para añadirlo a la cesta
     public static int comprobarStock(int idProducto) {
         int stock = 0;
         Statement consulta = null;
@@ -86,7 +110,13 @@ public class Model extends Observable {
         return stock;
     }
 
-    //Método para añadir el nuevo pedido a la tabla pedidos de la bd
+    /**
+     * Almacenar pedidos bd boolean.
+     *
+     * @param pedido el pedido
+     * @return el boolean
+     */
+//Método para añadir el nuevo pedido a la tabla pedidos de la bd
     public static boolean almacenarPedidosBd(Pedido pedido) {
         Boolean isAddOk = false;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -113,7 +143,13 @@ public class Model extends Observable {
         return isAddOk;
     }
 
-    //Método para añadir los productos del pedido a la tabla detalles_pedidos de la bd
+    /**
+     * Almacenar detalles pedidos bd.
+     *
+     * @param producto  el producto
+     * @param id_pedido el id pedido
+     */
+//Método para añadir los productos del pedido a la tabla detalles_pedidos de la bd
     public static void almacenarDetallesPedidosBd(DetallesProducto producto, int id_pedido) { // (DetallesProducto producto)
 
         Statement consulta = null;
@@ -132,7 +168,13 @@ public class Model extends Observable {
         }
     }
 
-    //Método para comprobar si el producto añadido a la cesta ya existía
+    /**
+     * Comprobar producto en cesta boolean.
+     *
+     * @param id el id
+     * @return el boolean
+     */
+//Método para comprobar si el producto añadido a la cesta ya existía
     public static boolean comprobarProductoEnCesta(int id) {
         boolean isProductoInCesta = false;
         for (DetallesProducto p : Controller.cesta.getCesta()) {
@@ -143,7 +185,13 @@ public class Model extends Observable {
         return isProductoInCesta;
     }
 
-    //Método para tomar el id del pedido generado autoincrementalmente en la bd para settearlo en el objeto pedido
+    /**
+     * Gets id pedido.
+     *
+     * @param pedido el pedido
+     * @return el id pedido
+     */
+//Método para tomar el id del pedido generado autoincrementalmente en la bd para settearlo en el objeto pedido
     public static int getIdPedido(Pedido pedido) {
         int idPedido = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -165,7 +213,13 @@ public class Model extends Observable {
         return idPedido;
     }
 
-    //Método para restar del stock los productos tras efectuar un pedido
+    /**
+     * Restar stock boolean.
+     *
+     * @param pedido el pedido
+     * @return el boolean
+     */
+//Método para restar del stock los productos tras efectuar un pedido
     public static boolean restarStock(Cesta pedido) {
         boolean isRestarOk = false;
         String actualizarStock = "UPDATE productos_almacen SET stock = ? WHERE id_producto = ?";
@@ -188,7 +242,15 @@ public class Model extends Observable {
         return isRestarOk;
     }
 
-    //Metodo para actualizar el stock en paginaPrincipalAdmin
+    /**
+     * Actualizar stock producto boolean.
+     *
+     * @param idProducto el id producto
+     * @param nuevoStock el nuevo stock
+     * @return el boolean
+     * @throws SQLException la excepcion sql
+     */
+//Metodo para actualizar el stock en paginaPrincipalAdmin
     public static Boolean actualizarStockProducto(int idProducto, int nuevoStock) throws SQLException {
         boolean isActualizadoOK = false;
         //ProductoEnStock stockActualizado = new ProductoEnStock();
@@ -211,7 +273,13 @@ public class Model extends Observable {
         return isActualizadoOK;
     }
 
-    //metodo para ordenar la tabla almacen por stock ascendente
+    /**
+     * Ordenar stock result set.
+     *
+     * @return el result set
+     * @throws SQLException la excepcion sql
+     */
+//metodo para ordenar la tabla almacen por stock ascendente
     public static ResultSet ordenarStock() throws SQLException {
         Statement consulta = null;
         String consultaStockOrdenado = "SELECT * FROM productos_almacen ORDER BY stock ASC";
@@ -225,6 +293,13 @@ public class Model extends Observable {
         return resultadoStock;
     }
 
+    /**
+     * Obtener cliente filtrado telefono result set.
+     *
+     * @param numTelf el num telf
+     * @return el result set
+     * @throws SQLException the sql exception
+     */
     public static ResultSet obtenerClienteFiltradoTelefono(int numTelf) throws SQLException {
         Statement consulta = null;
         String consultaClienteFiltrado = "SELECT id_usuario, nombre_usuario, nombre, apellido, pwd, direccion, num_telf, email, cp FROM usuarios WHERE is_admin=0 AND num_telf = '" + numTelf + "'";
@@ -238,6 +313,13 @@ public class Model extends Observable {
         return resultadoClienteTelefono;
     }
 
+    /**
+     * Obtener pedido filtrado id result set.
+     *
+     * @param idPedido the id pedido
+     * @return the result set
+     * @throws SQLException la excepcion sql
+     */
     public static ResultSet obtenerPedidoFiltradoID(int idPedido) throws SQLException {
         Statement consultaPedido = null;
         String consultaPedidoFiltrado = "SELECT * FROM pedidos WHERE id_pedido = '" + idPedido + "'";
@@ -251,7 +333,13 @@ public class Model extends Observable {
         return resultadoPedidoID;
     }
 
-    //Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
+    /**
+     * Avisar limite stock boolean.
+     *
+     * @return el boolean
+     * @throws SQLException la excepcion sql
+     */
+//Metodo para usar el patron observer, envia mensaje cuando el stock es igual o inferior a 10
     public boolean avisarLimiteStock() throws SQLException {
         boolean stockIsOk = false;
         int datoStock = 0;
@@ -272,7 +360,14 @@ public class Model extends Observable {
         return stockIsOk;
     }
 
-    //Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
+    /**
+     * Comprobar datos login ok boolean.
+     *
+     * @param nombreUsuario el nombre usuario
+     * @param pwd           la pwd
+     * @return el boolean
+     */
+//Método para comprobar si los datos introducidos por el usuario en el login existen en la base de datos
     public static boolean comprobarDatosLoginOk(String nombreUsuario, String pwd) {
         Statement consulta = null;
         boolean userExiste = false;
@@ -293,7 +388,14 @@ public class Model extends Observable {
         return userExiste;
     }
 
-    //Función para comprobar si los datos de inicio de sesión pertenecen a un admin o a un cliente
+    /**
+     * Comprobar si admin boolean.
+     *
+     * @param nombreUsuario el nombre usuario
+     * @param pwd           la pwd
+     * @return the boolean
+     */
+//Función para comprobar si los datos de inicio de sesión pertenecen a un admin o a un cliente
     public static boolean comprobarSiAdmin(String nombreUsuario, String pwd) {
         Statement consulta = null;
         boolean isAdmin = false;
@@ -318,7 +420,14 @@ public class Model extends Observable {
         return isAdmin;
     }
 
-    //Método que devuelve un objeto administrador consultando los datos del login en la bd
+    /**
+     * Gets administrador logado.
+     *
+     * @param nombreUsuario el nombre usuario
+     * @param pwd           la pwd
+     * @return el administrador logado
+     */
+//Método que devuelve un objeto administrador consultando los datos del login en la bd
     public static Administrador getAdministradorLogado(String nombreUsuario, String pwd) {
         Administrador admin = new Administrador();
 
@@ -343,7 +452,14 @@ public class Model extends Observable {
         return admin;
     }
 
-    //Método que devuelve un objeto Cliente consultando los datos del login en la bd. Se usa para crear el objeto clienteLogado
+    /**
+     * Gets cliente logado.
+     *
+     * @param nombreUsuario el nombre usuario
+     * @param pwd           la pwd
+     * @return el cliente logado
+     */
+//Método que devuelve un objeto Cliente consultando los datos del login en la bd. Se usa para crear el objeto clienteLogado
     public static Cliente getClienteLogado(String nombreUsuario, String pwd) {
         Cliente cliente = new Cliente();
 
@@ -374,7 +490,13 @@ public class Model extends Observable {
         return cliente;
     }
 
-    //método para obtener los datos personales del cliente de la bd
+    /**
+     * Gets datos cliente.
+     *
+     * @param idUsuario el id usuario
+     * @return el datos cliente
+     */
+//método para obtener los datos personales del cliente de la bd
     public static Cliente getDatosCliente(int idUsuario) {
         Cliente cliente = new Cliente();
 
@@ -403,7 +525,14 @@ public class Model extends Observable {
         return cliente;
     }
 
-    //método para actualizar en la bd los campos de usuarios cuando el cliente modifica sus datos
+    /**
+     * Actualizar datos cliente boolean.
+     *
+     * @param cliente el cliente
+     * @return el boolean
+     * @throws SQLException la excepcion sql
+     */
+//método para actualizar en la bd los campos de usuarios cuando el cliente modifica sus datos
     public static boolean actualizarDatosCliente(Cliente cliente) throws SQLException {
         boolean actualizarDatosIsOk = false;
         Statement consulta = null;
@@ -430,7 +559,13 @@ public class Model extends Observable {
         return actualizarDatosIsOk;
     }
 
-    //funcion para mostrar los datos de la tabla productos_almacen
+    /**
+     * Obtener datos almacen catalogo.
+     *
+     * @return el catalogo
+     * @throws SQLException la excepcion sql
+     */
+//funcion para mostrar los datos de la tabla productos_almacen
     public static Catalogo obtenerDatosAlmacen() throws SQLException {
         Catalogo catalogo = new Catalogo();
         ArrayList<ProductoEnStock> listaProductos = new ArrayList<>();
@@ -458,7 +593,13 @@ public class Model extends Observable {
         return catalogo;
     }
 
-    //Metodo para obtener los datos de los clientes en paginaPrincipalAdmin
+    /**
+     * Obtener lista clientes lista clientes.
+     *
+     * @return la lista clientes
+     * @throws SQLException la excepcion sql
+     */
+//Metodo para obtener los datos de los clientes en paginaPrincipalAdmin
     public static ListaClientes obtenerListaClientes() throws SQLException {
         ListaClientes listaCliente = new ListaClientes();
         ArrayList<Cliente> lista = new ArrayList<>();
@@ -485,7 +626,13 @@ public class Model extends Observable {
     }
 
 
-    //Función para obtener los pedidos de la bd
+    /**
+     * Obtener datos pedidos historial pedidos total.
+     *
+     * @return el historial pedidos total
+     * @throws SQLException la excepcion sql
+     */
+//Función para obtener los pedidos de la bd
     public static HistorialPedidosTotal obtenerDatosPedidos() throws SQLException {
         HistorialPedidosTotal historialPedidosTotal = new HistorialPedidosTotal();
         ArrayList<Pedido> listaPedidos = new ArrayList<>();
@@ -510,7 +657,13 @@ public class Model extends Observable {
         return historialPedidosTotal;
     }
 
-    //Función para obtener los productos de un pedido
+    /**
+     * Obtener detalles pedido array list.
+     *
+     * @param idPedido el id pedido
+     * @return el array list
+     */
+//Función para obtener los productos de un pedido
     public static ArrayList<DetallesProducto> obtenerDetallesPedido(int idPedido) {
         ArrayList<DetallesProducto> productos = new ArrayList<>();
 
@@ -533,7 +686,13 @@ public class Model extends Observable {
         return productos;
     }
 
-    //Método para obtener el nombre de un producto. Se usa en el método obtenerDetallesPedido
+    /**
+     * Obtener nombre producto string.
+     *
+     * @param idProducto el id producto
+     * @return el string
+     */
+//Método para obtener el nombre de un producto. Se usa en el método obtenerDetallesPedido
     public static String obtenerNombreProducto(int idProducto) {
         String nombreProd = "";
         for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
@@ -544,7 +703,13 @@ public class Model extends Observable {
         return nombreProd;
     }
 
-    //Método para obtener el precio de un producto. Se usa en el método obtenerDetallesPedido
+    /**
+     * Obtener precio producto float.
+     *
+     * @param idProducto el id producto
+     * @return el float
+     */
+//Método para obtener el precio de un producto. Se usa en el método obtenerDetallesPedido
     public static Float obtenerPrecioProducto(int idProducto) {
         Float precio = 0f;
         for (ProductoEnStock p : Controller.catalogo.getCatalogo()) {
@@ -556,7 +721,13 @@ public class Model extends Observable {
     }
 
 
-    //Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
+    /**
+     * Gets categoria.
+     *
+     * @param categoria la categoria
+     * @return la categoria
+     */
+//Función para realizar el filtrado por categorías para mostrar la tabla de productos para el cliente
     public static Catalogo getCategoria(int categoria) {
         Catalogo catalogoFiltrado = new Catalogo();
         ArrayList<ProductoEnStock> listaFiltrada = new ArrayList<>();
